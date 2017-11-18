@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:layout="@layout/prefs_category_widget"
+        android:title="@string/setting_function">
+
+        <!-- 开关：定义了自定义的widget -->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/setting_key_desktop_lyric"
+            android:title="@string/desktop_lyric"
+            android:summary="@string/lyric_on_the_desktop"
+            android:layout="@layout/prefs_switch_item"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/prefs_category_widget"
+        android:title="@string/file_filter">
+
+        <!-- 开关：定义了自定义的widget -->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/setting_key_filter_size"
+            android:title="@string/filter_by_size"
+            android:summary="@string/filter_some_small_size_audio_file"
+            android:layout="@layout/prefs_switch_item"/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/setting_key_filter_time"
+            android:title="@string/filter_by_duration"
+            android:summary="@string/filter_some_short_duration_audio_file"
+            android:layout="@layout/prefs_switch_item"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

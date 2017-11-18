@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_timer"
+            android:icon="@drawable/ic_timer"
+            android:title="@string/menu_timer"/>
+
+        <item
+            android:id="@+id/action_setting"
+            android:icon="@drawable/ic_setting"
+            android:title="@string/setting"/>
+
+        <item
+            android:id="@+id/action_exit"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/exit"/>
+    </group>
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_timer1"
+            android:icon="@drawable/ic_timer"
+            android:title="@string/menu_timer"/>
+
+        <item
+            android:id="@+id/action_setting1"
+            android:icon="@drawable/ic_setting"
+            android:title="@string/setting"/>
+
+        <item
+            android:id="@+id/action_exit1"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/exit"/>
+    </group>
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_timer2"
+            android:icon="@drawable/ic_timer"
+            android:title="@string/menu_timer"/>
+
+        <item
+            android:id="@+id/action_setting2"
+            android:icon="@drawable/ic_setting"
+            android:title="@string/setting"/>
+
+        <item
+            android:id="@+id/action_exit2"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/exit"/>
+    </group>
+    <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_timer3"
+            android:icon="@drawable/ic_timer"
+            android:title="@string/menu_timer"/>
+
+        <item
+            android:id="@+id/action_setting3"
+            android:icon="@drawable/ic_setting"
+            android:title="@string/setting"/>
+
+        <item
+            android:id="@+id/action_exit3"
+            android:icon="@drawable/ic_exit"
+            android:title="@string/exit"/>
+    </group>
+
+</menu>

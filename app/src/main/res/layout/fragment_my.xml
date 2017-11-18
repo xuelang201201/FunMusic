@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.charles.funmusic.widget.SuspendScrollView
+        android:id="@+id/fragment_my_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/fragment_my_can_hide_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="15dp">
+
+                    <com.charles.funmusic.widget.CircleImageView
+                        android:id="@+id/fragment_my_avatar"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:contentDescription="@null"
+                        app:border_color="@color/color_grey"
+                        app:border_width="0.3dp"
+                        app:srcCompat="@drawable/ic_default_avatar"/>
+
+                    <TextView
+                        android:id="@+id/fragment_my_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/my"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="-10dp"
+                        android:layout_marginRight="-10dp"
+                        android:drawableEnd="@drawable/ic_arrow_right"
+                        android:drawableRight="@drawable/ic_arrow_right"
+                        android:gravity="center_vertical"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        android:text="@string/setting"
+                        android:textColor="#AAAAAA"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/fragment_music_head_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:background="#CCCCCC"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="3dp"
+                        android:drawableTop="@drawable/ic_recent"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:scaleX="0.7"
+                        android:scaleY="0.7"
+                        android:text="@string/recent_play"
+                        android:textColor="#333333"
+                        android:textSize="17sp"/>
+
+                    <View
+                        android:layout_width="0.3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/black"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="3dp"
+                        android:drawableTop="@drawable/ic_download"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:scaleX="0.7"
+                        android:scaleY="0.7"
+                        android:text="@string/download_management"
+                        android:textColor="#333333"
+                        android:textSize="17sp"/>
+
+                    <View
+                        android:layout_width="0.3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/black"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="3dp"
+                        android:drawableTop="@drawable/ic_favorite"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:scaleX="0.7"
+                        android:scaleY="0.7"
+                        android:text="@string/favorites"
+                        android:textColor="#333333"
+                        android:textSize="17sp"/>
+
+                    <View
+                        android:layout_width="0.3dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/black"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="3dp"
+                        android:drawableTop="@drawable/ic_playlist"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:scaleX="0.7"
+                        android:scaleY="0.7"
+                        android:text="@string/my_music_list"
+                        android:textColor="#333333"
+                        android:textSize="17sp"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@color/color_normal"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fragment_my_suspend_layout"
+                android:layout_width="match_parent"
+                android:layout_height="50.5dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/fragment_my_suspend_child_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/fragment_my_random_play"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:contentDescription="@null"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="10dp"
+                            android:scaleX="0.4"
+                            android:scaleY="0.4"
+                            android:src="@drawable/ic_random"/>
+
+                        <TextView
+                            android:id="@+id/fragment_my_random_play_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/random_play"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+                    <ImageView
+                        android:id="@+id/fragment_my_sort"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@null"
+                        android:scaleX="0.7"
+                        android:scaleY="0.7"
+                        android:src="@drawable/selector_sort"/>
+
+                    <ImageView
+                        android:id="@+id/fragment_my_display"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="@null"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:scaleX="0.6"
+                        android:scaleY="0.6"
+                        android:src="@drawable/selector_display"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"
+                android:background="@color/color_grey"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/fragment_my_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/play_bar_height"
+                    android:background="@color/white"
+                    android:overScrollMode="never"/>
+
+                <TextView
+                    android:id="@+id/fragment_my_empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/screen_tips_top"
+                    android:drawablePadding="16dp"
+                    android:drawableTop="@drawable/ic_info"
+                    android:text="@string/no_local_music"
+                    android:textColor="#AAAAAA"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+        </LinearLayout>
+    </com.charles.funmusic.widget.SuspendScrollView>
+
+    <LinearLayout
+        android:id="@+id/fragment_my_top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50.5dp"
+        android:orientation="horizontal"/>
+
+</RelativeLayout>

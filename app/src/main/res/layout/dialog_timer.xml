@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="@string/menu_timer"
+        android:textSize="17sp"
+        android:textColor="@color/black"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/dialog_timer_no"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="@string/no"
+        android:textSize="14sp"
+        android:textColor="#333333"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/dialog_timer_ten"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="@string/ten_minutes_later"
+        android:textSize="14sp"
+        android:textColor="#333333"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/dialog_timer_twenty"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="@string/twenty_minutes_later"
+        android:textSize="14sp"
+        android:textColor="#333333"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/dialog_timer_thirty"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="@string/thirty_minutes_later"
+        android:textSize="14sp"
+        android:textColor="#333333"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/dialog_timer_hour"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="@string/an_hour_later"
+        android:textSize="14sp"
+        android:textColor="#333333"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/dialog_timer_custom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="@string/custom"
+        android:textSize="14sp"
+        android:textColor="#333333"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"/>
+
+</LinearLayout>
