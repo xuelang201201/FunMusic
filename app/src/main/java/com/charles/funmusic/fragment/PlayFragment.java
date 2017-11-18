@@ -7,12 +7,15 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.adapter.PlayPagerAdapter;
+import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Actions;
 import com.charles.funmusic.enums.PlayModeEnum;
 import com.charles.funmusic.model.Music;
@@ -21,6 +24,7 @@ import com.charles.funmusic.utils.Preferences;
 import com.charles.funmusic.utils.ScreenUtil;
 import com.charles.funmusic.utils.SystemUtil;
 import com.charles.funmusic.utils.ToastUtil;
+import com.charles.funmusic.widget.AlbumCoverView;
 import com.charles.funmusic.widget.IndicatorLayout;
 
 import java.util.ArrayList;
@@ -32,7 +36,7 @@ import butterknife.OnClick;
 /**
  * 正在播放界面
  */
-public class PlayFragment extends BaseFragment implements OnPlayerEventListener, SeekBar.OnSeekBarChangeListener {
+public class PlayFragment extends BaseFragment implements OnPlayerEventListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener {
 
     @BindView(R.id.fragment_play_head_container)
     View mHeadContainer;
@@ -63,6 +67,9 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
     @BindView(R.id.fragment_play_next)
     ImageView mNext;
 
+    private View mLrcViewFull;
+    private AlbumCoverView mAlbumCoverView;
+
     private List<View> mViewPagerContent;
     private int mLastProgress;
     private boolean isDraggingProgress;
@@ -86,13 +93,15 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
         mIndicator.create(mViewPagerContent.size());
         initPlayMode();
         onChangeImpl(getPlayService().getPlayingMusic());
+
+        mSeekBar.setOnSeekBarChangeListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(Actions.VOLUME_CHANGED_ACTION);
-        getContext().registerReceiver(mVolumeReceiver, filter);
+        AppCache.getContext().registerReceiver(mVolumeReceiver, filter);
     }
 
     /**
@@ -106,7 +115,15 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
     }
 
     private void initViewPager() {
+        View coverView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_play_page_cover, null);
+        View lrcView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_play_page_lrc, null);
+        mAlbumCoverView = coverView.findViewById(R.id.fragment_play_page_cover_album_cover_view);
+        mLrcViewFull = lrcView.findViewById(R.id.fragment_play_page_lrc_lrc_view);
+        mAlbumCoverView.initNeedle(getPlayService().isPlaying());
         mViewPagerContent = new ArrayList<>(2);
+        mViewPagerContent.add(coverView);
+        mViewPagerContent.add(mLrcViewFull);
+        mViewPager.setAdapter(new PlayPagerAdapter(mViewPagerContent));
     }
 
     private void initPlayMode() {
@@ -122,7 +139,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
         String artist;
 
         if ("<unknown>".equals(music.getArtist())) {
-            artist = getActivity().getString(R.string.unknown_artist);
+            artist = AppCache.getContext().getString(R.string.unknown_artist);
         } else {
             artist = music.getArtist();
         }
@@ -139,10 +156,8 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
         mDuration.setText(formatTime(music.getDuration()));
         if (getPlayService().isPlaying() || getPlayService().isPreparing()) {
             mPlayOrPause.setSelected(true);
-
         } else {
             mPlayOrPause.setSelected(false);
-
         }
     }
 
@@ -221,6 +236,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
      * 下一首
      */
     private void next() {
+        mAlbumCoverView.pause();
         getPlayService().next();
     }
 
@@ -228,22 +244,26 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
      * 上一首
      */
     private void prev() {
+        mAlbumCoverView.pause();
         getPlayService().prev();
     }
 
     @Override
     public void onChange(Music music) {
+        mAlbumCoverView.pause();
         onChangeImpl(music);
     }
 
     @Override
     public void onPlayerStart() {
+        mAlbumCoverView.start();
         mPlayOrPause.setSelected(true);
 
     }
 
     @Override
     public void onPlayerPause() {
+        mAlbumCoverView.pause();
         mPlayOrPause.setSelected(false);
     }
 
@@ -312,7 +332,22 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
 
     @Override
     public void onDestroy() {
-        getContext().unregisterReceiver(mVolumeReceiver);
+        AppCache.getContext().unregisterReceiver(mVolumeReceiver);
         super.onDestroy();
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        mIndicator.setCurrent(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }

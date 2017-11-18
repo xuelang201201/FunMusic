@@ -8,7 +8,6 @@
         android:id="@+id/fragment_play_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@drawable/play_page_default_bg"/>
