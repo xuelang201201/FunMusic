@@ -29,6 +29,7 @@ import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.fragment.MyFragment;
 import com.charles.funmusic.fragment.OnlineFragment;
 import com.charles.funmusic.fragment.PlayFragment;
+import com.charles.funmusic.fragment.SearchFragment;
 import com.charles.funmusic.fragment.TimerFragment;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.OnPlayerEventListener;
@@ -74,16 +75,15 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     View mPlayBar;
     @BindView(R.id.toolbar_tabs)
     SlidingTabLayout mToolbarTabs;
-    @BindView(R.id.activity_music_container)
-    View mContainer;
 
     private PlayFragment mPlayFragment;
     private TimerFragment mTimerFragment;
+    private SearchFragment mSearchFragment;
     private MyFragment mMyFragment;
     private OnlineFragment mOnlineFragment;
 
     private List<Fragment> mFragments = new ArrayList<>();
-    private final String[] mTitles = { "我的", "在线" };
+    private final String[] mTitles = {"我的", "在线"};
     /**
      * 是否显示播放界面
      */
@@ -93,11 +93,14 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
      */
     private boolean isTimerFragmentShow = false;
     /**
+     * 是否显示搜索界面
+     */
+    private boolean isSearchFragmentShow = false;
+    /**
      * 上一次按下返回键的时间
      */
     private long lastClickBackTimeMillis;
 
-    private ActionBarDrawerToggle mToggle;
     private MenuItem mTimerItem;
 
     @Override
@@ -125,7 +128,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     private void parseIntent() {
         Intent intent = getIntent();
         if (intent.hasExtra(Extra.EXTRA_NOTIFICATION)) {
-            showPlayingFragment();
+            showPlayFragment();
             setIntent(new Intent());
         }
     }
@@ -160,11 +163,11 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
         mNavigationView.setNavigationItemSelectedListener(this);
         setSupportActionBar(mToolbar);
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(mToggle);
-        mToggle.syncState();
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
-        mToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
@@ -178,6 +181,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
     /**
      * 去除掉NavigationView的滚动条
+     *
      * @param navigationView 侧边导航栏
      */
     private void disableNavigationViewScrolls(NavigationView navigationView) {
@@ -215,6 +219,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
     /**
      * 更新播放进度
+     *
      * @param progress 进度
      */
     @Override
@@ -256,12 +261,25 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
             if (mPlayFragment != null && isPlayFragmentShow) {
-                hidePlayingFragment();
+                hideFragments(mPlayFragment, R.anim.fragment_slide_down);
+                isPlayFragmentShow = false;
                 return false;
             }
 
             if (mTimerFragment != null && isTimerFragmentShow) {
-                hideTimerFragment();
+                hideFragments(mTimerFragment, R.anim.fragment_left_out);
+                isTimerFragmentShow = false;
+                return false;
+            }
+
+            if (mSearchFragment != null && isSearchFragmentShow) {
+                hideFragments(mSearchFragment, R.anim.fragment_left_out);
+                isSearchFragmentShow = false;
+                return false;
+            }
+
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawers();
                 return false;
             }
 
@@ -288,14 +306,23 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     @Override
     public void onBackPressed() {
         if (mPlayFragment != null && isPlayFragmentShow) {
-            hidePlayingFragment();
+            hideFragments(mPlayFragment, R.anim.fragment_slide_down);
+            isPlayFragmentShow = false;
             return;
         }
 
         if (mTimerFragment != null && isTimerFragmentShow) {
-            hideTimerFragment();
+            hideFragments(mTimerFragment, R.anim.fragment_left_out);
+            isTimerFragmentShow = false;
             return;
         }
+
+        if (mSearchFragment != null && isSearchFragmentShow) {
+            hideFragments(mSearchFragment, R.anim.fragment_left_out);
+            isSearchFragmentShow = false;
+            return;
+        }
+
 //        moveTaskToBack(false);
         super.onBackPressed();
     }
@@ -303,7 +330,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     /**
      * 显示正在播放界面
      */
-    private void showPlayingFragment() {
+    private void showPlayFragment() {
         if (isPlayFragmentShow) {
             return;
         }
@@ -321,6 +348,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         isPlayFragmentShow = true;
     }
 
+    /**
+     * 显示定时界面
+     */
     private void showTimerFragment() {
         if (isTimerFragmentShow) {
             return;
@@ -330,43 +360,65 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         ft.setCustomAnimations(R.anim.fragment_right_in, 0);
         if (mTimerFragment == null) {
             mTimerFragment = new TimerFragment();
-            ft.replace(R.id.activity_music_container, mTimerFragment);
+            ft.replace(R.id.activity_music_timer_container, mTimerFragment);
         } else {
             ft.show(mTimerFragment);
         }
         ft.commitAllowingStateLoss();
 
         isTimerFragmentShow = true;
+
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     /**
-     * 隐藏正在播放界面
+     * 显示搜索界面
      */
-    private void hidePlayingFragment() {
+    private void showSearchFragment() {
+        if (isSearchFragmentShow) {
+            return;
+        }
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(0, R.anim.fragment_slide_down);
-        ft.hide(mPlayFragment);
+        ft.setCustomAnimations(R.anim.fragment_right_in, 0);
+        if (mSearchFragment == null) {
+            mSearchFragment = new SearchFragment();
+            ft.replace(R.id.activity_music_search_container, mSearchFragment);
+        } else {
+            ft.show(mSearchFragment);
+        }
         ft.commitAllowingStateLoss();
-        isPlayFragmentShow = false;
+        isSearchFragmentShow = true;
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
-    private void hideTimerFragment() {
+    /**
+     * 隐藏界面
+     * @param fragment 需要隐藏的fragment
+     * @param anim 退出动画
+     */
+    private void hideFragments(Fragment fragment, int anim) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(0, R.anim.fragment_left_out);
-        ft.hide(mTimerFragment);
+        ft.setCustomAnimations(0, anim);
+        ft.hide(fragment);
         ft.commitAllowingStateLoss();
-        isTimerFragmentShow = false;
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
-    @OnClick({R.id.toolbar_menu, R.id.toolbar_search, R.id.activity_music_play_bar, R.id.play_bar_next, R.id.play_bar_play_or_pause})
+    @OnClick({R.id.toolbar_menu, R.id.toolbar_search, R.id.activity_music_play_bar,
+            R.id.play_bar_next, R.id.play_bar_play_or_pause})
     public void doClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_menu:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
 
+            case R.id.toolbar_search:
+                showSearchFragment();
+                break;
+
             case R.id.activity_music_play_bar:
-                showPlayingFragment();
+                showPlayFragment();
                 break;
 
             case R.id.play_bar_play_or_pause:
@@ -488,6 +540,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         return false;
     }
 
+    /**
+     * 退出程序
+     */
     private void exit() {
         finish();
         PlayService service = AppCache.getPlayService();

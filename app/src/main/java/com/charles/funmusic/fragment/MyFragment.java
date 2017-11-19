@@ -1,6 +1,8 @@
 package com.charles.funmusic.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.activity.UserInfoActivity;
 import com.charles.funmusic.adapter.AutoLinearLayoutManager;
 import com.charles.funmusic.adapter.MusicAdapter;
 import com.charles.funmusic.application.AppCache;
@@ -54,6 +57,8 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
     SuspendScrollView mScrollview;
     @BindView(R.id.fragment_my_top_layout)
     LinearLayout mTopLayout;
+    @BindView(R.id.fragment_my_user_info_layout)
+    LinearLayout mUserInfoLayout;
 
     private MusicAdapter mAdapter;
 
@@ -108,12 +113,13 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
         View footer = LayoutInflater.from(getActivity()).inflate(R.layout.footer_view, recyclerView, false);
         mAdapter.setFooterView(footer);
         TextView footerText = footer.findViewById(R.id.footer_view_text);
-        footerText.setText("共" + AppCache.getMusics().size() + "首歌曲");
+        String size = "共" + AppCache.getMusics().size() + "首歌曲";
+        footerText.setText(size);
         changeFont(footerText, false);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         int position = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
         int offset = (mRecyclerView.getChildAt(0) == null) ? 0 : mRecyclerView.getChildAt(0).getTop();
         outState.putInt(Keys.LOCAL_MUSIC_POSITION, position);
@@ -132,7 +138,8 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
         });
     }
 
-    @OnClick({R.id.fragment_my_random_play, R.id.fragment_my_sort, R.id.fragment_my_display})
+    @OnClick({R.id.fragment_my_random_play, R.id.fragment_my_sort,
+            R.id.fragment_my_display, R.id.fragment_my_user_info_layout})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fragment_my_random_play:
@@ -142,7 +149,13 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
 
             case R.id.fragment_my_sort:
                 break;
+
             case R.id.fragment_my_display:
+                break;
+
+            case R.id.fragment_my_user_info_layout:
+                Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+                startActivity(intent);
                 break;
         }
     }

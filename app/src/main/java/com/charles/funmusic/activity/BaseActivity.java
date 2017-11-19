@@ -99,8 +99,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 改变字体
+     *
      * @param textView TextView
-     * @param isBold 是否加粗
+     * @param isBold   是否加粗
      */
     protected void changeFont(TextView textView, boolean isBold) {
         FontUtil fontUtil = new FontUtil();
@@ -114,8 +115,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 跳转activity
+     *
      * @param context 上下文对象
-     * @param cls 对象Activity
+     * @param cls     对象Activity
      */
     protected static void startActivity(Context context, Class<?> cls) {
         Intent intent = new Intent(context, cls);

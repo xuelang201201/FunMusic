@@ -20,6 +20,7 @@ import com.charles.funmusic.constant.Actions;
 import com.charles.funmusic.enums.PlayModeEnum;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.OnPlayerEventListener;
+import com.charles.funmusic.utils.CoverLoader;
 import com.charles.funmusic.utils.Preferences;
 import com.charles.funmusic.utils.ScreenUtil;
 import com.charles.funmusic.utils.SystemUtil;
@@ -48,6 +49,8 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
     ImageView mShare;
     @BindView(R.id.fragment_play_artist)
     TextView mArtist;
+    @BindView(R.id.fragment_play_bg)
+    ImageView mPlayBg;
     @BindView(R.id.fragment_play_view_pager)
     ViewPager mViewPager;
     @BindView(R.id.fragment_play_indicator)
@@ -154,11 +157,28 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
         mLastProgress = 0;
         mCurrentTime.setText(R.string.play_time_start);
         mDuration.setText(formatTime(music.getDuration()));
+
+        setCoverAndBg(music);
+        setLrc(music);
+
         if (getPlayService().isPlaying() || getPlayService().isPreparing()) {
             mPlayOrPause.setSelected(true);
         } else {
             mPlayOrPause.setSelected(false);
         }
+    }
+
+    /**
+     * 设置播放界面专辑封面和北京
+     * @param music 正在播放的歌曲
+     */
+    private void setCoverAndBg(Music music) {
+        mAlbumCoverView.setCoverBitmap(CoverLoader.getInstance().loadRound(music));
+        mPlayBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
+    }
+
+    private void setLrc(Music music) {
+
     }
 
     @OnClick({R.id.fragment_play_back, R.id.fragment_play_play_mode, R.id.fragment_play_play_or_pause, R.id.fragment_play_next, R.id.fragment_play_prev})
