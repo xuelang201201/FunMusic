@@ -34,9 +34,7 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
     @BindView(R.id.fragment_my_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.fragment_my_random_play)
-    View mRandomPlay;
-    @BindView(R.id.fragment_my_random_play_text)
-    TextView mRandomPlayText;
+    TextView mRandomPlay;
     @BindView(R.id.fragment_my_empty)
     TextView mEmpty;
     @BindView(R.id.fragment_my_avatar)
@@ -59,6 +57,8 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
     LinearLayout mTopLayout;
     @BindView(R.id.fragment_my_user_info_layout)
     LinearLayout mUserInfoLayout;
+    @BindView(R.id.fragment_my_top_layout_divider)
+    View mTopDivider;
 
     private MusicAdapter mAdapter;
 
@@ -77,7 +77,7 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
         updateView();
         initRecyclerView();
 
-        changeFont(mRandomPlayText, true);
+        changeFont(mRandomPlay, true);
     }
 
     private void updateView() {
@@ -86,8 +86,6 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
         } else {
             mEmpty.setVisibility(View.GONE);
         }
-//        mAdapter.updatePlayingPosition(getPlayService());
-//        mAdapter.notifyDataSetChanged();
     }
 
     private void initRecyclerView() {
@@ -148,6 +146,7 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
                 break;
 
             case R.id.fragment_my_sort:
+                showSortDialog();
                 break;
 
             case R.id.fragment_my_display:
@@ -158,6 +157,11 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
                 startActivity(intent);
                 break;
         }
+    }
+
+    private void showSortDialog() {
+        SortDialogFragment sortDialog = new SortDialogFragment();
+        sortDialog.show(getFragmentManager(), "sort");
     }
 
     public void onItemPlay() {
@@ -188,11 +192,13 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
             if (mSuspendChildLayout.getParent() != mTopLayout) {
                 mSuspendLayout.removeView(mSuspendChildLayout);
                 mTopLayout.addView(mSuspendChildLayout);
+                mTopDivider.setVisibility(View.VISIBLE);
             }
         } else {
             if (mSuspendChildLayout.getParent() != mSuspendLayout) {
                 mTopLayout.removeView(mSuspendChildLayout);
                 mSuspendLayout.addView(mSuspendChildLayout);
+                mTopDivider.setVisibility(View.INVISIBLE);
             }
         }
     }

@@ -163,8 +163,10 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
 
         if (getPlayService().isPlaying() || getPlayService().isPreparing()) {
             mPlayOrPause.setSelected(true);
+            mAlbumCoverView.start();
         } else {
             mPlayOrPause.setSelected(false);
+            mAlbumCoverView.pause();
         }
     }
 
@@ -172,7 +174,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
      * 设置播放界面专辑封面和北京
      * @param music 正在播放的歌曲
      */
-    private void setCoverAndBg(Music music) {
+    private void setCoverAndBg(final Music music) {
         mAlbumCoverView.setCoverBitmap(CoverLoader.getInstance().loadRound(music));
         mPlayBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
     }

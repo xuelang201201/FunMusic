@@ -9,7 +9,8 @@
         android:id="@+id/fragment_my_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -175,46 +176,32 @@
             <LinearLayout
                 android:id="@+id/fragment_my_suspend_layout"
                 android:layout_width="match_parent"
-                android:layout_height="50.5dp"
+                android:layout_height="@dimen/top_height"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/fragment_my_suspend_child_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/top_height"
                     android:background="@color/white"
                     android:orientation="horizontal">
 
-                    <LinearLayout
+                    <TextView
                         android:id="@+id/fragment_my_random_play"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginStart="5dp"
-                            android:contentDescription="@null"
-                            android:paddingBottom="10dp"
-                            android:paddingTop="10dp"
-                            android:scaleX="0.4"
-                            android:scaleY="0.4"
-                            android:src="@drawable/ic_random"/>
-
-                        <TextView
-                            android:id="@+id/fragment_my_random_play_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/random_play"
-                            android:textColor="@color/black"
-                            android:textSize="14sp"
-                            android:textStyle="bold"/>
-
-                    </LinearLayout>
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="-40dp"
+                        android:layout_marginStart="-40dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:drawableLeft="@drawable/ic_random"
+                        android:drawablePadding="10dp"
+                        android:drawableStart="@drawable/ic_random"
+                        android:scaleX="0.4"
+                        android:scaleY="0.4"
+                        android:text="@string/random_play"
+                        android:textColor="@color/black"
+                        android:textSize="36sp"/>
 
                     <View
                         android:layout_width="0dp"
@@ -226,6 +213,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@null"
                         android:scaleX="0.7"
                         android:scaleY="0.7"
@@ -236,6 +224,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@null"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
@@ -283,7 +272,15 @@
     <LinearLayout
         android:id="@+id/fragment_my_top_layout"
         android:layout_width="match_parent"
-        android:layout_height="50.5dp"
+        android:layout_height="@dimen/top_height"
         android:orientation="horizontal"/>
+
+    <View
+        android:id="@+id/fragment_my_top_layout_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_below="@+id/fragment_my_top_layout"
+        android:background="#CCCCCC"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

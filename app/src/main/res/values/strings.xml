@@ -52,4 +52,8 @@
     <string name="time_pick_ok">确定</string>
     <string name="navigation_drawer_open">Navigation Drawer Open</string>
     <string name="navigation_drawer_close">Navigation Drawer Close</string>
+    <string name="sort_way">排序方式</string>
+    <string name="sort_by_title">按名称</string>
+    <string name="add_time">按添加时间</string>
+    <string name="play_time">按播放次数</string>
 </resources>

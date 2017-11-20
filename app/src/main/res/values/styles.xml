@@ -24,4 +24,16 @@
 
     </style>
 
+    <style name="Dialog_Bottom" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_exit</item>
+    </style>
+
+    <style name="Dialog_Full_Screen">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item> <!--模糊-->
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
 </resources>

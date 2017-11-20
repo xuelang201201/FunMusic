@@ -7,5 +7,7 @@
     <color name="color_normal">#EFEFEF</color>
     <color name="red">#FB7299</color>
     <color name="black">#000000</color>
+    <color name="light_black">#333333</color>
     <color name="color_grey">#DEDEDE</color>
+    <color name="blue">#33b5e5</color>
 </resources>
