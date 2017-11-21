@@ -273,6 +273,7 @@
         android:id="@+id/fragment_my_top_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_height"
+        android:clickable="false"
         android:orientation="horizontal"/>
 
     <View

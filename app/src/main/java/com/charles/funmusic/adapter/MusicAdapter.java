@@ -24,8 +24,8 @@ import butterknife.ButterKnife;
  * 本地音乐适配器
  */
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder> {
-    public static final int TYPE_FOOTER = 0;
-    public static final int TYPE_NORMAL = 1;
+    private static final int TYPE_FOOTER = 0;
+    private static final int TYPE_NORMAL = 1;
 
     private Context mContext;
     private LayoutInflater mLayoutInflater;
@@ -103,6 +103,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
 
             Bitmap cover = CoverLoader.getInstance().loadThumbnail(music);
             holder.mCover.setImageBitmap(cover);
+
+//            if (position == mPlayingPosition) {
+//                holder.mPlaying.setVisibility(View.VISIBLE);
+//            } else {
+//                holder.mPlaying.setVisibility(View.INVISIBLE);
+//            }
         }
     }
 
@@ -155,6 +161,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
         TextView mArtistAndAlbum;
         @BindView(R.id.music_item_cover)
         ImageView mCover;
+//        @BindView(R.id.music_item_playing)
+//        ViewStub mPlaying;
 
         MusicHolder(View itemView) {
             super(itemView);
@@ -170,6 +178,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
             FontUtil util = new FontUtil();
             util.changeFont(mContext, mTitle);
             util.changeFont(mContext, mArtistAndAlbum);
+
+//            mPlaying.inflate();
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);

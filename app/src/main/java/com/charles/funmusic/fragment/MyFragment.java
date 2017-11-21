@@ -74,8 +74,8 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
         if (getPlayService().getPlayingMusic() != null && getPlayService().getPlayingMusic().getType() == Music.Type.LOCAL) {
             mRecyclerView.smoothScrollToPosition(getPlayService().getPlayingPosition());
         }
-        updateView();
         initRecyclerView();
+        updateView();
 
         changeFont(mRandomPlay, true);
     }
@@ -86,6 +86,8 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
         } else {
             mEmpty.setVisibility(View.GONE);
         }
+//        mAdapter.updatePlayingPosition(getPlayService());
+//        mAdapter.notifyDataSetChanged();
     }
 
     private void initRecyclerView() {
@@ -104,7 +106,9 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
             }
         });
         mRecyclerView.setAdapter(mAdapter);
-        addFooterView(mRecyclerView);
+        if (! AppCache.getMusics().isEmpty()) {
+            addFooterView(mRecyclerView);
+        }
     }
 
     private void addFooterView(RecyclerView recyclerView) {
@@ -137,12 +141,17 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
     }
 
     @OnClick({R.id.fragment_my_random_play, R.id.fragment_my_sort,
-            R.id.fragment_my_display, R.id.fragment_my_user_info_layout})
+            R.id.fragment_my_display, R.id.fragment_my_user_info_layout,
+            R.id.fragment_my_top_layout})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fragment_my_random_play:
-                int position = new Random().nextInt(AppCache.getMusics().size());
-                getPlayService().play(position);
+                if (AppCache.getMusics().isEmpty()) {
+                    return;
+                } else {
+                    int position = new Random().nextInt(AppCache.getMusics().size());
+                    getPlayService().play(position);
+                }
                 break;
 
             case R.id.fragment_my_sort:
@@ -155,6 +164,10 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
             case R.id.fragment_my_user_info_layout:
                 Intent intent = new Intent(getActivity(), UserInfoActivity.class);
                 startActivity(intent);
+                break;
+
+            case R.id.fragment_my_top_layout:
+                mScrollview.scrollTo(0, mTop);
                 break;
         }
     }
@@ -184,6 +197,7 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
 
     /**
      * 监听滚动Y值变化，通过addView和removeView来实现悬停效果
+     *
      * @param scrollY Y轴滚动距离
      */
     @Override
@@ -193,12 +207,14 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
                 mSuspendLayout.removeView(mSuspendChildLayout);
                 mTopLayout.addView(mSuspendChildLayout);
                 mTopDivider.setVisibility(View.VISIBLE);
+                mTopLayout.setClickable(true);
             }
         } else {
             if (mSuspendChildLayout.getParent() != mSuspendLayout) {
                 mTopLayout.removeView(mSuspendChildLayout);
                 mSuspendLayout.addView(mSuspendChildLayout);
                 mTopDivider.setVisibility(View.INVISIBLE);
+                mTopLayout.setClickable(false);
             }
         }
     }

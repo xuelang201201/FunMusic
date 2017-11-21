@@ -6,6 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <!--<ViewStub-->
+        <!--android:id="@+id/music_item_playing"-->
+        <!--android:layout_width="3dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:background="@color/red"-->
+        <!--android:layout="@layout/playing"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:contentDescription="@null"-->
+        <!--android:visibility="invisible" />-->
+
     <ImageView
         android:id="@+id/music_item_cover"
         android:layout_width="45dp"
@@ -36,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:maxLines="1"
+            android:singleLine="true"
             android:ellipsize="marquee"
             android:textColor="@android:color/black"
             android:textStyle="bold"/>
@@ -45,25 +55,12 @@
             android:id="@+id/music_item_artist_and_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
+            android:singleLine="true"
             android:ellipsize="marquee"
             android:textColor="#888888"
             android:textSize="13sp"/>
 
     </LinearLayout>
-
-    <!--<ImageView-->
-        <!--android:id="@+id/music_item_playing"-->
-        <!--android:visibility="gone"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@drawable/playing"-->
-        <!--android:scaleX="0.5"-->
-        <!--android:scaleY="0.5"-->
-        <!--android:contentDescription="@null"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_toLeftOf="@+id/music_item_more"-->
-        <!--android:layout_toStartOf="@+id/music_item_more"/>-->
 
     <ImageView
         android:id="@+id/music_item_more"

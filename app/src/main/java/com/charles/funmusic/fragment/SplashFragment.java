@@ -60,6 +60,7 @@ public class SplashFragment extends BaseFragment {
 
         int year = Calendar.getInstance().get(Calendar.YEAR);
         mCopyright.setText(getString(R.string.copyright, year));
+        changeFont(mCopyright, false);
 
         checkService();
     }
@@ -84,7 +85,7 @@ public class SplashFragment extends BaseFragment {
 
     private void startService() {
         Intent intent = new Intent(getActivity(), PlayService.class);
-        getActivity().startService(intent);
+        AppCache.getContext().startService(intent);
     }
 
     private void bindService() {
@@ -100,7 +101,7 @@ public class SplashFragment extends BaseFragment {
         public void onServiceConnected(ComponentName name, IBinder service) {
             final PlayService playService = ((PlayService.PlayBinder) service).getService();
             AppCache.setPlayService(playService);
-            PermissionReq.with(getActivity())
+            PermissionReq.with(SplashFragment.this)
                     .permissions(Manifest.permission.READ_EXTERNAL_STORAGE,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     .result(new PermissionReq.Result() {
@@ -136,7 +137,7 @@ public class SplashFragment extends BaseFragment {
     private void showSplash() {
         File splashImg = new File(FileUtil.getSplashDir(getActivity()), SPLASH_FILE_NAME);
         if (splashImg.exists()) {
-            Glide.with(getActivity()).load(splashImg.getPath()).into(mImageView);
+            Glide.with(AppCache.getContext()).load(splashImg.getPath()).into(mImageView);
         }
     }
 

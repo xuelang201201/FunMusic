@@ -11,9 +11,7 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore.Audio.AlbumColumns;
 import android.provider.MediaStore.Audio.AudioColumns;
 import android.provider.MediaStore.Audio.Media;
-import android.support.v7.widget.RecyclerView;
 
-import com.charles.funmusic.adapter.MusicAdapter;
 import com.charles.funmusic.model.Music;
 
 import java.util.ArrayList;
@@ -28,6 +26,7 @@ public class MusicUtil {
 
     /**
      * 扫描歌曲
+     *
      * @param context 上下文
      * @return 歌曲合集
      */
@@ -39,7 +38,7 @@ public class MusicUtil {
 
         Cursor cursor = context.getContentResolver().query(
                 Media.EXTERNAL_CONTENT_URI,
-                new String[] {
+                new String[]{
                         BaseColumns._ID,
                         AudioColumns.IS_MUSIC,
                         AudioColumns.TITLE,
@@ -94,17 +93,18 @@ public class MusicUtil {
             music.setUrl(path);
             music.setFileName(fileName);
             music.setFileSize(fileSize);
-            if (++i <= 20) {
-                // 只加载前20首的缩略图
+            if (++i <= 18) {
+                // 只加载前18首的缩略图
                 CoverLoader.getInstance().loadThumbnail(music);
             }
             musics.add(music);
         }
         cursor.close();
+
         return musics;
     }
 
-    public static Uri getMediaStoreAlbumCoverUri(long albumId) {
+    static Uri getMediaStoreAlbumCoverUri(long albumId) {
         Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
         return ContentUris.withAppendedId(artworkUri, albumId);
     }
@@ -115,10 +115,5 @@ public class MusicUtil {
 
     private static boolean isIntentAvailable(Context context, Intent intent) {
         return context.getPackageManager().resolveActivity(intent, PackageManager.GET_RESOLVED_FILTER) != null;
-    }
-
-    public void setMusicAdapter(Context context, RecyclerView recyclerView, MusicAdapter.OnItemClickListener onItemClickListener, MusicAdapter.OnItemLongClickListener onItemLongClickListener) {
-        MusicAdapter adapter = new MusicAdapter(context, onItemClickListener, onItemLongClickListener);
-        recyclerView.setAdapter(adapter);
     }
 }
