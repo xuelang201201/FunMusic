@@ -130,13 +130,13 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
     }
 
     private void initPlayMode() {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 int mode = Preferences.getPlayMode();
                 mPlayMode.setImageLevel(mode);
             }
-        }));
+        });
     }
 
     private void onChangeImpl(final Music music) {
@@ -152,7 +152,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
             artist = music.getArtist();
         }
 
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mTitle.setText(music.getTitle());
@@ -177,7 +177,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
                     mAlbumCoverView.pause();
                 }
             }
-        }));
+        });
     }
 
     /**
@@ -186,13 +186,8 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
      * @param music 正在播放的歌曲
      */
     private void setCoverAndBg(final Music music) {
-        mHandler.post(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mAlbumCoverView.setCoverBitmap(CoverLoader.getInstance().loadRound(music));
-                mPlayBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
-            }
-        }));
+        mAlbumCoverView.setCoverBitmap(CoverLoader.getInstance().loadRound(music));
+        mPlayBg.setImageBitmap(CoverLoader.getInstance().loadBlur(music));
     }
 
     private void setLrc(Music music) {
@@ -274,59 +269,59 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
      * 下一首
      */
     private void next() {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mAlbumCoverView.pause();
                 getPlayService().next();
             }
-        }));
+        });
     }
 
     /**
      * 上一首
      */
     private void prev() {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mAlbumCoverView.pause();
                 getPlayService().prev();
             }
-        }));
+        });
     }
 
     @Override
     public void onChange(final Music music) {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mAlbumCoverView.pause();
                 onChangeImpl(music);
             }
-        }));
+        });
     }
 
     @Override
     public void onPlayerStart() {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mAlbumCoverView.start();
                 mPlayOrPause.setSelected(true);
             }
-        }));
+        });
     }
 
     @Override
     public void onPlayerPause() {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mAlbumCoverView.pause();
                 mPlayOrPause.setSelected(false);
             }
-        }));
+        });
     }
 
     /**
@@ -336,24 +331,24 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
      */
     @Override
     public void onPublish(final int progress) {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (!isDraggingProgress) {
                     mSeekBar.setProgress(progress);
                 }
             }
-        }));
+        });
     }
 
     @Override
     public void onBufferingUpdate(final int percent) {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mSeekBar.setSecondaryProgress(mSeekBar.getMax() * 100 / percent);
             }
-        }));
+        });
     }
 
     @Override
@@ -368,7 +363,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
 
     @Override
     public void onProgressChanged(final SeekBar seekBar, final int progress, boolean fromUser) {
-        mHandler.post(new Thread(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (seekBar == mSeekBar) {
@@ -378,7 +373,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
                     }
                 }
             }
-        }));
+        });
 
     }
 

@@ -53,7 +53,9 @@
     <string name="navigation_drawer_open">Navigation Drawer Open</string>
     <string name="navigation_drawer_close">Navigation Drawer Close</string>
     <string name="sort_way">排序方式</string>
-    <string name="sort_by_title">按名称</string>
-    <string name="add_time">按添加时间</string>
-    <string name="play_time">按播放次数</string>
+    <string name="sort_by_artist">按歌手名</string>
+    <string name="sort_by_single">按单曲名</string>
+    <string name="sort_by_album">按专辑名</string>
+    <string name="sort_by_add_time">按添加时间</string>
+    <string name="sort_by_play_time">按播放次数</string>
 </resources>

@@ -169,7 +169,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
                     prev(); // 上一首
                     break;
                 case Actions.ACTION_MEDIA_EXIT:
-                    exit();
+                    exit(); // 退出
                     break;
             }
         }
@@ -220,26 +220,29 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
         next();
     }
 
+    private int pos;
+
     /**
      * 播放指定位置的歌曲
      *
      * @param position 位置
      */
     public void play(int position) {
-        if (AppCache.getMusics().isEmpty()) {
-            return;
-        }
-
-        if (position < 0) {
-            position = AppCache.getMusics().size() - 1;
-        } else if (position >= AppCache.getMusics().size()) {
-            position = 0;
-        }
-
-        mPlayingPosition = position;
+        pos = position;
         new Thread(new Runnable() {
             @Override
             public void run() {
+                if (AppCache.getMusics().isEmpty()) {
+                    return;
+                }
+
+                if (pos < 0) {
+                    pos = AppCache.getMusics().size() - 1;
+                } else if (pos >= AppCache.getMusics().size()) {
+                    pos = 0;
+                }
+
+                mPlayingPosition = pos;
                 Music music = AppCache.getMusics().get(mPlayingPosition);
                 Preferences.saveCurrentSongId(music.getId());
                 play(music);

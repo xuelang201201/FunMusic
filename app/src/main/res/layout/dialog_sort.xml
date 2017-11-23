@@ -22,31 +22,38 @@
         android:background="#CCCCCC"/>
 
     <LinearLayout
-        android:id="@+id/dialog_sort_by_title"
+        android:id="@+id/dialog_sort_by_artist"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/touch_bg"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/dialog_sort_by_artist_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_by_artist"
+            android:textColor="@color/light_black"
+            android:textSize="14sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
         <ImageView
-            android:id="@+id/dialog_sort_by_title_image"
+            android:id="@+id/dialog_sort_by_artist_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:contentDescription="@null"
             android:scaleX="0.7"
             android:scaleY="0.7"
-            android:src="@drawable/ic_arrow_right_dialog"
+            android:src="@drawable/ic_selected"
             android:visibility="invisible"/>
-
-        <TextView
-            android:id="@+id/dialog_sort_by_title_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sort_by_title"
-            android:textColor="@color/light_black"
-            android:textSize="14sp"/>
 
     </LinearLayout>
 
@@ -56,12 +63,69 @@
         android:background="#CCCCCC"/>
 
     <LinearLayout
+        android:id="@+id/dialog_sort_by_single"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/dialog_sort_by_single_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_by_single"
+            android:textColor="@color/light_black"
+            android:textSize="14sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/dialog_sort_by_single_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@null"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:src="@drawable/ic_selected"
+            android:visibility="invisible"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_weight="1"
+        android:background="#CCCCCC"/>
+
+    <LinearLayout
         android:id="@+id/dialog_sort_by_add_time"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@drawable/touch_bg"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/dialog_sort_by_add_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_by_add_time"
+            android:textColor="@color/light_black"
+            android:textSize="14sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/dialog_sort_by_add_time_image"
@@ -71,16 +135,49 @@
             android:contentDescription="@null"
             android:scaleX="0.7"
             android:scaleY="0.7"
-            android:src="@drawable/ic_arrow_right_dialog"
+            android:src="@drawable/ic_selected"
             android:visibility="invisible"/>
 
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#CCCCCC"/>
+
+    <LinearLayout
+        android:id="@+id/dialog_sort_by_album"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
         <TextView
-            android:id="@+id/dialog_sort_by_add_time_text"
+            android:id="@+id/dialog_sort_by_album_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_time"
+            android:text="@string/sort_by_album"
             android:textColor="@color/light_black"
             android:textSize="14sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/dialog_sort_by_album_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@null"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:src="@drawable/ic_selected"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 
@@ -95,7 +192,22 @@
         android:layout_height="48dp"
         android:background="@drawable/touch_bg"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/dialog_sort_by_play_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_by_play_time"
+            android:textColor="@color/light_black"
+            android:textSize="14sp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/dialog_sort_by_play_time_image"
@@ -105,16 +217,8 @@
             android:contentDescription="@null"
             android:scaleX="0.7"
             android:scaleY="0.7"
-            android:src="@drawable/ic_arrow_right_dialog"
+            android:src="@drawable/ic_selected"
             android:visibility="invisible"/>
-
-        <TextView
-            android:id="@+id/dialog_sort_by_play_time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/play_time"
-            android:textColor="@color/light_black"
-            android:textSize="14sp"/>
 
     </LinearLayout>
 

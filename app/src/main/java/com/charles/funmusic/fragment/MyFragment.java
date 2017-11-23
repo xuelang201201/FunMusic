@@ -97,7 +97,7 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
         mRecyclerView.setNestedScrollingEnabled(false);
         mAdapter = new MusicAdapter(getActivity(), new MusicAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(final int position) {
                 getPlayService().play(position);
             }
         }, new MusicAdapter.OnItemLongClickListener() {
