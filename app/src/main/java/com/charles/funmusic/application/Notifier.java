@@ -68,8 +68,22 @@ public class Notifier {
     }
 
     private static RemoteViews getRemoteViews(Context context, Music music, boolean isPlaying) {
+
+        String artist;
+        String album;
+
+        if ("<unknown>".equals(music.getArtist())) {
+            artist = context.getString(R.string.unknown_artist);
+        } else {
+            artist = music.getArtist();
+        }
+        if ("Music".equals(music.getAlbum()) || "0".equals(music.getAlbum())) {
+            album = context.getString(R.string.unknown_album);
+        } else {
+            album = music.getAlbum();
+        }
         String title = music.getTitle();
-        String subtitle = FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum());
+        String subtitle = FileUtil.getArtistAndAlbum(artist, album);
         Bitmap cover = CoverLoader.getInstance().loadThumbnail(music);
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification);
