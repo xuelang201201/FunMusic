@@ -19,7 +19,7 @@ import java.util.List;
 public class AppCache {
     private Context mContext;
     private PlayService mPlayService;
-    private final List<Music> mMuscis = new ArrayList<>();
+    private final List<Music> mMusics = new ArrayList<>();
     private final List<Activity> mActivityStack = new ArrayList<>();
 
     private AppCache() {
@@ -59,7 +59,7 @@ public class AppCache {
     }
 
     public static List<Music> getMusics() {
-        return getInstance().mMuscis;
+        return getInstance().mMusics;
     }
 
     public static void clearStack() {

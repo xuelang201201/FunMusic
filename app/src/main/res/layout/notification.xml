@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/notification_icon"
+        android:layout_width="@android:dimen/notification_large_icon_width"
+        android:layout_height="@android:dimen/notification_large_icon_width"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/notification_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:fadingEdge="horizontal"
+            android:singleLine="true"
+            android:text="@string/app_name"
+            android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title"/>
+
+        <TextView
+            android:id="@+id/notification_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fadingEdge="horizontal"
+            android:singleLine="true"
+            android:text="@string/slogan"
+            android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/notification_play_or_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="center"
+        android:src="@drawable/ic_status_bar_play_dark"/>
+
+    <ImageView
+        android:id="@+id/notification_next"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="center"
+        android:src="@drawable/ic_status_bar_next_dark"/>
+
+    <ImageView
+        android:id="@+id/notification_lyric"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="center"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:src="@drawable/ic_lyric"/>
+
+    <ImageView
+        android:id="@+id/notification_exit"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_close"/>
+
+</LinearLayout>

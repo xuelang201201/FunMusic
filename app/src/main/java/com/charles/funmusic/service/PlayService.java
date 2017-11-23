@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.charles.funmusic.application.AppCache;
+import com.charles.funmusic.application.Notifier;
 import com.charles.funmusic.constant.Actions;
 import com.charles.funmusic.enums.PlayModeEnum;
 import com.charles.funmusic.model.Music;
@@ -126,7 +127,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
         mAudioFocusManager = new AudioFocusManager(this);
         mMediaSessionManager = new MediaSessionManager(this);
         mPlayer.setOnCompletionListener(this);
-//        Notifier.init(this);
+        Notifier.init(this);
         QuitTimer.getInstance().init(this, mHandler, new EventCallback<Long>() {
             @Override
             public void onEvent(Long aLong) {
@@ -144,8 +145,9 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
 
     /**
      * 启动Service
+     *
      * @param context 上下文
-     * @param action 要求Service执行的参数
+     * @param action  要求Service执行的参数
      */
     public static void startCommand(Context context, String action) {
         Intent intent = new Intent(context, PlayService.class);
@@ -166,13 +168,22 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
                 case Actions.ACTION_MEDIA_PREVIOUS:
                     prev(); // 上一首
                     break;
+                case Actions.ACTION_MEDIA_EXIT:
+                    exit();
+                    break;
             }
         }
         return START_NOT_STICKY;
     }
 
+    private void exit() {
+        AppCache.clearStack();
+        quit();
+    }
+
     /**
      * 更新本地歌曲列表
+     *
      * @param callback 事件回调
      */
     public void updateMusicList(final EventCallback<Void> callback) {
@@ -211,6 +222,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
 
     /**
      * 播放指定位置的歌曲
+     *
      * @param position 位置
      */
     public void play(int position) {
@@ -225,33 +237,44 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
         }
 
         mPlayingPosition = position;
-        Music music = AppCache.getMusics().get(mPlayingPosition);
-        Preferences.saveCurrentSongId(music.getId());
-        play(music);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Music music = AppCache.getMusics().get(mPlayingPosition);
+                Preferences.saveCurrentSongId(music.getId());
+                play(music);
+            }
+        }).start();
     }
 
     /**
      * 播放指定音频文件
+     *
      * @param music 音频文件
      */
-    public void play(Music music) {
+    public void play(final Music music) {
         mPlayingMusic = music;
-        try {
-            mPlayer.reset();
-            mPlayer.setDataSource(music.getUrl());
-            mPlayer.prepareAsync();
-            mPlayState = STATE_PREPARING;
-            mPlayer.setOnPreparedListener(mPreparedListener);
-            mPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
-            if (mListener != null) {
-                mListener.onChange(music);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mPlayer.reset();
+                    mPlayer.setDataSource(music.getUrl());
+                    mPlayer.prepareAsync();
+                    mPlayState = STATE_PREPARING;
+                    mPlayer.setOnPreparedListener(mPreparedListener);
+                    mPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
+                    if (mListener != null) {
+                        mListener.onChange(music);
+                    }
+                    Notifier.showPlay(music);
+                    mMediaSessionManager.updateMetaData(mPlayingMusic);
+                    mMediaSessionManager.updatePlaybackState();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-//            Notifier.showPlay(music);
-            mMediaSessionManager.updateMetaData(mPlayingMusic);
-            mMediaSessionManager.updatePlaybackState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     private MediaPlayer.OnPreparedListener mPreparedListener = new MediaPlayer.OnPreparedListener() {
@@ -277,33 +300,43 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
      * 播放/暂停
      */
     public void playPause() {
-        if (isPreparing()) {
-            stop();
-        } else if (isPlaying()) {
-            pause();
-        } else if (isPausing()) {
-            start();
-        } else {
-            play(getPlayingPosition());
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isPreparing()) {
+                    stop();
+                } else if (isPlaying()) {
+                    pause();
+                } else if (isPausing()) {
+                    start();
+                } else {
+                    play(getPlayingPosition());
+                }
+            }
+        });
     }
 
     void start() {
-        if (!isPreparing() && !isPausing()) {
-            return;
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (!isPreparing() && !isPausing()) {
+                    return;
+                }
 
-        if (mAudioFocusManager.requestAudioFocus()) {
-            mPlayer.start();
-            mPlayState = STATE_PLAYING;
-            mHandler.post(mPublishRunnable);
-//            Notifier.showPlay(mPlayingMusic);
-            registerReceiver(mNoisyReceiver, mNoisyFilter);
+                if (mAudioFocusManager.requestAudioFocus()) {
+                    mPlayer.start();
+                    mPlayState = STATE_PLAYING;
+                    mHandler.post(mPublishRunnable);
+                    Notifier.showPlay(mPlayingMusic);
+                    registerReceiver(mNoisyReceiver, mNoisyFilter);
 
-            if (mListener != null) {
-                mListener.onPlayerStart();
+                    if (mListener != null) {
+                        mListener.onPlayerStart();
+                    }
+                }
             }
-        }
+        });
     }
 
     void pause() {
@@ -314,7 +347,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
         mPlayer.pause();
         mPlayState = STATE_PAUSE;
         mHandler.removeCallbacks(mPublishRunnable);
-//        Notifier.showPause(mPlayingMusic);
+        Notifier.showPause(mPlayingMusic);
         mMediaSessionManager.updatePlaybackState();
         unregisterReceiver(mNoisyReceiver);
 
@@ -334,49 +367,60 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
     }
 
     public void next() {
-        if (AppCache.getMusics().isEmpty()) {
-            return;
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (AppCache.getMusics().isEmpty()) {
+                    return;
+                }
 
-        PlayModeEnum mode = PlayModeEnum.valueOf(Preferences.getPlayMode());
-        switch (mode) {
-            case SHUFFLE:
-                mPlayingPosition = new Random().nextInt(AppCache.getMusics().size());
-                play(mPlayingPosition);
-                break;
-            case SINGLE:
-                play(mPlayingPosition);
-                break;
-            case LOOP:
-            default:
-                play(mPlayingPosition + 1);
-                break;
-        }
+                PlayModeEnum mode = PlayModeEnum.valueOf(Preferences.getPlayMode());
+                switch (mode) {
+                    case SHUFFLE:
+                        mPlayingPosition = new Random().nextInt(AppCache.getMusics().size());
+                        play(mPlayingPosition);
+                        break;
+                    case SINGLE:
+                        play(mPlayingPosition);
+                        break;
+                    case LOOP:
+                    default:
+                        play(mPlayingPosition + 1);
+                        break;
+                }
+            }
+        });
     }
 
     public void prev() {
-        if (AppCache.getMusics().isEmpty()) {
-            return;
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (AppCache.getMusics().isEmpty()) {
+                    return;
+                }
 
-        PlayModeEnum mode = PlayModeEnum.valueOf(Preferences.getPlayMode());
-        switch (mode) {
-            case SHUFFLE:
-                mPlayingPosition = new Random().nextInt(AppCache.getMusics().size());
-                play(mPlayingPosition);
-                break;
-            case SINGLE:
-                play(mPlayingPosition);
-                break;
-            case LOOP:
-            default:
-                play(mPlayingPosition - 1);
-                break;
-        }
+                PlayModeEnum mode = PlayModeEnum.valueOf(Preferences.getPlayMode());
+                switch (mode) {
+                    case SHUFFLE:
+                        mPlayingPosition = new Random().nextInt(AppCache.getMusics().size());
+                        play(mPlayingPosition);
+                        break;
+                    case SINGLE:
+                        play(mPlayingPosition);
+                        break;
+                    case LOOP:
+                    default:
+                        play(mPlayingPosition - 1);
+                        break;
+                }
+            }
+        });
     }
 
     /**
      * 跳转到指定的时间位置
+     *
      * @param msec 时间
      */
     public void seekTo(int msec) {
@@ -418,7 +462,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
         mPlayer = null;
         mAudioFocusManager.abandonAudioFocus();
         mMediaSessionManager.release();
-//        Notifer.cancellAll();
+        Notifier.cancelAll();
         AppCache.setPlayService(null);
         super.onDestroy();
         Log.i(TAG, "onDestroy: " + getClass().getSimpleName());

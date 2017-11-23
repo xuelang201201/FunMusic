@@ -141,13 +141,15 @@ public class AlbumCoverView extends View implements ValueAnimator.AnimatorUpdate
 
     public void initNeedle(boolean isPlaying) {
         mNeedleRotation = isPlaying ? NEEDLE_ROTATION_PLAY : NEEDLE_ROTATION_PAUSE;
-        invalidate();
+        postInvalidate();
+//        invalidate();
     }
 
     public void setCoverBitmap(Bitmap bitmap) {
         mCoverBitmap = bitmap;
         mDiscRotation = 0.0f;
-        invalidate();
+//        invalidate();
+        postInvalidate();
     }
 
     public void start() {
@@ -171,7 +173,8 @@ public class AlbumCoverView extends View implements ValueAnimator.AnimatorUpdate
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         mNeedleRotation = (float) animation.getAnimatedValue();
-        invalidate();
+//        invalidate();
+        postInvalidate();
     }
 
     private Runnable mRotationRunnable = new Runnable() {
@@ -182,7 +185,8 @@ public class AlbumCoverView extends View implements ValueAnimator.AnimatorUpdate
                 if (mDiscRotation >= 360) {
                     mDiscRotation = 0;
                 }
-                invalidate();
+//                invalidate();
+                postInvalidate();
             }
             mHandler.postDelayed(this, TIME_UPDATE);
         }

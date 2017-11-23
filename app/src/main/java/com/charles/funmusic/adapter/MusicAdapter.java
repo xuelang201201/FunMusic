@@ -92,7 +92,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
             } else {
                 artist = music.getArtist();
             }
-            if ("Music".equals(music.getAlbum())) {
+            if ("Music".equals(music.getAlbum()) || "0".equals(music.getAlbum())) {
                 album = mContext.getString(R.string.unknown_album);
             } else {
                 album = music.getAlbum();
@@ -161,8 +161,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
         TextView mArtistAndAlbum;
         @BindView(R.id.music_item_cover)
         ImageView mCover;
-//        @BindView(R.id.music_item_playing)
-//        ViewStub mPlaying;
+        @BindView(R.id.music_item_playing)
+        View mPlaying;
 
         MusicHolder(View itemView) {
             super(itemView);
@@ -178,8 +178,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
             FontUtil util = new FontUtil();
             util.changeFont(mContext, mTitle);
             util.changeFont(mContext, mArtistAndAlbum);
-
-//            mPlaying.inflate();
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);

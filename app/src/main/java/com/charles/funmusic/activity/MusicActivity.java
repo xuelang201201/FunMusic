@@ -194,10 +194,15 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     }
 
     @Override
-    public void onChange(Music music) {
+    public void onChange(final Music music) {
         onChangeImpl(music);
         if (mPlayFragment != null && mPlayFragment.isAdded()) {
-            mPlayFragment.onChange(music);
+            mHandler.post(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mPlayFragment.onChange(music);
+                }
+            }));
         }
     }
 
@@ -205,7 +210,12 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     public void onPlayerStart() {
         mPlayBarPlayOrPause.setSelected(true);
         if (mPlayFragment != null && mPlayFragment.isAdded()) {
-            mPlayFragment.onPlayerStart();
+            mHandler.post(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mPlayFragment.onPlayerStart();
+                }
+            }));
         }
     }
 
@@ -223,17 +233,27 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
      * @param progress 进度
      */
     @Override
-    public void onPublish(int progress) {
+    public void onPublish(final int progress) {
         mPlayBarProgressBar.setProgress(progress);
         if (mPlayFragment != null && mPlayFragment.isAdded()) {
-            mPlayFragment.onPublish(progress);
+            mHandler.post(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mPlayFragment.onPublish(progress);
+                }
+            }));
         }
     }
 
     @Override
-    public void onBufferingUpdate(int percent) {
+    public void onBufferingUpdate(final int percent) {
         if (mPlayFragment != null && mPlayFragment.isAdded()) {
-            mPlayFragment.onBufferingUpdate(percent);
+            mHandler.post(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mPlayFragment.onBufferingUpdate(percent);
+                }
+            }));
         }
     }
 

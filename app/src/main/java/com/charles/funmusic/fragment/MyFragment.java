@@ -87,7 +87,7 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
             mEmpty.setVisibility(View.GONE);
         }
 //        mAdapter.updatePlayingPosition(getPlayService());
-//        mAdapter.notifyDataSetChanged();
+//        mAdapter.notifyItemChanged(getPlayService().getPlayingPosition());
     }
 
     private void initRecyclerView() {
@@ -106,7 +106,7 @@ public class MyFragment extends BaseFragment implements SuspendScrollView.OnScro
             }
         });
         mRecyclerView.setAdapter(mAdapter);
-        if (! AppCache.getMusics().isEmpty()) {
+        if (!AppCache.getMusics().isEmpty()) {
             addFooterView(mRecyclerView);
         }
     }

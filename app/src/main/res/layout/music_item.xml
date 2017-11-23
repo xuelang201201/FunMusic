@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:background="@drawable/touch_bg"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/touch_bg"
+    android:orientation="horizontal">
 
-    <!--<ViewStub-->
-        <!--android:id="@+id/music_item_playing"-->
-        <!--android:layout_width="3dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:background="@color/red"-->
-        <!--android:layout="@layout/playing"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:contentDescription="@null"-->
-        <!--android:visibility="invisible" />-->
+    <View
+        android:id="@+id/music_item_playing"
+        android:layout_width="3dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:background="@color/red"
+        android:contentDescription="@null"
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/music_item_cover"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:contentDescription="@null"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_centerVertical="true"
-        android:scaleType="centerCrop"
         android:background="@drawable/cover_bg"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_default_album_cover"/>
 
     <LinearLayout
@@ -35,9 +34,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/music_item_cover"
         android:layout_toEndOf="@+id/music_item_cover"
         android:layout_toLeftOf="@+id/music_item_more"
+        android:layout_toRightOf="@+id/music_item_cover"
         android:layout_toStartOf="@+id/music_item_more"
         android:orientation="vertical">
 
@@ -45,18 +44,18 @@
             android:id="@+id/music_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:singleLine="true"
             android:ellipsize="marquee"
+            android:singleLine="true"
             android:textColor="@android:color/black"
+            android:textSize="16sp"
             android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/music_item_artist_and_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
             android:ellipsize="marquee"
+            android:singleLine="true"
             android:textColor="#888888"
             android:textSize="13sp"/>
 
@@ -66,24 +65,24 @@
         android:id="@+id/music_item_more"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginRight="12dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:contentDescription="@null"
         android:scaleX="0.8"
         android:scaleY="0.8"
-        android:src="@drawable/ic_more_vert"
-        android:contentDescription="@null"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+        android:src="@drawable/ic_more_vert"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/music_item_cover"
-        android:layout_alignStart="@+id/music_item_cover"
-        android:layout_alignRight="@+id/music_item_more"
         android:layout_alignEnd="@+id/music_item_more"
+        android:layout_alignLeft="@+id/music_item_cover"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/music_item_more"
+        android:layout_alignStart="@+id/music_item_cover"
         android:background="#CCCCCC"/>
 
 </RelativeLayout>

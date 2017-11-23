@@ -27,6 +27,19 @@
         <activity android:name=".activity.SettingActivity"/>
 
         <service android:name=".service.PlayService"/>
+
+        <receiver android:name=".receiver.RemoteControlReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receiver.StatusBarReceiver">
+            <intent-filter>
+                <action android:name="com.charles.funmusic.receiver.STATUS_BAR_ACTIONS"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
