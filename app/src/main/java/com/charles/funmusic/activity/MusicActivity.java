@@ -71,6 +71,8 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     TextView mPlayBarArtist;
     @BindView(R.id.play_bar_title)
     TextView mPlayBarTitle;
+    @BindView(R.id.play_bar_playlist)
+    ImageView mPlayBarPlaylist;
     @BindView(R.id.activity_music_play_bar)
     View mPlayBar;
     @BindView(R.id.toolbar_tabs)
@@ -426,7 +428,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     }
 
     @OnClick({R.id.toolbar_menu, R.id.toolbar_search, R.id.activity_music_play_bar,
-            R.id.play_bar_next, R.id.play_bar_play_or_pause})
+            R.id.play_bar_next, R.id.play_bar_play_or_pause, R.id.play_bar_playlist})
     public void doClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_menu:
@@ -448,7 +450,15 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
             case R.id.play_bar_next:
                 next();
                 break;
+
+            case R.id.play_bar_playlist:
+                showPlayList();
+                break;
         }
+    }
+
+    private void showPlayList() {
+        
     }
 
     /**

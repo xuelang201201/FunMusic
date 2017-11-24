@@ -382,10 +382,14 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
                     case SHUFFLE:
                         mPlayingPosition = new Random().nextInt(AppCache.getMusics().size());
                         play(mPlayingPosition);
+//                        long seed = System.nanoTime();
+//                        Collections.shuffle(AppCache.getMusics(), new Random(seed));
                         break;
+
                     case SINGLE:
                         play(mPlayingPosition);
                         break;
+
                     case LOOP:
                     default:
                         play(mPlayingPosition + 1);
@@ -406,8 +410,8 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
                 PlayModeEnum mode = PlayModeEnum.valueOf(Preferences.getPlayMode());
                 switch (mode) {
                     case SHUFFLE:
-                        mPlayingPosition = new Random().nextInt(AppCache.getMusics().size());
-                        play(mPlayingPosition);
+//                        mPlayingPosition = new Random().nextInt(AppCache.getMusics().size());
+                        play(mPlayingMusic);
                         break;
                     case SINGLE:
                         play(mPlayingPosition);
