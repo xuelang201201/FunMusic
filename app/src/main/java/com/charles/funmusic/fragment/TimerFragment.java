@@ -1,6 +1,7 @@
 package com.charles.funmusic.fragment;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -73,7 +74,7 @@ public class TimerFragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
+    public void initView(Bundle savedInstanceState) {
         mTitle.setText(getString(R.string.menu_timer));
 
         setSelectedTimer(mTimerNoText, mTimerNoImage);

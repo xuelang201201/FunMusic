@@ -1,5 +1,6 @@
 package com.charles.funmusic.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.charles.funmusic.activity.SplashActivity;
@@ -24,10 +26,11 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseFragment extends Fragment implements View.OnTouchListener {
     protected Handler mHandler = new Handler(Looper.getMainLooper());
+    private InputMethodManager mInputMethodManager;
 
     public abstract int getLayoutId();
 
-    public abstract void initView();
+    public abstract void initView(Bundle savedInstanceState);
 
     public View mView;
 
@@ -35,16 +38,13 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
             mView = inflater.inflate(getLayoutId(), container, false);
+
+            ButterKnife.bind(this, mView);
+            initView(savedInstanceState);
         }
+
         mView.setOnTouchListener(this); // 防止fragment被击穿
         return mView;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ButterKnife.bind(this, getActivity());
-        initView();
     }
 
     protected PlayService getPlayService() {
@@ -85,5 +85,31 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return true;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mView != null) {
+            ((ViewGroup) mView.getParent()).removeView(mView);
+        }
+    }
+
+    /**
+     * 显示软键盘
+     */
+    public void showSoftInput() {
+        mInputMethodManager = (InputMethodManager) AppCache
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (mInputMethodManager != null) {
+            mInputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    public void hideSoftInput(View view) {
+        mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

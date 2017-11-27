@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -67,7 +70,7 @@ public class SortDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Dialog_Full_Screen);
         @SuppressLint("InflateParams") View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_sort, null);
         ButterKnife.bind(this, view);
 
@@ -105,16 +108,35 @@ public class SortDialogFragment extends DialogFragment {
         fontUtil.changeFont(getActivity(), mText);
         mText.getPaint().setFakeBoldText(true);
         fontUtil.changeFont(getActivity(), mArtistText);
+        mArtistText.getPaint().setFakeBoldText(true);
         fontUtil.changeFont(getActivity(), mSingleText);
+        mSingleText.getPaint().setFakeBoldText(true);
         fontUtil.changeFont(getActivity(), mAddTimeText);
+        mAddTimeText.getPaint().setFakeBoldText(true);
         fontUtil.changeFont(getActivity(), mAlbumText);
+        mAlbumText.getPaint().setFakeBoldText(true);
         fontUtil.changeFont(getActivity(), mPlayTimeText);
+        mPlayTimeText.getPaint().setFakeBoldText(true);
 
-        builder.setView(view);
-        return builder.create();
+        AlertDialog dialog = builder.setView(view).create();
+        Window window = dialog.getWindow();
+
+        if (window != null) {
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.width = WindowManager.LayoutParams.MATCH_PARENT;
+            window.setAttributes(params);
+
+            window.setGravity(Gravity.BOTTOM);
+            window.setWindowAnimations(R.style.Dialog_Bottom);
+        }
+
+        return dialog;
     }
 
-    @OnClick({R.id.dialog_sort_by_artist, R.id.dialog_sort_by_single, R.id.dialog_sort_by_add_time, R.id.dialog_sort_by_album, R.id.dialog_sort_by_play_time})
+    @OnClick({R.id.dialog_sort_by_artist, R.id.dialog_sort_by_single,
+            R.id.dialog_sort_by_add_time, R.id.dialog_sort_by_album,
+            R.id.dialog_sort_by_play_time, R.id.dialog_sort_cancel})
     public void setSortWay(View view) {
         switch (view.getId()) {
             case R.id.dialog_sort_by_artist:
@@ -139,6 +161,10 @@ public class SortDialogFragment extends DialogFragment {
 
             case R.id.dialog_sort_by_play_time:
                 Preferences.saveSortWay(SORT_BY_PLAY_TIME);
+                dismiss();
+                break;
+
+            case R.id.dialog_sort_cancel:
                 dismiss();
                 break;
         }

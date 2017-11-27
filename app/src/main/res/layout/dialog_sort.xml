@@ -222,4 +222,19 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/color_normal"/>
+
+    <TextView
+        android:id="@+id/dialog_sort_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/touch_bg"
+        android:text="@string/cancel"
+        android:gravity="center"
+        android:textColor="@color/light_black"
+        android:textSize="16sp"/>
+
 </LinearLayout>

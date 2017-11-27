@@ -7,8 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -23,9 +21,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.adapter.MyPagerAdapter;
 import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Extra;
 import com.charles.funmusic.constant.Keys;
+import com.charles.funmusic.fragment.IOnStartFragmentClick;
+import com.charles.funmusic.fragment.LocalMusicFragment;
 import com.charles.funmusic.fragment.MyFragment;
 import com.charles.funmusic.fragment.OnlineFragment;
 import com.charles.funmusic.fragment.PlayFragment;
@@ -45,7 +46,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MusicActivity extends BaseActivity implements OnPlayerEventListener, NavigationView.OnNavigationItemSelectedListener {
+public class MusicActivity extends BaseActivity implements OnPlayerEventListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        IOnStartFragmentClick {
 
     @BindView(R.id.activity_music_drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -78,14 +81,21 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     @BindView(R.id.toolbar_tabs)
     SlidingTabLayout mToolbarTabs;
 
+    private static final int SHOW_LOCAL_MUSIC_FRAGMENT = 0;
+    private static final int SHOW_RECENT_PLAY_FRAGMENT = 1;
+    private static final int SHOW_DOWNLOADER_FRAGMENT = 2;
+    private static final int SHOW_FAVORITE_FRAGMENT = 3;
+    private static final int SHOW_MUSIC_LIST_FRAGMENT = 4;
+
     private PlayFragment mPlayFragment;
     private TimerFragment mTimerFragment;
     private SearchFragment mSearchFragment;
     private MyFragment mMyFragment;
     private OnlineFragment mOnlineFragment;
+    private LocalMusicFragment mLocalMusicFragment;
 
     private List<Fragment> mFragments = new ArrayList<>();
-    private final String[] mTitles = {"我的", "在线"};
+    private final String[] mTitles = {"我的", "乐库"};
     /**
      * 是否显示播放界面
      */
@@ -98,11 +108,12 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
      * 是否显示搜索界面
      */
     private boolean isSearchFragmentShow = false;
+    private boolean isLocalMusicFragmentShow = false;
+
     /**
      * 上一次按下返回键的时间
      */
     private long lastClickBackTimeMillis;
-
     private MenuItem mTimerItem;
 
     @Override
@@ -142,7 +153,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         mOnlineFragment = new OnlineFragment();
         mFragments.add(mOnlineFragment);
 
-        MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager());
+        MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), mFragments, mTitles);
         mViewPager.setAdapter(adapter);
         mToolbarTabs.setViewPager(mViewPager, mTitles);
 
@@ -270,9 +281,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
     @Override
     public void onMusicListUpdate() {
-        if (mMyFragment != null && mMyFragment.isAdded()) {
-            mMyFragment.onMusicListUpdate();
-        }
+//        if (mLocalMusicFragment != null && mLocalMusicFragment.isAdded()) {
+//            mLocalMusicFragment.onMusicListUpdate();
+//        }
     }
 
     /**
@@ -297,6 +308,12 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
             if (mSearchFragment != null && isSearchFragmentShow) {
                 hideFragments(mSearchFragment, R.anim.fragment_left_out);
                 isSearchFragmentShow = false;
+                return false;
+            }
+
+            if (mLocalMusicFragment != null && isLocalMusicFragmentShow) {
+                hideFragments(mLocalMusicFragment, R.anim.fragment_left_out);
+                isLocalMusicFragmentShow = false;
                 return false;
             }
 
@@ -327,6 +344,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
      */
     @Override
     public void onBackPressed() {
+
         if (mPlayFragment != null && isPlayFragmentShow) {
             hideFragments(mPlayFragment, R.anim.fragment_slide_down);
             isPlayFragmentShow = false;
@@ -345,8 +363,207 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
             return;
         }
 
-//        moveTaskToBack(false);
+        if (mLocalMusicFragment != null && isLocalMusicFragmentShow) {
+            hideFragments(mLocalMusicFragment, R.anim.fragment_left_out);
+            isLocalMusicFragmentShow = false;
+            return;
+        }
+
         super.onBackPressed();
+//        moveTaskToBack(false);
+    }
+
+    @OnClick({R.id.toolbar_menu, R.id.toolbar_search, R.id.activity_music_play_bar,
+            R.id.play_bar_next, R.id.play_bar_play_or_pause, R.id.play_bar_playlist})
+    public void doClick(View v) {
+        switch (v.getId()) {
+            case R.id.toolbar_menu:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+
+            case R.id.toolbar_search:
+                showSearchFragment();
+                break;
+
+            case R.id.activity_music_play_bar:
+                showPlayFragment();
+                break;
+
+            case R.id.play_bar_play_or_pause:
+                playPause();
+                break;
+
+            case R.id.play_bar_next:
+                next();
+                break;
+
+            case R.id.play_bar_playlist:
+                showPlayList();
+                break;
+        }
+    }
+
+    private void showPlayList() {
+    }
+
+    /**
+     * 播放或者暂停
+     */
+    private void playPause() {
+        getPlayService().playPause();
+    }
+
+    /**
+     * 播放下一首
+     */
+    private void next() {
+        getPlayService().next();
+    }
+
+    private void onChangeImpl(Music music) {
+        if (music == null) {
+            return;
+        }
+
+        Bitmap cover = CoverLoader.getInstance().loadThumbnail(music);
+        mPlayBarCover.setImageBitmap(cover);
+
+        // 向控件内填充数据
+        String artist;
+
+        if ("<unknown>".equals(music.getArtist())) {
+            artist = getString(R.string.unknown_artist);
+        } else {
+            artist = music.getArtist();
+        }
+
+        changeFont(mPlayBarTitle, false);
+        changeFont(mPlayBarArtist, false);
+
+        mPlayBarTitle.setText(music.getTitle());
+        mPlayBarArtist.setText(artist);
+        mPlayBarPlayOrPause.setSelected(getPlayService().isPlaying() || getPlayService().isPreparing());
+        mPlayBarProgressBar.setMax((int) music.getDuration());
+        mPlayBarProgressBar.setProgress((int) getPlayService().getCurrentPosition());
+
+//        if (mLocalMusicFragment != null && mLocalMusicFragment.isAdded()) {
+//            mLocalMusicFragment.onItemPlay();
+//        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Keys.VIEW_PAGER_INDEX, mViewPager.getCurrentItem());
+        mMyFragment.onSaveInstanceState(outState);
+        mOnlineFragment.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        mViewPager.post(new Runnable() {
+            @Override
+            public void run() {
+                mViewPager.setCurrentItem(savedInstanceState.getInt(Keys.VIEW_PAGER_INDEX), false);
+//                mLocalMusicFragment.onRestoreInstanceState(savedInstanceState);
+//                mOnlineFragment.onRestoreInstanceState(savedInstanceState);
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        PlayService service = AppCache.getPlayService();
+        if (service != null) {
+            service.setOnPlayEventListener(null);
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+        mDrawerLayout.closeDrawers();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                item.setChecked(false);
+            }
+        }, 500);
+//        return NaviMenuExecutor.onNavigationItemSelected(item, this);
+
+        switch (item.getItemId()) {
+            case R.id.action_timer:
+                showTimerFragment();
+                return true;
+
+            case R.id.action_setting:
+                startActivity(MusicActivity.this, SettingActivity.class);
+                return true;
+
+            case R.id.action_exit:
+                exit();
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * 退出程序
+     */
+    private void exit() {
+        finish();
+        PlayService service = AppCache.getPlayService();
+        if (service != null) {
+            service.quit();
+        }
+    }
+
+    /**
+     * 让当前fragment所在的activity实现此接口
+     *
+     * @param index 要启动的fragment的索引
+     */
+    @Override
+    public void startFragment(int index) {
+        switch (index) {
+            case SHOW_LOCAL_MUSIC_FRAGMENT:
+                showLocalMusicFragment();
+                break;
+
+            case SHOW_RECENT_PLAY_FRAGMENT:
+                break;
+
+            case SHOW_DOWNLOADER_FRAGMENT:
+                break;
+
+            case SHOW_FAVORITE_FRAGMENT:
+                break;
+
+            case SHOW_MUSIC_LIST_FRAGMENT:
+                break;
+        }
+    }
+
+    /**
+     * 显示本地音乐列表
+     */
+    private void showLocalMusicFragment() {
+        if (isLocalMusicFragmentShow) {
+            return;
+        }
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.fragment_right_in, 0);
+        if (mLocalMusicFragment == null) {
+            mLocalMusicFragment = new LocalMusicFragment();
+            ft.replace(R.id.activity_music_container, mLocalMusicFragment);
+        } else {
+            ft.show(mLocalMusicFragment);
+        }
+        ft.commitAllowingStateLoss();
+
+        isLocalMusicFragmentShow = true;
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     /**
@@ -389,7 +606,6 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         ft.commitAllowingStateLoss();
 
         isTimerFragmentShow = true;
-
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
@@ -416,8 +632,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
     /**
      * 隐藏界面
+     *
      * @param fragment 需要隐藏的fragment
-     * @param anim 退出动画
+     * @param anim     退出动画
      */
     private void hideFragments(Fragment fragment, int anim) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -425,184 +642,5 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         ft.hide(fragment);
         ft.commitAllowingStateLoss();
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-    }
-
-    @OnClick({R.id.toolbar_menu, R.id.toolbar_search, R.id.activity_music_play_bar,
-            R.id.play_bar_next, R.id.play_bar_play_or_pause, R.id.play_bar_playlist})
-    public void doClick(View v) {
-        switch (v.getId()) {
-            case R.id.toolbar_menu:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                break;
-
-            case R.id.toolbar_search:
-                showSearchFragment();
-                break;
-
-            case R.id.activity_music_play_bar:
-                showPlayFragment();
-                break;
-
-            case R.id.play_bar_play_or_pause:
-                playPause();
-                break;
-
-            case R.id.play_bar_next:
-                next();
-                break;
-
-            case R.id.play_bar_playlist:
-                showPlayList();
-                break;
-        }
-    }
-
-    private void showPlayList() {
-        
-    }
-
-    /**
-     * 播放或者暂停
-     */
-    private void playPause() {
-        getPlayService().playPause();
-    }
-
-    /**
-     * 播放下一首
-     */
-    private void next() {
-        getPlayService().next();
-    }
-
-    private void onChangeImpl(Music music) {
-        if (music == null) {
-            return;
-        }
-
-        Bitmap cover = CoverLoader.getInstance().loadRound(music);
-        mPlayBarCover.setImageBitmap(cover);
-
-        // 向控件内填充数据
-        String artist;
-
-        if ("<unknown>".equals(music.getArtist())) {
-            artist = getString(R.string.unknown_artist);
-        } else {
-            artist = music.getArtist();
-        }
-
-        changeFont(mPlayBarTitle, false);
-        changeFont(mPlayBarArtist, false);
-
-        mPlayBarTitle.setText(music.getTitle());
-        mPlayBarArtist.setText(artist);
-        mPlayBarPlayOrPause.setSelected(getPlayService().isPlaying() || getPlayService().isPreparing());
-        mPlayBarProgressBar.setMax((int) music.getDuration());
-        mPlayBarProgressBar.setProgress((int) getPlayService().getCurrentPosition());
-
-        if (mMyFragment != null && mMyFragment.isAdded()) {
-            mMyFragment.onItemPlay();
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(Keys.VIEW_PAGER_INDEX, mViewPager.getCurrentItem());
-        mMyFragment.onSaveInstanceState(outState);
-        mOnlineFragment.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-        mViewPager.post(new Runnable() {
-            @Override
-            public void run() {
-                mViewPager.setCurrentItem(savedInstanceState.getInt(Keys.VIEW_PAGER_INDEX), false);
-                mMyFragment.onRestoreInstanceState(savedInstanceState);
-//                mOnlineFragment.onRestoreInstanceState(savedInstanceState);
-            }
-        });
-    }
-
-    @Override
-    protected void onDestroy() {
-        PlayService service = AppCache.getPlayService();
-        if (service != null) {
-            service.setOnPlayEventListener(null);
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (mMyFragment != null) {
-            mMyFragment.onWindowFocusChanged(hasFocus);
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
-        mDrawerLayout.closeDrawers();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                item.setChecked(false);
-            }
-        }, 500);
-//        return NaviMenuExecutor.onNavigationItemSelected(item, this);
-
-        switch (item.getItemId()) {
-            case R.id.action_timer:
-                showTimerFragment();
-                return true;
-
-            case R.id.action_setting:
-                startActivity(MusicActivity.this, SettingActivity.class);
-                return true;
-
-            case R.id.action_exit:
-                exit();
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * 退出程序
-     */
-    private void exit() {
-        finish();
-        PlayService service = AppCache.getPlayService();
-        if (service != null) {
-            service.quit();
-        }
-    }
-
-    /**
-     * Fragment适配器
-     */
-    private class MyPagerAdapter extends FragmentPagerAdapter {
-
-        MyPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragments.get(position);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mTitles[position];
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
     }
 }

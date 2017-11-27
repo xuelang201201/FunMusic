@@ -15,30 +15,34 @@
         android:contentDescription="@null"
         android:visibility="invisible"/>
 
-    <ImageView
-        android:id="@+id/music_item_cover"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/cover_bg"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_default_album_cover"/>
+    <!--<ImageView-->
+    <!--android:id="@+id/music_item_cover"-->
+    <!--android:layout_width="45dp"-->
+    <!--android:layout_height="45dp"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--android:layout_marginLeft="15dp"-->
+    <!--android:layout_marginRight="15dp"-->
+    <!--android:layout_marginTop="8dp"-->
+    <!--android:background="@drawable/cover_bg"-->
+    <!--android:contentDescription="@null"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:src="@drawable/ic_default_album_cover"/>-->
 
     <LinearLayout
         android:id="@+id/music_item_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/music_item_cover"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_toEndOf="@+id/music_item_playing"
         android:layout_toLeftOf="@+id/music_item_more"
-        android:layout_toRightOf="@+id/music_item_cover"
+        android:layout_toRightOf="@+id/music_item_playing"
         android:layout_toStartOf="@+id/music_item_more"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/music_item_title"
@@ -54,6 +58,7 @@
             android:id="@+id/music_item_artist_and_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:ellipsize="marquee"
             android:singleLine="true"
             android:textColor="#888888"
@@ -78,11 +83,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.3dp"
-        android:layout_alignEnd="@+id/music_item_more"
-        android:layout_alignLeft="@+id/music_item_cover"
+        android:layout_alignLeft="@+id/music_item_container"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/music_item_more"
-        android:layout_alignStart="@+id/music_item_cover"
+        android:layout_alignStart="@+id/music_item_container"
         android:background="#CCCCCC"/>
 
 </RelativeLayout>

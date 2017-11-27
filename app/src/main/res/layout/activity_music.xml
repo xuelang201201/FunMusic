@@ -50,7 +50,6 @@
                 android:layout_gravity="bottom"/>
 
         </FrameLayout>
-
     </LinearLayout>
 
     <FrameLayout
@@ -60,6 +59,11 @@
 
     <FrameLayout
         android:id="@+id/activity_music_search_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/activity_music_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

@@ -1,5 +1,7 @@
 package com.charles.funmusic.fragment;
 
+import android.os.Bundle;
+
 import com.charles.funmusic.R;
 
 public class OnlineFragment extends BaseFragment {
@@ -10,7 +12,7 @@ public class OnlineFragment extends BaseFragment {
     }
 
     @Override
-    public void initView() {
+    public void initView(Bundle savedInstanceState) {
 
     }
 }

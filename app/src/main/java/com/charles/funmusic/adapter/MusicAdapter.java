@@ -1,19 +1,16 @@
 package com.charles.funmusic.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.PlayService;
-import com.charles.funmusic.utils.CoverLoader;
 import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.FontUtil;
 
@@ -24,13 +21,15 @@ import butterknife.ButterKnife;
  * 本地音乐适配器
  */
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder> {
-    private static final int TYPE_FOOTER = 0;
-    private static final int TYPE_NORMAL = 1;
+    private static final int TYPE_HEADER = 0;
+    private static final int TYPE_FOOTER = 1;
+    private static final int TYPE_NORMAL = 2;
 
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     private int mPlayingPosition;
     private View mFooterView;
+    private View mHeaderView;
 
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
@@ -45,6 +44,15 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
         mLayoutInflater = LayoutInflater.from(mContext);
     }
 
+    public View getHeaderView() {
+        return mHeaderView;
+    }
+
+    public void setHeaderView(View headerView) {
+        mHeaderView = headerView;
+        notifyItemInserted(0);
+    }
+
     public View getFooterView() {
         return mFooterView;
     }
@@ -55,7 +63,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
     }
 
     /**
-     * 创建View，如果是FooterView，直接在Holder中返回
+     * 创建View，如果是HeaderView或者是FooterView，直接在Holder中返回
      *
      * @param parent   父容器
      * @param viewType view的类型：header,footer,normal
@@ -63,11 +71,16 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
      */
     @Override
     public MusicHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mHeaderView != null && viewType == TYPE_HEADER) {
+            return new MusicHolder(mHeaderView);
+        }
+
         if (mFooterView != null && viewType == TYPE_FOOTER) {
             return new MusicHolder(mFooterView);
         }
-        View v = mLayoutInflater.inflate(R.layout.music_item, parent, false);
-        return new MusicHolder(v);
+
+        View view = mLayoutInflater.inflate(R.layout.music_item, parent, false);
+        return new MusicHolder(view);
     }
 
     /**
@@ -80,7 +93,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
     public void onBindViewHolder(MusicHolder holder, int position) {
 
         if (getItemViewType(position) == TYPE_NORMAL) {
-            Music music = AppCache.getMusics().get(position);
+            // 这里加载数据的时候要注意，是从position - 1开始，因为position == 0 已经被header占用了
+            Music music = AppCache.getMusics().get(position - 1);
             holder.itemView.setTag(position);
 
             // 向控件内填充数据
@@ -101,44 +115,55 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
             holder.mArtistAndAlbum.setText(artistAndAlbum);
             holder.mTitle.setText(music.getTitle());
 
-            Bitmap cover = CoverLoader.getInstance().loadThumbnail(music);
-            holder.mCover.setImageBitmap(cover);
+//            Bitmap cover = CoverLoader.getInstance().loadThumbnail(music);
+//            holder.mCover.setImageBitmap(cover);
 
-//            if (position == mPlayingPosition) {
-//                holder.mPlaying.setVisibility(View.VISIBLE);
-//            } else {
-//                holder.mPlaying.setVisibility(View.INVISIBLE);
-//            }
+            if (position - 1 == mPlayingPosition) {
+                holder.mPlaying.setVisibility(View.VISIBLE);
+            } else {
+                holder.mPlaying.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
     /**
-     * 返回View中item的个数，item的个数加上FooterView
+     * 返回View中item的个数，item的个数加上HeaderView和FooterView
      *
      * @return
      */
     @Override
     public int getItemCount() {
-        if (mFooterView == null) {
+        if (mHeaderView == null && mFooterView == null) {
             return AppCache.getMusics().size();
-        } else {
+        } else if (mHeaderView != null && mFooterView == null) {
             return AppCache.getMusics().size() + 1;
+        } else if (mHeaderView == null && mFooterView != null) {
+            return AppCache.getMusics().size() + 1;
+        } else {
+            return AppCache.getMusics().size() + 2;
         }
     }
 
     /**
-     * 通过判断item的类型，从而绑定不同的view类型
+     * 重写这个方法，是加入Header和Footer的关键，
+     * 通过判断item的类型，从而绑定不同的view
      *
      * @param position item的位置
-     * @return footer 或者 normal
+     * @return header、footer 或者 normal
      */
     @Override
     public int getItemViewType(int position) {
-        if (mFooterView == null) {
+        if (mHeaderView == null && mFooterView == null) {
             return TYPE_NORMAL;
         }
 
+        if (position == 0) {
+            // 第一个item应该加载Header
+            return TYPE_HEADER;
+        }
+
         if (position == getItemCount() - 1) {
+            // 最后一个，应该加载Footer
             return TYPE_FOOTER;
         }
         return TYPE_NORMAL;
@@ -159,15 +184,18 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
         TextView mTitle;
         @BindView(R.id.music_item_artist_and_album)
         TextView mArtistAndAlbum;
-        @BindView(R.id.music_item_cover)
-        ImageView mCover;
+        //        @BindView(R.id.music_item_cover)
+//        ImageView mCover;
         @BindView(R.id.music_item_playing)
         View mPlaying;
 
         MusicHolder(View itemView) {
             super(itemView);
 
-            // 如果是FooterView，直接返回
+            // 如果是HeaderView或者是FooterView，直接返回
+            if (itemView == mHeaderView) {
+                return;
+            }
             if (itemView == mFooterView) {
                 return;
             }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/header_random_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawableLeft="@drawable/ic_random"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_random"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
+        android:text="@string/random_play"
+        android:textColor="@color/black"
+        android:textSize="15sp"/>
+
+    <ImageView
+        android:id="@+id/header_sort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@null"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:src="@drawable/selector_sort"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_alignParentBottom="true"
+        android:background="#CCCCCC"/>
+</RelativeLayout>

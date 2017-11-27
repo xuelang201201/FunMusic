@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -90,7 +91,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
     }
 
     @Override
-    public void initView() {
+    public void initView(Bundle savedInstanceState) {
         initSystemBar();
         initViewPager();
         mIndicator.create(mViewPagerContent.size());
