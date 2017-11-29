@@ -6,8 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +30,7 @@ import com.charles.funmusic.http.HttpClient;
 import com.charles.funmusic.service.EventCallback;
 import com.charles.funmusic.service.PlayService;
 import com.charles.funmusic.utils.FileUtil;
+import com.charles.funmusic.utils.FontUtil;
 import com.charles.funmusic.utils.PermissionReq;
 import com.charles.funmusic.utils.Preferences;
 import com.charles.funmusic.utils.ToastUtil;
@@ -30,15 +39,18 @@ import java.io.File;
 import java.util.Calendar;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class SplashFragment extends BaseFragment {
+public class SplashFragment extends Fragment {
     private static final String SPLASH_FILE_NAME = "splash";
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @BindView(R.id.fragment_splash_image_view)
     ImageView mImageView;
     @BindView(R.id.fragment_splash_copyright)
     TextView mCopyright;
     private ServiceConnection mPlayServiceConnection;
+    private View mView;
 
     public static SplashFragment newInstance() {
 
@@ -49,20 +61,20 @@ public class SplashFragment extends BaseFragment {
         return fragment;
     }
 
+    @Nullable
     @Override
-    public int getLayoutId() {
-        return R.layout.fragment_splash;
-    }
-
-    @Override
-    public void initView(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        if (mView == null) {
+            mView = inflater.inflate(R.layout.fragment_splash, container, false);
+            ButterKnife.bind(this, mView);
+        }
         int year = Calendar.getInstance().get(Calendar.YEAR);
         mCopyright.setText(getString(R.string.copyright, year));
-        changeFont(mCopyright, false);
-
+        FontUtil fontUtil = new FontUtil();
+        fontUtil.changeFont(AppCache.getContext(), mCopyright);
         checkService();
+        return mView;
     }
 
     private void checkService() {

@@ -61,4 +61,6 @@
     <string name="local_musics">本地音乐</string>
     <string name="search_local">搜索本地歌曲</string>
     <string name="cancel">取消</string>
+    <string name="get_cover_and_lyric">获取封面歌词</string>
+    <string name="update_quality">升级音质</string>
 </resources>

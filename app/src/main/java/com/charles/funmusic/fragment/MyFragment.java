@@ -1,12 +1,12 @@
 package com.charles.funmusic.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.service.EventCallback;
 import com.charles.funmusic.widget.CircleImageView;
 
 import butterknife.BindView;
@@ -15,13 +15,13 @@ import butterknife.OnClick;
 /**
  * 本地音乐列表和一些基础设置
  */
-public class MyFragment extends BaseFragment implements IOnStartFragmentClick {
+public class MyFragment extends BaseFragment implements EventCallback {
 
-    private static final int SHOW_LOCAL_MUSIC_FRAGMENT = 0;
-    private static final int SHOW_RECENT_PLAY_FRAGMENT = 1;
-    private static final int SHOW_DOWNLOADER_FRAGMENT = 2;
-    private static final int SHOW_FAVORITE_FRAGMENT = 3;
-    private static final int SHOW_MUSIC_LIST_FRAGMENT = 4;
+    public static final int SHOW_LOCAL_MUSIC_FRAGMENT = 0;
+    public static final int SHOW_RECENT_PLAY_FRAGMENT = 1;
+    public static final int SHOW_DOWNLOADER_FRAGMENT = 2;
+    public static final int SHOW_FAVORITE_FRAGMENT = 3;
+    public static final int SHOW_MUSIC_LIST_FRAGMENT = 4;
 
     @BindView(R.id.fragment_my_avatar)
     CircleImageView mAvatar;
@@ -46,8 +46,6 @@ public class MyFragment extends BaseFragment implements IOnStartFragmentClick {
     @BindView(R.id.fragment_my_favorite_text)
     TextView mFavoriteText;
 
-    public IOnStartFragmentClick mListener;
-
     @Override
     public int getLayoutId() {
         return R.layout.fragment_my;
@@ -58,43 +56,34 @@ public class MyFragment extends BaseFragment implements IOnStartFragmentClick {
 
     }
 
-    /**
-     * 重写fragment的onAttach()方法，fragment第一次附属于activity时调用，
-     * 在onCreate之前调用
-     */
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mListener = (IOnStartFragmentClick) context;
-    }
-
     @OnClick({R.id.fragment_my_local, R.id.fragment_my_recent, R.id.fragment_my_download, R.id.fragment_my_favorite})
     public void doClick(View view) {
         switch (view.getId()) {
             case R.id.fragment_my_local:
-                startFragment(SHOW_LOCAL_MUSIC_FRAGMENT);
+                onEvent(SHOW_LOCAL_MUSIC_FRAGMENT);
                 break;
 
             case R.id.fragment_my_recent:
-                startFragment(SHOW_RECENT_PLAY_FRAGMENT);
+                onEvent(SHOW_RECENT_PLAY_FRAGMENT);
                 break;
 
             case R.id.fragment_my_download:
-                startFragment(SHOW_DOWNLOADER_FRAGMENT);
+                onEvent(SHOW_DOWNLOADER_FRAGMENT);
                 break;
 
             case R.id.fragment_my_favorite:
-                startFragment(SHOW_FAVORITE_FRAGMENT);
+                onEvent(SHOW_FAVORITE_FRAGMENT);
                 break;
         }
     }
 
     /**
      * 在触发事件的地方调用接口，给其设置参数
-     * @param index 要启动的fragment的索引
+     * @param o 要启动的fragment的索引
      */
+    @SuppressWarnings("unchecked")
     @Override
-    public void startFragment(int index) {
-        mListener.startFragment(index);
+    public void onEvent(Object o) {
+        mListener.onEvent(o);
     }
 }

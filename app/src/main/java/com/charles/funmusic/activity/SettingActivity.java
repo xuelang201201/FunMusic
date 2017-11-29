@@ -1,5 +1,6 @@
 package com.charles.funmusic.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.service.PlayService;
+import com.charles.funmusic.utils.ScreenUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -27,6 +29,11 @@ public class SettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
+//        Window window = getWindow();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            window.setStatusBarColor(ContextCompat.getColor(AppCache.getContext(), R.color.red));
+//        }
+
         if (!checkServiceAlive()) {
             return;
         }
@@ -39,6 +46,17 @@ public class SettingActivity extends BaseActivity {
                 .commit();
 
         mHeaderTitle.setText(getString(R.string.setting));
+        initSystemBar();
+    }
+
+    /**
+     * 沉浸式状态栏
+     */
+    private void initSystemBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int top = ScreenUtil.getStatusBarHeight();
+            mHeaderView.setPadding(0, top, 0, 0);
+        }
     }
 
     @OnClick(R.id.header_view_image_view)

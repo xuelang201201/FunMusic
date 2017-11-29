@@ -1,6 +1,7 @@
 package com.charles.funmusic.utils;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 /**
@@ -14,8 +15,21 @@ public class ScreenUtil {
     }
 
     public static int getScreenWidth() {
-        WindowManager wm = (WindowManager) sContext.getSystemService(Context.WINDOW_SERVICE);
-        return wm.getDefaultDisplay().getWidth();
+        WindowManager windowManager = (WindowManager) sContext.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        if (windowManager != null) {
+            windowManager.getDefaultDisplay().getMetrics(dm);
+        }
+        return dm.widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        WindowManager windowManager = (WindowManager) sContext.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        if (windowManager != null) {
+            windowManager.getDefaultDisplay().getMetrics(dm);
+        }
+        return dm.heightPixels;
     }
 
     /**

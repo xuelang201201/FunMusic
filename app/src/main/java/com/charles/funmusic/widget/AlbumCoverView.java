@@ -195,7 +195,9 @@ public class AlbumCoverView extends View implements ValueAnimator.AnimatorUpdate
     private int getScreenWidth() {
         Point size = new Point();
         WindowManager manager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        manager.getDefaultDisplay().getSize(size);
+        if (manager != null) {
+            manager.getDefaultDisplay().getSize(size);
+        }
         return size.x;
     }
 

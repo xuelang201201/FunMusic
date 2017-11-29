@@ -13,10 +13,7 @@
 
     <style name="AppTheme" parent="AppBaseTheme"/>
 
-    <style
-        name="AnimationActivity"
-        parent="@android:style/Animation.Activity">
-
+    <style name="AnimationActivity" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/fragment_slide_up</item>
         <item name="android:activityCloseEnterAnimation">@anim/fragment_slide_down</item>
         <item name="android:activityOpenExitAnimation">@anim/fragment_slide_up</item>
@@ -49,5 +46,4 @@
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
-
 </resources>

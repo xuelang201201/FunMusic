@@ -25,14 +25,15 @@ import com.charles.funmusic.adapter.MyPagerAdapter;
 import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Extra;
 import com.charles.funmusic.constant.Keys;
-import com.charles.funmusic.fragment.IOnStartFragmentClick;
 import com.charles.funmusic.fragment.LocalMusicFragment;
 import com.charles.funmusic.fragment.MyFragment;
 import com.charles.funmusic.fragment.OnlineFragment;
 import com.charles.funmusic.fragment.PlayFragment;
 import com.charles.funmusic.fragment.SearchFragment;
+import com.charles.funmusic.fragment.SingleFragment;
 import com.charles.funmusic.fragment.TimerFragment;
 import com.charles.funmusic.model.Music;
+import com.charles.funmusic.service.EventCallback;
 import com.charles.funmusic.service.OnPlayerEventListener;
 import com.charles.funmusic.service.PlayService;
 import com.charles.funmusic.utils.CoverLoader;
@@ -46,9 +47,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.charles.funmusic.fragment.MyFragment.SHOW_DOWNLOADER_FRAGMENT;
+import static com.charles.funmusic.fragment.MyFragment.SHOW_FAVORITE_FRAGMENT;
+import static com.charles.funmusic.fragment.MyFragment.SHOW_LOCAL_MUSIC_FRAGMENT;
+import static com.charles.funmusic.fragment.MyFragment.SHOW_MUSIC_LIST_FRAGMENT;
+import static com.charles.funmusic.fragment.MyFragment.SHOW_RECENT_PLAY_FRAGMENT;
+
 public class MusicActivity extends BaseActivity implements OnPlayerEventListener,
         NavigationView.OnNavigationItemSelectedListener,
-        IOnStartFragmentClick {
+        EventCallback {
 
     @BindView(R.id.activity_music_drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -80,12 +87,6 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     View mPlayBar;
     @BindView(R.id.toolbar_tabs)
     SlidingTabLayout mToolbarTabs;
-
-    private static final int SHOW_LOCAL_MUSIC_FRAGMENT = 0;
-    private static final int SHOW_RECENT_PLAY_FRAGMENT = 1;
-    private static final int SHOW_DOWNLOADER_FRAGMENT = 2;
-    private static final int SHOW_FAVORITE_FRAGMENT = 3;
-    private static final int SHOW_MUSIC_LIST_FRAGMENT = 4;
 
     private PlayFragment mPlayFragment;
     private TimerFragment mTimerFragment;
@@ -293,6 +294,10 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
+            if (mLocalMusicFragment != null) {
+                mLocalMusicFragment.updateView();
+            }
+
             if (mPlayFragment != null && isPlayFragmentShow) {
                 hideFragments(mPlayFragment, R.anim.fragment_slide_down);
                 isPlayFragmentShow = false;
@@ -344,6 +349,10 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
      */
     @Override
     public void onBackPressed() {
+
+        if (mLocalMusicFragment != null) {
+            mLocalMusicFragment.updateView();
+        }
 
         if (mPlayFragment != null && isPlayFragmentShow) {
             hideFragments(mPlayFragment, R.anim.fragment_slide_down);
@@ -446,9 +455,10 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         mPlayBarProgressBar.setMax((int) music.getDuration());
         mPlayBarProgressBar.setProgress((int) getPlayService().getCurrentPosition());
 
-//        if (mLocalMusicFragment != null && mLocalMusicFragment.isAdded()) {
-//            mLocalMusicFragment.onItemPlay();
-//        }
+        if (mLocalMusicFragment != null && mLocalMusicFragment.isAdded()) {
+            mLocalMusicFragment.onEvent(new SingleFragment());
+        }
+
     }
 
     @Override
@@ -518,14 +528,15 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
     }
 
+
     /**
      * 让当前fragment所在的activity实现此接口
      *
-     * @param index 要启动的fragment的索引
+     * @param o 要启动的fragment的索引
      */
     @Override
-    public void startFragment(int index) {
-        switch (index) {
+    public void onEvent(Object o) {
+        switch ((int) o) {
             case SHOW_LOCAL_MUSIC_FRAGMENT:
                 showLocalMusicFragment();
                 break;
@@ -542,6 +553,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
             case SHOW_MUSIC_LIST_FRAGMENT:
                 break;
         }
+
     }
 
     /**

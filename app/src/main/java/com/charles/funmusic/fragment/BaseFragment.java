@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.charles.funmusic.activity.SplashActivity;
 import com.charles.funmusic.application.AppCache;
+import com.charles.funmusic.service.EventCallback;
 import com.charles.funmusic.service.PlayService;
 import com.charles.funmusic.utils.FontUtil;
 
@@ -26,13 +27,24 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseFragment extends Fragment implements View.OnTouchListener {
     protected Handler mHandler = new Handler(Looper.getMainLooper());
-    private InputMethodManager mInputMethodManager;
 
     public abstract int getLayoutId();
 
     public abstract void initView(Bundle savedInstanceState);
 
     public View mView;
+
+    public EventCallback mListener;
+
+    /**
+     * 重写fragment的onAttach()方法，fragment第一次附属于activity时调用，
+     * 在onCreate之前调用
+     */
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener = (EventCallback) context;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -99,17 +111,17 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
      * 显示软键盘
      */
     public void showSoftInput() {
-        mInputMethodManager = (InputMethodManager) AppCache
+        InputMethodManager inputMethodManager = (InputMethodManager) AppCache
                 .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (mInputMethodManager != null) {
-            mInputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        if (inputMethodManager != null) {
+            inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
-    /**
-     * 隐藏软键盘
-     */
-    public void hideSoftInput(View view) {
-        mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    public void showSortDialog() {
+        if (getFragmentManager() != null) {
+            SortDialogFragment sortDialog = new SortDialogFragment();
+            sortDialog.show(getFragmentManager(), "sort");
+        }
     }
 }

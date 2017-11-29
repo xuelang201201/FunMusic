@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/ic_menu_sort"
+        android:orderInCategory="100"
+        android:title="@string/sort_way"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_get_cover_lyric"
+        android:icon="@drawable/ic_menu_cover_lyric"
+        android:orderInCategory="100"
+        android:title="@string/get_cover_and_lyric"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_update_quality"
+        android:icon="@drawable/ic_menu_update_quality"
+        android:orderInCategory="100"
+        android:title="@string/update_quality"
+        app:showAsAction="never"/>
+</menu>
