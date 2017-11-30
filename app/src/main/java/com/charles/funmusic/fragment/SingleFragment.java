@@ -52,13 +52,18 @@ public class SingleFragment extends BaseFragment implements EventCallback {
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
+    public void initView(final Bundle savedInstanceState) {
         if (getPlayService().getPlayingMusic() != null && getPlayService().getPlayingMusic().getType() == Music.Type.LOCAL) {
             mRecyclerView.smoothScrollToPosition(getPlayService().getPlayingPosition());
         }
 
-        initRecyclerView(savedInstanceState);
-        updateView();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                initRecyclerView(savedInstanceState);
+                updateView();
+            }
+        }, 500);
     }
 
     private void initRecyclerView(Bundle savedInstanceState) {
@@ -68,12 +73,7 @@ public class SingleFragment extends BaseFragment implements EventCallback {
             @Override
             public void onItemClick(int position) {
                 if (getPlayService().getPlayingPosition() == position - 1) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            onEvent(SHOW_PLAY_FRAGMENT);
-                        }
-                    });
+                    onEvent(SHOW_PLAY_FRAGMENT);
                 } else {
                     getPlayService().play(position - 1);
                 }

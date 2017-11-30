@@ -178,6 +178,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), mFragments, mTitles);
         mViewPager.setAdapter(adapter);
         mToolbarTabs.setViewPager(mViewPager, mTitles);
+        mViewPager.setOffscreenPageLimit(2);
 
         mViewPager.setCurrentItem(1);
         mViewPager.setCurrentItem(0);
@@ -320,43 +321,43 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
             }
 
             if (mPlayFragment != null && isPlayFragmentShow) {
-                hideFragments(mPlayFragment, R.anim.fragment_slide_down);
+                hideFragments(mPlayFragment);
                 isPlayFragmentShow = false;
                 return false;
             }
 
             if (mTimerFragment != null && isTimerFragmentShow) {
-                hideFragments(mTimerFragment, R.anim.fragment_out);
+                hideFragments(mTimerFragment);
                 isTimerFragmentShow = false;
                 return false;
             }
 
             if (mSearchFragment != null && isSearchFragmentShow) {
-                hideFragments(mSearchFragment, R.anim.fragment_out);
+                hideFragments(mSearchFragment);
                 isSearchFragmentShow = false;
                 return false;
             }
 
             if (mLocalMusicFragment != null && isLocalMusicFragmentShow) {
-                hideFragments(mLocalMusicFragment, R.anim.fragment_out);
+                hideFragments(mLocalMusicFragment);
                 isLocalMusicFragmentShow = false;
                 return false;
             }
 
             if (mRecentPlayFragment != null && isRecentPlayFragmentShow) {
-                hideFragments(mRecentPlayFragment, R.anim.fragment_out);
+                hideFragments(mRecentPlayFragment);
                 isRecentPlayFragmentShow = false;
                 return false;
             }
 
             if (mDownloaderFragment != null && isDownloaderFragmentShow) {
-                hideFragments(mDownloaderFragment, R.anim.fragment_out);
+                hideFragments(mDownloaderFragment);
                 isDownloaderFragmentShow = false;
                 return false;
             }
 
             if (mFavoriteFragment != null && isFavoriteFragmentShow) {
-                hideFragments(mFavoriteFragment, R.anim.fragment_out);
+                hideFragments(mFavoriteFragment);
                 isFavoriteFragmentShow = false;
                 return false;
             }
@@ -394,43 +395,43 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         if (mPlayFragment != null && isPlayFragmentShow) {
-            hideFragments(mPlayFragment, R.anim.fragment_slide_down);
+            hideFragments(mPlayFragment);
             isPlayFragmentShow = false;
             return;
         }
 
         if (mTimerFragment != null && isTimerFragmentShow) {
-            hideFragments(mTimerFragment, R.anim.fragment_out);
+            hideFragments(mTimerFragment);
             isTimerFragmentShow = false;
             return;
         }
 
         if (mSearchFragment != null && isSearchFragmentShow) {
-            hideFragments(mSearchFragment, R.anim.fragment_out);
+            hideFragments(mSearchFragment);
             isSearchFragmentShow = false;
             return;
         }
 
         if (mLocalMusicFragment != null && isLocalMusicFragmentShow) {
-            hideFragments(mLocalMusicFragment, R.anim.fragment_out);
+            hideFragments(mLocalMusicFragment);
             isLocalMusicFragmentShow = false;
             return;
         }
 
         if (mRecentPlayFragment != null && isRecentPlayFragmentShow) {
-            hideFragments(mRecentPlayFragment, R.anim.fragment_out);
+            hideFragments(mRecentPlayFragment);
             isRecentPlayFragmentShow = false;
             return;
         }
 
         if (mDownloaderFragment != null && isDownloaderFragmentShow) {
-            hideFragments(mDownloaderFragment, R.anim.fragment_out);
+            hideFragments(mDownloaderFragment);
             isDownloaderFragmentShow = false;
             return;
         }
 
         if (mFavoriteFragment != null && isFavoriteFragmentShow) {
-            hideFragments(mFavoriteFragment, R.anim.fragment_out);
+            hideFragments(mFavoriteFragment);
             isFavoriteFragmentShow = false;
             return;
         }
@@ -494,20 +495,20 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         Bitmap cover = CoverLoader.getInstance().loadThumbnail(music);
         mPlayBarCover.setImageBitmap(cover);
 
-        // 向控件内填充数据
-        String artist;
-
-        if ("<unknown>".equals(music.getArtist())) {
-            artist = getString(R.string.unknown_artist);
-        } else {
-            artist = music.getArtist();
-        }
+//        // 向控件内填充数据
+//        String artist;
+//
+//        if ("<unknown>".equals(music.getArtist())) {
+//            artist = getString(R.string.unknown_artist);
+//        } else {
+//            artist = music.getArtist();
+//        }
 
         changeFont(mPlayBarTitle, false);
         changeFont(mPlayBarArtist, false);
 
         mPlayBarTitle.setText(music.getTitle());
-        mPlayBarArtist.setText(artist);
+        mPlayBarArtist.setText(music.getArtist());
         mPlayBarPlayOrPause.setSelected(getPlayService().isPlaying() || getPlayService().isPreparing());
         mPlayBarProgressBar.setMax((int) music.getDuration());
         mPlayBarProgressBar.setProgress((int) getPlayService().getCurrentPosition());
@@ -630,9 +631,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_in, 0);
-        if (mLocalMusicFragment == null) {
+        if (getSupportFragmentManager().findFragmentByTag("local") == null) {
             mLocalMusicFragment = new LocalMusicFragment();
-            ft.add(android.R.id.content, mLocalMusicFragment);
+            ft.add(android.R.id.content, mLocalMusicFragment, "local");
         } else {
             ft.show(mLocalMusicFragment);
         }
@@ -652,9 +653,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_in, 0);
-        if (mRecentPlayFragment == null) {
+        if (getSupportFragmentManager().findFragmentByTag("recent") == null) {
             mRecentPlayFragment = new RecentPlayFragment();
-            ft.add(android.R.id.content, mRecentPlayFragment);
+            ft.add(android.R.id.content, mRecentPlayFragment, "recent");
         } else {
             ft.show(mRecentPlayFragment);
         }
@@ -674,9 +675,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_in, 0);
-        if (mDownloaderFragment == null) {
+        if (getSupportFragmentManager().findFragmentByTag("downloader") == null) {
             mDownloaderFragment = new DownloaderFragment();
-            ft.add(android.R.id.content, mDownloaderFragment);
+            ft.add(android.R.id.content, mDownloaderFragment, "downloader");
         } else {
             ft.show(mDownloaderFragment);
         }
@@ -696,9 +697,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_in, 0);
-        if (mFavoriteFragment == null) {
+        if (getSupportFragmentManager().findFragmentByTag("favorite") == null) {
             mFavoriteFragment = new FavoriteFragment();
-            ft.add(android.R.id.content, mFavoriteFragment);
+            ft.add(android.R.id.content, mFavoriteFragment, "favorite");
         } else {
             ft.show(mFavoriteFragment);
         }
@@ -717,10 +718,10 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_slide_up, 0);
-        if (mPlayFragment == null) {
+        ft.setCustomAnimations(R.anim.fragment_in, 0);
+        if (getSupportFragmentManager().findFragmentByTag("play") == null) {
             mPlayFragment = new PlayFragment();
-            ft.add(android.R.id.content, mPlayFragment);
+            ft.add(android.R.id.content, mPlayFragment, "play");
         } else {
             ft.show(mPlayFragment);
         }
@@ -739,9 +740,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_in, 0);
-        if (mTimerFragment == null) {
+        if (getSupportFragmentManager().findFragmentByTag("timer") == null) {
             mTimerFragment = new TimerFragment();
-            ft.add(android.R.id.content, mTimerFragment);
+            ft.add(android.R.id.content, mTimerFragment, "timer");
         } else {
             ft.show(mTimerFragment);
         }
@@ -761,9 +762,9 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.fragment_in, 0);
-        if (mSearchFragment == null) {
+        if (getSupportFragmentManager().findFragmentByTag("search") == null) {
             mSearchFragment = new SearchFragment();
-            ft.add(android.R.id.content, mSearchFragment);
+            ft.add(android.R.id.content, mSearchFragment, "search");
         } else {
             ft.show(mSearchFragment);
         }
@@ -776,11 +777,10 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
      * 隐藏界面
      *
      * @param fragment 需要隐藏的fragment
-     * @param anim     退出动画
      */
-    private void hideFragments(Fragment fragment, int anim) {
+    private void hideFragments(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(0, anim);
+        ft.setCustomAnimations(0, R.anim.fragment_out);
         ft.hide(fragment);
         ft.commitAllowingStateLoss();
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);

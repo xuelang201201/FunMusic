@@ -135,8 +135,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
         } else {
             if (position - 1 == mPlayingPosition) {
                 holder.mPlaying.setVisibility(View.VISIBLE);
-            } else {
-                holder.mPlaying.setVisibility(View.INVISIBLE);
             }
         }
     }

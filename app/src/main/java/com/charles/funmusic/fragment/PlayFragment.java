@@ -97,8 +97,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
         mIndicator.create(mViewPagerContent.size());
         initPlayMode();
         onChangeImpl(getPlayService().getPlayingMusic());
-
-        mSeekBar.setOnSeekBarChangeListener(this);
+        mSeekBar.setOnSeekBarChangeListener(PlayFragment.this);
     }
 
     @Override
@@ -145,20 +144,12 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
             return;
         }
 
-        final String artist;
-
-        if ("<unknown>".equals(music.getArtist())) {
-            artist = AppCache.getContext().getString(R.string.unknown_artist);
-        } else {
-            artist = music.getArtist();
-        }
-
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mTitle.setText(music.getTitle());
                 changeFont(mTitle, false);
-                mArtist.setText(artist);
+                mArtist.setText(music.getArtist());
                 changeFont(mArtist, false);
                 mSeekBar.setProgress((int) getPlayService().getCurrentPosition());
                 mSeekBar.setSecondaryProgress(0);
