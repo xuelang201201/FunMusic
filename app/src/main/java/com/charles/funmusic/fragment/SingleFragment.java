@@ -16,6 +16,7 @@ import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.EventCallback;
+import com.charles.funmusic.widget.IndexBar;
 
 import java.util.Random;
 
@@ -29,9 +30,14 @@ public class SingleFragment extends BaseFragment implements EventCallback {
     RecyclerView mRecyclerView;
     @BindView(R.id.fragment_single_empty)
     TextView mEmpty;
+    @BindView(R.id.fragment_single_index_bar)
+    IndexBar mIndexBar;
+    @BindView(R.id.fragment_single_letter)
+    TextView mLetter;
 
     private MusicAdapter mAdapter;
     private static final String TAG = SingleFragment.class.getSimpleName();
+    private LinearLayoutManager mLinearLayoutManager;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -64,11 +70,36 @@ public class SingleFragment extends BaseFragment implements EventCallback {
                 updateView();
             }
         }, 500);
+
+        initIndexBar();
+    }
+
+    private void initIndexBar() {
+        mIndexBar.setListener(new IndexBar.OnTouchLetterListener() {
+            @Override
+            public void onTouchLetter(String str) {
+                // 1）挪动RecyclerView
+                int position = mAdapter.getPositionForSection(str.charAt(0));
+                if (position != -1) {
+                    mLinearLayoutManager.scrollToPositionWithOffset(position + 1, 0);
+                }
+//                mRecyclerView.smoothScrollToPosition(mAdapter.getPositionForSection(str.charAt(0)));
+                // 2）显示大字母
+                mLetter.setVisibility(View.VISIBLE);
+                mLetter.setText(str);
+            }
+
+            @Override
+            public void onFinishTouch() {
+                mLetter.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void initRecyclerView(Bundle savedInstanceState) {
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(AppCache.getContext()));
+        mLinearLayoutManager = new LinearLayoutManager(AppCache.getContext());
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mAdapter = new MusicAdapter(AppCache.getContext(), new MusicAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {

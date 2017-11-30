@@ -193,15 +193,15 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
     @Override
     public int getSectionForPosition(int position) {
         // position位置的sortLetter属性所对应的Char
-        // 因为有header所以position需要-1，如果不减本例中会导致PlayFragment和LocalFragment重叠
-        if (Preferences.getSortWay() == SORT_BY_ARTIST) {
-            return AppCache.getMusics().get(position - 1).getArtistPinyin().charAt(0);
-        }
+        // 因为有header所以position需要+1，如果不减本例中会导致PlayFragment和LocalFragment重叠
         if (Preferences.getSortWay() == SORT_BY_SINGLE) {
-            return AppCache.getMusics().get(position - 1).getTitlePinyin().charAt(0);
+            return AppCache.getMusics().get(position).getTitlePinyin().charAt(0);
+        }
+        if (Preferences.getSortWay() == SORT_BY_ARTIST) {
+            return AppCache.getMusics().get(position).getArtistPinyin().charAt(0);
         }
         if (Preferences.getSortWay() == SORT_BY_ALBUM) {
-            return AppCache.getMusics().get(position - 1).getAlbumPinyin().charAt(0);
+            return AppCache.getMusics().get(position).getAlbumPinyin().charAt(0);
         }
 //        if (Preferences.getSortWay() == SORT_BY_ADD_TIME) {
 //        }

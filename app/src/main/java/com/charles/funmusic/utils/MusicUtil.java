@@ -14,6 +14,7 @@ import android.provider.MediaStore.Audio.Media;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.model.Music;
+import com.github.promeg.pinyinhelper.Pinyin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,12 +88,15 @@ public class MusicUtil {
             music.setId(id);
             music.setType(Music.Type.LOCAL);
             music.setTitle(title);
+            music.setTitlePinyin(Pinyin.toPinyin(title, ","));
             if ("<unknown>".equals(artist)) {
                 music.setArtist(context.getString(R.string.unknown_artist));
             } else {
                 music.setArtist(artist);
             }
+            music.setArtistPinyin(Pinyin.toPinyin(artist, ","));
             music.setAlbum(album);
+            music.setAlbumPinyin(Pinyin.toPinyin(album, ","));
             music.setAlbumId(albumId);
             music.setDuration(duration);
             music.setUrl(path);
