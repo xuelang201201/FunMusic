@@ -36,9 +36,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
 
-    public MusicAdapter() {
-    }
-
     public MusicAdapter(Context context, OnItemClickListener onItemClickListener, OnItemLongClickListener onItemLongClickListener) {
         mContext = context;
         mOnItemClickListener = onItemClickListener;
@@ -46,17 +43,9 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
         mLayoutInflater = LayoutInflater.from(mContext);
     }
 
-    public View getHeaderView() {
-        return mHeaderView;
-    }
-
     public void setHeaderView(View headerView) {
         mHeaderView = headerView;
         notifyItemInserted(0);
-    }
-
-    public View getFooterView() {
-        return mFooterView;
     }
 
     public void setFooterView(View footerView) {
@@ -105,20 +94,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
                 Music music = AppCache.getMusics().get(position - 1);
                 holder.itemView.setTag(position);
 
-                // 向控件内填充数据
-//                String artist;
-//                String album;
-//
-//                if ("<unknown>".equals(music.getArtist())) {
-//                    artist = mContext.getString(R.string.unknown_artist);
-//                } else {
-//                    artist = music.getArtist();
-//                }
-//                if ("Music".equals(music.getAlbum()) || "0".equals(music.getAlbum())) {
-//                    album = mContext.getString(R.string.unknown_album);
-//                } else {
-//                    album = music.getAlbum();
-//                }
                 String artistAndAlbum = FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum());
                 holder.mArtistAndAlbum.setText(artistAndAlbum);
                 holder.mTitle.setText(music.getTitle());
@@ -140,20 +115,22 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
     }
 
     /**
-     * 返回View中item的个数，item的个数加上HeaderView和FooterView
-     *
-     * @return
+     * @return 返回View中item的个数，item的个数加上HeaderView和FooterView
      */
     @Override
     public int getItemCount() {
-        if (mHeaderView == null && mFooterView == null) {
-            return AppCache.getMusics().size();
-        } else if (mHeaderView != null && mFooterView == null) {
-            return AppCache.getMusics().size() + 1;
-        } else if (mHeaderView == null && mFooterView != null) {
-            return AppCache.getMusics().size() + 1;
+        if (mHeaderView == null) {
+            if (mFooterView == null) {
+                return AppCache.getMusics().size();
+            } else {
+                return AppCache.getMusics().size() + 1;
+            }
         } else {
-            return AppCache.getMusics().size() + 2;
+            if (mFooterView == null) {
+                return AppCache.getMusics().size() + 1;
+            } else {
+                return AppCache.getMusics().size() + 2;
+            }
         }
     }
 

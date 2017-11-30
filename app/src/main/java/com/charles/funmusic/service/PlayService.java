@@ -1,5 +1,6 @@
 package com.charles.funmusic.service;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -188,6 +189,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
      *
      * @param callback 事件回调
      */
+    @SuppressLint("StaticFieldLeak")
     public void updateMusicList(final EventCallback<Void> callback) {
         new AsyncTask<Void, Void, List<Music>>() {
 
