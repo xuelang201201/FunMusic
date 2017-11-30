@@ -224,14 +224,16 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
      * 返回activity
      */
     public void onBackPressed() {
-        getActivity().onBackPressed();
-        mBack.setEnabled(false);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBack.setEnabled(true);
-            }
-        }, 300);
+        if (getActivity() != null) {
+            getActivity().onBackPressed();
+            mBack.setEnabled(false);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mBack.setEnabled(true);
+                }
+            }, 300);
+        }
     }
 
     /**

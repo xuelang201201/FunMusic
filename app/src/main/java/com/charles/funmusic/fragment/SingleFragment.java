@@ -21,6 +21,8 @@ import java.util.Random;
 
 import butterknife.BindView;
 
+import static com.charles.funmusic.fragment.MyFragment.SHOW_PLAY_FRAGMENT;
+
 public class SingleFragment extends BaseFragment implements EventCallback {
 
     @BindView(R.id.fragment_single_recycler_view)
@@ -65,7 +67,16 @@ public class SingleFragment extends BaseFragment implements EventCallback {
         mAdapter = new MusicAdapter(AppCache.getContext(), new MusicAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                AppCache.getPlayService().play(position - 1);
+                if (getPlayService().getPlayingPosition() == position - 1) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            onEvent(SHOW_PLAY_FRAGMENT);
+                        }
+                    });
+                } else {
+                    getPlayService().play(position - 1);
+                }
             }
         }, new MusicAdapter.OnItemLongClickListener() {
             @Override
@@ -141,14 +152,14 @@ public class SingleFragment extends BaseFragment implements EventCallback {
     public void onItemPlay() {
         updateView();
 
-        if (getPlayService().getPlayingMusic().getType() == Music.Type.LOCAL) {
-            if (getPlayService().getPlayingPosition() - 4 < 0) {
-                mRecyclerView.scrollToPosition(getPlayService().getPlayingPosition());
-            } else if (AppCache.getMusics().size() - 4 > getPlayService().getPlayingPosition()) {
-                mRecyclerView.scrollToPosition(getPlayService().getPlayingPosition() + 4);
-            } else if (AppCache.getMusics().size() - 4 <= getPlayService().getPlayingPosition()) {
-                mRecyclerView.scrollToPosition(AppCache.getMusics().size());
-            }
-        }
+//        if (getPlayService().getPlayingMusic().getType() == Music.Type.LOCAL) {
+//            if (getPlayService().getPlayingPosition() - 4 < 0) {
+//                mRecyclerView.scrollToPosition(getPlayService().getPlayingPosition());
+//            } else if (AppCache.getMusics().size() - 4 > getPlayService().getPlayingPosition()) {
+//                mRecyclerView.scrollToPosition(getPlayService().getPlayingPosition() + 4);
+//            } else if (AppCache.getMusics().size() - 4 <= getPlayService().getPlayingPosition()) {
+//                mRecyclerView.scrollToPosition(AppCache.getMusics().size());
+//            }
+//        }
     }
 }

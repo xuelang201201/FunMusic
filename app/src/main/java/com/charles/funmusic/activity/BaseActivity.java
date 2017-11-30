@@ -64,6 +64,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         setListener();
     }
 
+    @Override
+    protected void onPause() {
+        overridePendingTransition(0, 0);
+        super.onPause();
+    }
+
     protected void setListener() {
 
     }
@@ -119,8 +125,9 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param context 上下文对象
      * @param cls     对象Activity
      */
-    protected static void startActivity(Context context, Class<?> cls) {
+    protected void startActivity(Context context, Class<?> cls) {
         Intent intent = new Intent(context, cls);
         context.startActivity(intent);
+        this.overridePendingTransition(0, 0);
     }
 }

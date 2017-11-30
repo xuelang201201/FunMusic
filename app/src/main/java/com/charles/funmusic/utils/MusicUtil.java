@@ -12,6 +12,7 @@ import android.provider.MediaStore.Audio.AlbumColumns;
 import android.provider.MediaStore.Audio.AudioColumns;
 import android.provider.MediaStore.Audio.Media;
 
+import com.charles.funmusic.R;
 import com.charles.funmusic.model.Music;
 
 import java.util.ArrayList;
@@ -86,7 +87,11 @@ public class MusicUtil {
             music.setId(id);
             music.setType(Music.Type.LOCAL);
             music.setTitle(title);
-            music.setArtist(artist);
+            if ("<unknown>".equals(artist)) {
+                music.setArtist(context.getString(R.string.unknown_artist));
+            } else {
+                music.setArtist(artist);
+            }
             music.setAlbum(album);
             music.setAlbumId(albumId);
             music.setDuration(duration);

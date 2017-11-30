@@ -14,6 +14,8 @@ import com.charles.funmusic.service.PlayService;
 import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.FontUtil;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -92,32 +94,45 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
     @Override
     public void onBindViewHolder(MusicHolder holder, int position) {
 
-        if (getItemViewType(position) == TYPE_NORMAL) {
-            // 这里加载数据的时候要注意，是从position - 1开始，因为position == 0 已经被header占用了
-            Music music = AppCache.getMusics().get(position - 1);
-            holder.itemView.setTag(position);
+    }
 
-            // 向控件内填充数据
-            String artist;
-            String album;
+    @Override
+    public void onBindViewHolder(MusicHolder holder, int position, List<Object> payloads) {
+        if (payloads.isEmpty()) {
 
-            if ("<unknown>".equals(music.getArtist())) {
-                artist = mContext.getString(R.string.unknown_artist);
-            } else {
-                artist = music.getArtist();
-            }
-            if ("Music".equals(music.getAlbum()) || "0".equals(music.getAlbum())) {
-                album = mContext.getString(R.string.unknown_album);
-            } else {
-                album = music.getAlbum();
-            }
-            String artistAndAlbum = FileUtil.getArtistAndAlbum(artist, album);
-            holder.mArtistAndAlbum.setText(artistAndAlbum);
-            holder.mTitle.setText(music.getTitle());
+            if (getItemViewType(position) == TYPE_NORMAL) {
+                // 这里加载数据的时候要注意，是从position - 1开始，因为position == 0 已经被header占用了
+                Music music = AppCache.getMusics().get(position - 1);
+                holder.itemView.setTag(position);
+
+                // 向控件内填充数据
+//                String artist;
+//                String album;
+//
+//                if ("<unknown>".equals(music.getArtist())) {
+//                    artist = mContext.getString(R.string.unknown_artist);
+//                } else {
+//                    artist = music.getArtist();
+//                }
+//                if ("Music".equals(music.getAlbum()) || "0".equals(music.getAlbum())) {
+//                    album = mContext.getString(R.string.unknown_album);
+//                } else {
+//                    album = music.getAlbum();
+//                }
+                String artistAndAlbum = FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum());
+                holder.mArtistAndAlbum.setText(artistAndAlbum);
+                holder.mTitle.setText(music.getTitle());
 
 //            Bitmap cover = CoverLoader.getInstance().loadThumbnail(music);
 //            holder.mCover.setImageBitmap(cover);
 
+                if (position - 1 == mPlayingPosition) {
+                    holder.mPlaying.setVisibility(View.VISIBLE);
+                } else {
+                    holder.mPlaying.setVisibility(View.INVISIBLE);
+                }
+            }
+        } else {
             if (position - 1 == mPlayingPosition) {
                 holder.mPlaying.setVisibility(View.VISIBLE);
             } else {
@@ -215,6 +230,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
         public void onClick(View view) {
             if (mOnItemClickListener != null) {
                 int position = (int) view.getTag();
+                if (mPlayingPosition != position - 1) {
+                    mPlaying.setVisibility(View.VISIBLE);
+                    if (mPlayingPosition != -1) {
+                        notifyItemChanged(mPlayingPosition, 0);
+                    }
+                    mPlayingPosition = position - 1;
+                }
                 mOnItemClickListener.onItemClick(position);
             }
         }

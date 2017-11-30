@@ -64,7 +64,9 @@ public class SplashFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (getActivity() != null) {
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_splash, container, false);
             ButterKnife.bind(this, mView);
@@ -91,7 +93,9 @@ public class SplashFragment extends Fragment {
             }, 1000);
         } else {
             startMusicActivity();
-            getActivity().finish();
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
         }
     }
 
@@ -102,7 +106,9 @@ public class SplashFragment extends Fragment {
 
     private void bindService() {
         Intent intent = new Intent();
-        intent.setClass(getActivity(), PlayService.class);
+        if (getActivity() != null) {
+            intent.setClass(getActivity(), PlayService.class);
+        }
         mPlayServiceConnection = new PlayServiceConnection();
         getActivity().bindService(intent, mPlayServiceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -125,7 +131,9 @@ public class SplashFragment extends Fragment {
                         @Override
                         public void onDenied() {
                             ToastUtil.show(R.string.no_permission_storage);
-                            getActivity().finish();
+                            if (getActivity()!= null) {
+                                getActivity().finish();
+                            }
                             playService.quit();
                         }
                     }).request();
@@ -141,7 +149,9 @@ public class SplashFragment extends Fragment {
             @Override
             public void onEvent(Void aVoid) {
                 startMusicActivity();
-                getActivity().finish();
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
             }
         });
     }
@@ -188,16 +198,19 @@ public class SplashFragment extends Fragment {
 
     private void startMusicActivity() {
         Intent intent = new Intent();
-        intent.setClass(getActivity(), MusicActivity.class);
+        if (getActivity() != null) {
+            intent.setClass(getActivity(), MusicActivity.class);
+        }
         intent.putExtras(getActivity().getIntent());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         getActivity().startActivity(intent);
+        getActivity().overridePendingTransition(0, 0);
     }
 
     @Override
     public void onDestroy() {
-        if (mPlayServiceConnection != null) {
+        if (mPlayServiceConnection != null && getActivity() != null) {
             getActivity().unbindService(mPlayServiceConnection);
         }
         super.onDestroy();

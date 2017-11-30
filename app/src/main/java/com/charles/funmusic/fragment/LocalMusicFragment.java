@@ -2,7 +2,6 @@ package com.charles.funmusic.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,16 +12,11 @@ import android.support.v7.widget.PopupMenu;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
@@ -69,7 +63,6 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
     private AlbumFragment mAlbumFragment;
     private FolderFragment mFolderFragment;
 
-    private PopupWindow mPopupWindow;
     private PopupMenu mPopupMenu;
 
     @Override
@@ -175,8 +168,6 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
                 break;
 
             case R.id.header_view_more:
-//                showPopupWindow();
-//                showMoreDialog();
                 showPopupMenu();
                 break;
 
@@ -205,7 +196,10 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.action_sort:
-                            showSortDialog();
+                            if (mViewPager.getCurrentItem() == 0) {
+                                showSortDialog();
+                                onEvent(new SingleFragment());
+                            }
                             mPopupMenu.dismiss();
                             break;
                         case R.id.action_get_cover_lyric:
@@ -224,56 +218,12 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
         }
     }
 
-    private void showPopupWindow() {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.popup_layout, null);
-        mPopupWindow = new PopupWindow(getActivity());
-        mPopupWindow.setContentView(view);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-
-        LinearLayout sort = view.findViewById(R.id.popup_layout_sort);
-        LinearLayout get = view.findViewById(R.id.popup_layout_get_lyric_cover);
-        LinearLayout update = view.findViewById(R.id.popup_layout_update_quality);
-
-        sort.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSortDialog();
-                mPopupWindow.dismiss();
-            }
-        });
-
-        get.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupWindow.dismiss();
-            }
-        });
-
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupWindow.dismiss();
-            }
-        });
-
-        int x = ScreenUtil.getScreenWidth();
-        int y = ScreenUtil.getStatusBarHeight();
-
-        mPopupWindow.showAtLocation(view, Gravity.TOP, x, y);
-    }
-
     /**
      * 显示搜索框
      */
     private void setSearchMode() {
         updateView();
-//        mRandomPlay.setVisibility(View.GONE);
         mSearch.setVisibility(View.GONE);
-//        mSort.setVisibility(View.GONE);
         mCancel.setVisibility(View.VISIBLE);
         mMore.setVisibility(View.GONE);
         mTitle.setVisibility(View.GONE);

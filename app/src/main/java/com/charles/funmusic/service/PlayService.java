@@ -52,6 +52,8 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
      * 正在播放的本地歌曲的序号
      */
     private int mPlayingPosition = -1;
+    private int mPosition;
+
     private int mPlayState = STATE_IDLE;
 
     public OnPlayerEventListener getOnPlayEventListener() {
@@ -220,15 +222,13 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
         next();
     }
 
-    private int pos;
-
     /**
      * 播放指定位置的歌曲
      *
      * @param position 位置
      */
     public void play(int position) {
-        pos = position;
+        mPosition = position;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -236,13 +236,13 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
                     return;
                 }
 
-                if (pos < 0) {
-                    pos = AppCache.getMusics().size() - 1;
-                } else if (pos >= AppCache.getMusics().size()) {
-                    pos = 0;
+                if (mPosition < 0) {
+                    mPosition = AppCache.getMusics().size() - 1;
+                } else if (mPosition >= AppCache.getMusics().size()) {
+                    mPosition = 0;
                 }
 
-                mPlayingPosition = pos;
+                mPlayingPosition = mPosition;
                 Music music = AppCache.getMusics().get(mPlayingPosition);
                 Preferences.saveCurrentSongId(music.getId());
                 play(music);
@@ -410,8 +410,10 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
                 PlayModeEnum mode = PlayModeEnum.valueOf(Preferences.getPlayMode());
                 switch (mode) {
                     case SHUFFLE:
+                        long seed = System.nanoTime();
+                        mPlayingPosition = new Random(seed).nextInt(AppCache.getMusics().size());
 //                        mPlayingPosition = new Random().nextInt(AppCache.getMusics().size());
-                        play(mPlayingMusic);
+                        play(mPlayingPosition);
                         break;
                     case SINGLE:
                         play(mPlayingPosition);

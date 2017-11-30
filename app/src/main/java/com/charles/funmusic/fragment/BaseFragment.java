@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +28,7 @@ import butterknife.ButterKnife;
  * 基类
  */
 public abstract class BaseFragment extends Fragment implements View.OnTouchListener {
+    private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
     protected Handler mHandler = new Handler(Looper.getMainLooper());
 
     public abstract int getLayoutId();
@@ -44,6 +47,29 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (EventCallback) context;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            boolean isSupportHidden = savedInstanceState.getBoolean(STATE_SAVE_IS_HIDDEN);
+            if (getFragmentManager() != null) {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                if (isSupportHidden) {
+                    ft.hide(this);
+                } else {
+                    ft.show(this);
+                }
+                ft.commitAllowingStateLoss();
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_SAVE_IS_HIDDEN, isHidden());
     }
 
     @Override

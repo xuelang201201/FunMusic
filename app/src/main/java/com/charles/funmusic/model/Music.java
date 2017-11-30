@@ -15,13 +15,25 @@ public class Music {
      */
     private String mTitle;
     /**
+     * 音乐标题的拼音
+     */
+    private String mTitlePinyin;
+    /**
      * 艺术家
      */
     private String mArtist;
     /**
+     * 艺术家的拼音
+     */
+    private String mArtistPinyin;
+    /**
      * 专辑
      */
     private String mAlbum;
+    /**
+     * 专辑的拼音
+     */
+    private String mAlbumPinyin;
     /**
      * [本地歌曲]专辑id
      */
@@ -46,6 +58,8 @@ public class Music {
      * 文件大小
      */
     private long mFileSize;
+
+    private String mSortLetter;
 
     public enum Type {
         LOCAL,
@@ -76,6 +90,14 @@ public class Music {
         mTitle = title;
     }
 
+    public String getTitlePinyin() {
+        return mTitlePinyin;
+    }
+
+    public void setTitlePinyin(String titlePinyin) {
+        mTitlePinyin = titlePinyin;
+    }
+
     public String getArtist() {
         return mArtist;
     }
@@ -84,12 +106,28 @@ public class Music {
         mArtist = artist;
     }
 
+    public String getArtistPinyin() {
+        return mArtistPinyin;
+    }
+
+    public void setArtistPinyin(String artistPinyin) {
+        mArtistPinyin = artistPinyin;
+    }
+
     public String getAlbum() {
         return mAlbum;
     }
 
     public void setAlbum(String album) {
         mAlbum = album;
+    }
+
+    public String getAlbumPinyin() {
+        return mAlbumPinyin;
+    }
+
+    public void setAlbumPinyin(String albumPinyin) {
+        mAlbumPinyin = albumPinyin;
     }
 
     public long getAlbumId() {
@@ -138,6 +176,14 @@ public class Music {
 
     public void setFileSize(long fileSize) {
         mFileSize = fileSize;
+    }
+
+    public String getSortLetter() {
+        return mSortLetter;
+    }
+
+    public void setSortLetter(String sortLetter) {
+        mSortLetter = sortLetter;
     }
 
     /**

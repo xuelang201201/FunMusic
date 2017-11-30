@@ -5,7 +5,7 @@
         <attr name="border_color" format="color" />
     </declare-styleable>
 
-    <declare-styleable name="SideNavigationBar">
+    <declare-styleable name="IndexBar">
         <attr name="text_size" format="dimension" />
         <attr name="text_color" format="color" />
     </declare-styleable>

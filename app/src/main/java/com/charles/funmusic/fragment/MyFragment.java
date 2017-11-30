@@ -22,6 +22,7 @@ public class MyFragment extends BaseFragment implements EventCallback {
     public static final int SHOW_DOWNLOADER_FRAGMENT = 2;
     public static final int SHOW_FAVORITE_FRAGMENT = 3;
     public static final int SHOW_MUSIC_LIST_FRAGMENT = 4;
+    public static final int SHOW_PLAY_FRAGMENT = 5;
 
     @BindView(R.id.fragment_my_avatar)
     CircleImageView mAvatar;
