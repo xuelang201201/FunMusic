@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
@@ -13,6 +14,7 @@ import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.PlayService;
 import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.FontUtil;
+import com.charles.funmusic.utils.Preferences;
 
 import java.util.List;
 
@@ -22,10 +24,16 @@ import butterknife.ButterKnife;
 /**
  * 本地音乐适配器
  */
-public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder> {
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_FOOTER = 1;
-    private static final int TYPE_NORMAL = 2;
+public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder> implements SectionIndexer {
+    private static final int TYPE_HEADER = 100;
+    private static final int TYPE_FOOTER = 101;
+    private static final int TYPE_NORMAL = 102;
+
+    private static final int SORT_BY_ARTIST = 0;
+    private static final int SORT_BY_SINGLE = 1;
+    private static final int SORT_BY_ADD_TIME = 2;
+    private static final int SORT_BY_ALBUM = 3;
+    private static final int SORT_BY_PLAY_TIME = 4;
 
     private Context mContext;
     private LayoutInflater mLayoutInflater;
@@ -165,6 +173,41 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
         } else {
             mPlayingPosition = -1;
         }
+    }
+
+    @Override
+    public Object[] getSections() {
+        return new Object[0];
+    }
+
+    @Override
+    public int getPositionForSection(int sectionIndex) {
+        for (int i = 0; i < AppCache.getMusics().size(); i++) {
+            if (sectionIndex == getSectionForPosition(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int getSectionForPosition(int position) {
+        // position位置的sortLetter属性所对应的Char
+        // 因为有header所以position需要-1，如果不减本例中会导致PlayFragment和LocalFragment重叠
+        if (Preferences.getSortWay() == SORT_BY_ARTIST) {
+            return AppCache.getMusics().get(position - 1).getArtistPinyin().charAt(0);
+        }
+        if (Preferences.getSortWay() == SORT_BY_SINGLE) {
+            return AppCache.getMusics().get(position - 1).getTitlePinyin().charAt(0);
+        }
+        if (Preferences.getSortWay() == SORT_BY_ALBUM) {
+            return AppCache.getMusics().get(position - 1).getAlbumPinyin().charAt(0);
+        }
+//        if (Preferences.getSortWay() == SORT_BY_ADD_TIME) {
+//        }
+//        if (Preferences.getSortWay() == SORT_BY_PLAY_TIME) {
+//        }
+        return Preferences.getSortWay();
     }
 
     class MusicHolder extends RecyclerView.ViewHolder

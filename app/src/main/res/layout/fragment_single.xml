@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -26,5 +27,24 @@
             android:textColor="#AAAAAA"
             android:textSize="12sp"
             android:visibility="gone"/>
+
+        <com.charles.funmusic.widget.IndexBar
+            android:id="@+id/fragment_single_index_bar"
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            app:text_color="@color/light_black"
+            app:text_size="10sp"/>
+
+        <TextView
+            android:id="@+id/fragment_single_letter"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/letter_bg"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="36sp"
+            android:visibility="invisible"/>
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>
