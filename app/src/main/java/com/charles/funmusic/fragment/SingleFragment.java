@@ -16,13 +16,19 @@ import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.EventCallback;
+import com.charles.funmusic.utils.Preferences;
 import com.charles.funmusic.widget.IndexBar;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 import butterknife.BindView;
 
 import static com.charles.funmusic.fragment.MyFragment.SHOW_PLAY_FRAGMENT;
+import static com.charles.funmusic.fragment.SortDialogFragment.SORT_BY_ALBUM;
+import static com.charles.funmusic.fragment.SortDialogFragment.SORT_BY_ARTIST;
+import static com.charles.funmusic.fragment.SortDialogFragment.SORT_BY_SINGLE;
 
 public class SingleFragment extends BaseFragment implements EventCallback {
 
@@ -67,6 +73,23 @@ public class SingleFragment extends BaseFragment implements EventCallback {
             @Override
             public void run() {
                 initRecyclerView(savedInstanceState);
+                // 对数据根据拼音进行排序
+                Collections.sort(AppCache.getMusics(), new Comparator<Music>() {
+                    @Override
+                    public int compare(Music lhs, Music rhs) {
+                        int result = Preferences.getSortWay();
+                        if (Preferences.getSortWay() == SORT_BY_SINGLE) {
+                            result = lhs.getTitlePinyin().compareTo(rhs.getTitlePinyin());
+                        }
+                        if (Preferences.getSortWay() == SORT_BY_ARTIST) {
+                            result = lhs.getArtistPinyin().compareTo(rhs.getArtistPinyin());
+                        }
+                        if (Preferences.getSortWay() == SORT_BY_ALBUM) {
+                            result = lhs.getAlbumPinyin().compareTo(rhs.getAlbumPinyin());
+                        }
+                        return result;
+                    }
+                });
                 updateView();
             }
         }, 500);
@@ -156,11 +179,12 @@ public class SingleFragment extends BaseFragment implements EventCallback {
                 getPlayService().play(position);
             }
         });
-        ImageView sort = header.findViewById(R.id.header_sort);
+        final ImageView sort = header.findViewById(R.id.header_sort);
         sort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showSortDialog();
+                sort();
             }
         });
     }
@@ -182,15 +206,9 @@ public class SingleFragment extends BaseFragment implements EventCallback {
 
     public void onItemPlay() {
         updateView();
+    }
 
-//        if (getPlayService().getPlayingMusic().getType() == Music.Type.LOCAL) {
-//            if (getPlayService().getPlayingPosition() - 4 < 0) {
-//                mRecyclerView.scrollToPosition(getPlayService().getPlayingPosition());
-//            } else if (AppCache.getMusics().size() - 4 > getPlayService().getPlayingPosition()) {
-//                mRecyclerView.scrollToPosition(getPlayService().getPlayingPosition() + 4);
-//            } else if (AppCache.getMusics().size() - 4 <= getPlayService().getPlayingPosition()) {
-//                mRecyclerView.scrollToPosition(AppCache.getMusics().size());
-//            }
-//        }
+    public void sort() {
+        mAdapter.notifyDataSetChanged();
     }
 }

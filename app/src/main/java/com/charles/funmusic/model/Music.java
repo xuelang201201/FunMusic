@@ -59,7 +59,12 @@ public class Music {
      */
     private long mFileSize;
 
-    private String mSortLetter;
+    public Music() {
+    }
+
+    public Music(long id) {
+        mId = id;
+    }
 
     public enum Type {
         LOCAL,
@@ -176,14 +181,6 @@ public class Music {
 
     public void setFileSize(long fileSize) {
         mFileSize = fileSize;
-    }
-
-    public String getSortLetter() {
-        return mSortLetter;
-    }
-
-    public void setSortLetter(String sortLetter) {
-        mSortLetter = sortLetter;
     }
 
     /**

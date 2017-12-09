@@ -44,13 +44,28 @@
 
             <include
                 android:id="@+id/activity_music_play_bar"
-                layout="@layout/play_bar"
+                layout="@layout/play_bar_view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/play_bar_height"
                 android:layout_gravity="bottom"/>
 
         </FrameLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/activity_local_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/activity_recent_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/activity_play_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/activity_music_navigation_view"

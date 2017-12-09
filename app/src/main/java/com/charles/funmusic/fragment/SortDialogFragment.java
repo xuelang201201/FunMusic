@@ -18,8 +18,12 @@ import android.widget.TextView;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.application.AppCache;
+import com.charles.funmusic.model.Music;
 import com.charles.funmusic.utils.FontUtil;
 import com.charles.funmusic.utils.Preferences;
+
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,11 +31,11 @@ import butterknife.OnClick;
 
 public class SortDialogFragment extends DialogFragment {
 
-    private static final int SORT_BY_ARTIST = 0;
-    private static final int SORT_BY_SINGLE = 1;
-    private static final int SORT_BY_ADD_TIME = 2;
-    private static final int SORT_BY_ALBUM = 3;
-    private static final int SORT_BY_PLAY_TIME = 4;
+    public static final int SORT_BY_ARTIST = 0;
+    public static final int SORT_BY_SINGLE = 1;
+    public static final int SORT_BY_ADD_TIME = 2;
+    public static final int SORT_BY_ALBUM = 3;
+    public static final int SORT_BY_PLAY_TIME = 4;
 
     @BindView(R.id.dialog_sort_text)
     TextView mText;
@@ -142,11 +146,13 @@ public class SortDialogFragment extends DialogFragment {
             case R.id.dialog_sort_by_artist:
                 Preferences.saveSortWay(SORT_BY_ARTIST);
                 dismiss();
+                sort();
                 break;
 
             case R.id.dialog_sort_by_single:
                 Preferences.saveSortWay(SORT_BY_SINGLE);
                 dismiss();
+                sort();
                 break;
 
             case R.id.dialog_sort_by_add_time:
@@ -157,6 +163,7 @@ public class SortDialogFragment extends DialogFragment {
             case R.id.dialog_sort_by_album:
                 Preferences.saveSortWay(SORT_BY_ALBUM);
                 dismiss();
+                sort();
                 break;
 
             case R.id.dialog_sort_by_play_time:
@@ -168,5 +175,25 @@ public class SortDialogFragment extends DialogFragment {
                 dismiss();
                 break;
         }
+    }
+
+    public void sort() {
+        // 对数据根据拼音进行排序
+        Collections.sort(AppCache.getMusics(), new Comparator<Music>() {
+            @Override
+            public int compare(Music lhs, Music rhs) {
+                int result = Preferences.getSortWay();
+                if (Preferences.getSortWay() == SORT_BY_SINGLE) {
+                    result = lhs.getTitlePinyin().compareTo(rhs.getTitlePinyin());
+                }
+                if (Preferences.getSortWay() == SORT_BY_ARTIST) {
+                    result = lhs.getArtistPinyin().compareTo(rhs.getArtistPinyin());
+                }
+                if (Preferences.getSortWay() == SORT_BY_ALBUM) {
+                    result = lhs.getAlbumPinyin().compareTo(rhs.getAlbumPinyin());
+                }
+                return result;
+            }
+        });
     }
 }

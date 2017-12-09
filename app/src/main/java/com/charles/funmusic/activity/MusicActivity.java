@@ -630,10 +630,10 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_in, 0);
+        ft.setCustomAnimations(R.anim.slide_in, 0);
         if (getSupportFragmentManager().findFragmentByTag("local") == null) {
             mLocalMusicFragment = new LocalMusicFragment();
-            ft.add(android.R.id.content, mLocalMusicFragment, "local");
+            ft.replace(R.id.activity_local_container, mLocalMusicFragment, "local");
         } else {
             ft.show(mLocalMusicFragment);
         }
@@ -652,10 +652,10 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_in, 0);
+        ft.setCustomAnimations(R.anim.slide_in, 0);
         if (getSupportFragmentManager().findFragmentByTag("recent") == null) {
             mRecentPlayFragment = new RecentPlayFragment();
-            ft.add(android.R.id.content, mRecentPlayFragment, "recent");
+            ft.replace(R.id.activity_recent_container, mRecentPlayFragment, "recent");
         } else {
             ft.show(mRecentPlayFragment);
         }
@@ -674,7 +674,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_in, 0);
+        ft.setCustomAnimations(R.anim.slide_in, 0);
         if (getSupportFragmentManager().findFragmentByTag("downloader") == null) {
             mDownloaderFragment = new DownloaderFragment();
             ft.add(android.R.id.content, mDownloaderFragment, "downloader");
@@ -696,7 +696,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_in, 0);
+        ft.setCustomAnimations(R.anim.slide_in, 0);
         if (getSupportFragmentManager().findFragmentByTag("favorite") == null) {
             mFavoriteFragment = new FavoriteFragment();
             ft.add(android.R.id.content, mFavoriteFragment, "favorite");
@@ -718,10 +718,10 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_in, 0);
+        ft.setCustomAnimations(R.anim.slide_in, 0);
         if (getSupportFragmentManager().findFragmentByTag("play") == null) {
             mPlayFragment = new PlayFragment();
-            ft.add(android.R.id.content, mPlayFragment, "play");
+            ft.replace(R.id.activity_play_container, mPlayFragment, "play");
         } else {
             ft.show(mPlayFragment);
         }
@@ -739,7 +739,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_in, 0);
+        ft.setCustomAnimations(R.anim.slide_in, 0);
         if (getSupportFragmentManager().findFragmentByTag("timer") == null) {
             mTimerFragment = new TimerFragment();
             ft.add(android.R.id.content, mTimerFragment, "timer");
@@ -761,7 +761,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.fragment_in, 0);
+        ft.setCustomAnimations(R.anim.slide_in, 0);
         if (getSupportFragmentManager().findFragmentByTag("search") == null) {
             mSearchFragment = new SearchFragment();
             ft.add(android.R.id.content, mSearchFragment, "search");
@@ -780,7 +780,7 @@ public class MusicActivity extends BaseActivity implements OnPlayerEventListener
      */
     private void hideFragments(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(0, R.anim.fragment_out);
+        ft.setCustomAnimations(0, R.anim.slide_out);
         ft.hide(fragment);
         ft.commitAllowingStateLoss();
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);

@@ -15,14 +15,19 @@
         android:layout_marginTop="10dp"
         app:border_color="@color/white"
         app:border_width="1dp"
-        app:srcCompat="@mipmap/ic_launcher"/>
+        app:srcCompat="@drawable/ic_default_avatar_white"/>
 
     <TextView
         android:id="@+id/navigation_header_view_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/navigation_header_view_avatar"
+        android:layout_alignLeft="@+id/navigation_header_view_avatar"
+        android:layout_alignRight="@+id/navigation_header_view_avatar"
+        android:layout_alignStart="@+id/navigation_header_view_avatar"
         android:layout_below="@+id/navigation_header_view_avatar"
         android:layout_marginTop="10dp"
+        android:gravity="center"
         android:text="@string/app_name"
         android:textColor="@color/white"
         android:textSize="16sp"/>

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.charles.funmusic.R;
 import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.service.PlayService;
 import com.charles.funmusic.utils.FontUtil;
@@ -66,7 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        overridePendingTransition(0, 0);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         super.onPause();
     }
 

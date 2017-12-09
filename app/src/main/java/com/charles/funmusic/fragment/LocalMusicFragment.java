@@ -52,7 +52,7 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
     EditText mEditText;
     @BindView(R.id.header_view_clear)
     ImageView mClear;
-    @BindView(R.id.header_view_cancel)
+    @BindView(R.id.header_view_text_right)
     TextView mCancel;
 
     private List<Fragment> mFragments = new ArrayList<>();
@@ -98,6 +98,7 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
         mMore.setVisibility(View.VISIBLE);
         mSearch.setVisibility(View.VISIBLE);
         mTitle.setText(R.string.local_musics);
+        mCancel.setText(R.string.cancel);
         changeFont(mTitle, true);
         initSystemBar();
 
@@ -148,8 +149,6 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
     }
 
     public void updateView() {
-//        mRandomPlay.setVisibility(View.VISIBLE);
-//        mSort.setVisibility(View.VISIBLE);
         mTitle.setVisibility(View.VISIBLE);
         mSearch.setVisibility(View.VISIBLE);
         mMore.setVisibility(View.VISIBLE);
@@ -160,7 +159,7 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
     }
 
     @OnClick({R.id.header_view_image_view, R.id.header_view_more, R.id.header_view_search,
-            R.id.header_view_edit_text, R.id.header_view_clear, R.id.header_view_cancel})
+            R.id.header_view_edit_text, R.id.header_view_clear, R.id.header_view_text_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.header_view_image_view:
@@ -178,7 +177,7 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
             case R.id.header_view_edit_text:
                 break;
 
-            case R.id.header_view_cancel:
+            case R.id.header_view_text_right:
                 updateView();
                 // 强制隐藏软键盘
                 hideSoftInput();
@@ -198,8 +197,8 @@ public class LocalMusicFragment extends BaseFragment implements EventCallback {
                         case R.id.action_sort:
                             if (mViewPager.getCurrentItem() == 0) {
                                 showSortDialog();
-                                onEvent(new SingleFragment());
                             }
+                            mSingleFragment.sort();
                             mPopupMenu.dismiss();
                             break;
                         case R.id.action_get_cover_lyric:

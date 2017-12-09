@@ -1,5 +1,6 @@
 package com.charles.funmusic.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -117,6 +118,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
         }
     }
 
+    @SuppressLint("InflateParams")
     private void initViewPager() {
         View coverView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_play_page_cover, null);
         View lrcView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_play_page_lrc, null);
@@ -173,7 +175,7 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
     }
 
     /**
-     * 设置播放界面专辑封面和北京
+     * 设置播放界面专辑封面和背景
      *
      * @param music 正在播放的歌曲
      */
@@ -183,7 +185,6 @@ public class PlayFragment extends BaseFragment implements OnPlayerEventListener,
     }
 
     private void setLrc(Music music) {
-
     }
 
     @OnClick({R.id.fragment_play_back, R.id.fragment_play_play_mode, R.id.fragment_play_play_or_pause, R.id.fragment_play_next, R.id.fragment_play_prev})

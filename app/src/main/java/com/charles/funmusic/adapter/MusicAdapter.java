@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.application.AppCache;
+import com.charles.funmusic.fragment.SortDialogFragment;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.PlayService;
 import com.charles.funmusic.utils.FileUtil;
@@ -21,6 +22,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.charles.funmusic.fragment.SortDialogFragment.SORT_BY_ALBUM;
+import static com.charles.funmusic.fragment.SortDialogFragment.SORT_BY_ARTIST;
+
 /**
  * 本地音乐适配器
  */
@@ -28,12 +32,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
     private static final int TYPE_HEADER = 100;
     private static final int TYPE_FOOTER = 101;
     private static final int TYPE_NORMAL = 102;
-
-    private static final int SORT_BY_ARTIST = 0;
-    private static final int SORT_BY_SINGLE = 1;
-    private static final int SORT_BY_ADD_TIME = 2;
-    private static final int SORT_BY_ALBUM = 3;
-    private static final int SORT_BY_PLAY_TIME = 4;
 
     private Context mContext;
     private LayoutInflater mLayoutInflater;
@@ -90,31 +88,27 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
      */
     @Override
     public void onBindViewHolder(MusicHolder holder, int position) {
+        if (getItemViewType(position) == TYPE_NORMAL) {
+            // 这里加载数据的时候要注意，是从position - 1开始，因为position == 0 已经被header占用了
+            Music music = AppCache.getMusics().get(position - 1);
+            holder.itemView.setTag(position);
 
+            String artistAndAlbum = FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum());
+            holder.mArtistAndAlbum.setText(artistAndAlbum);
+            holder.mTitle.setText(music.getTitle());
+
+            if (position - 1 == mPlayingPosition) {
+                holder.mPlaying.setVisibility(View.VISIBLE);
+            } else {
+                holder.mPlaying.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     @Override
     public void onBindViewHolder(MusicHolder holder, int position, List<Object> payloads) {
         if (payloads.isEmpty()) {
-
-            if (getItemViewType(position) == TYPE_NORMAL) {
-                // 这里加载数据的时候要注意，是从position - 1开始，因为position == 0 已经被header占用了
-                Music music = AppCache.getMusics().get(position - 1);
-                holder.itemView.setTag(position);
-
-                String artistAndAlbum = FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum());
-                holder.mArtistAndAlbum.setText(artistAndAlbum);
-                holder.mTitle.setText(music.getTitle());
-
-//            Bitmap cover = CoverLoader.getInstance().loadThumbnail(music);
-//            holder.mCover.setImageBitmap(cover);
-
-                if (position - 1 == mPlayingPosition) {
-                    holder.mPlaying.setVisibility(View.VISIBLE);
-                } else {
-                    holder.mPlaying.setVisibility(View.INVISIBLE);
-                }
-            }
+            onBindViewHolder(holder, position);
         } else {
             if (position - 1 == mPlayingPosition) {
                 holder.mPlaying.setVisibility(View.VISIBLE);
@@ -194,7 +188,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicHolder>
     public int getSectionForPosition(int position) {
         // position位置的sortLetter属性所对应的Char
         // 因为有header所以position需要+1，如果不减本例中会导致PlayFragment和LocalFragment重叠
-        if (Preferences.getSortWay() == SORT_BY_SINGLE) {
+        if (Preferences.getSortWay() == SortDialogFragment.SORT_BY_SINGLE) {
             return AppCache.getMusics().get(position).getTitlePinyin().charAt(0);
         }
         if (Preferences.getSortWay() == SORT_BY_ARTIST) {

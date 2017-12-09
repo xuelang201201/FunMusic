@@ -30,7 +30,7 @@
 
         <com.charles.funmusic.widget.IndexBar
             android:id="@+id/fragment_single_index_bar"
-            android:layout_width="10dp"
+            android:layout_width="15dp"
             android:layout_height="match_parent"
             android:layout_gravity="end"
             app:text_color="@color/light_black"

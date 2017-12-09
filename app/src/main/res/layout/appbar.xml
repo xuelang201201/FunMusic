@@ -68,9 +68,9 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="1dp"
         android:layout_toEndOf="@+id/header_view_image_view"
-        android:layout_toLeftOf="@+id/header_view_cancel"
+        android:layout_toLeftOf="@+id/header_view_text_right"
         android:layout_toRightOf="@+id/header_view_image_view"
-        android:layout_toStartOf="@+id/header_view_cancel">
+        android:layout_toStartOf="@+id/header_view_text_right">
 
         <EditText
             android:id="@+id/header_view_edit_text"
@@ -107,7 +107,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/header_view_cancel"
+        android:id="@+id/header_view_text_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -117,7 +117,6 @@
         android:paddingRight="20dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:gravity="center_vertical"
-        android:text="@string/cancel"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:visibility="gone"/>

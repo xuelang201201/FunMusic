@@ -64,4 +64,5 @@
     <string name="get_cover_and_lyric">获取封面歌词</string>
     <string name="update_quality">升级音质</string>
     <string name="loading">努力加载中...</string>
+    <string name="clear_all">清空</string>
 </resources>

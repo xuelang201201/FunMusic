@@ -54,7 +54,6 @@ public class MyFragment extends BaseFragment implements EventCallback {
 
     @Override
     public void initView(Bundle savedInstanceState) {
-
     }
 
     @OnClick({R.id.fragment_my_local, R.id.fragment_my_recent, R.id.fragment_my_download, R.id.fragment_my_favorite})
@@ -80,6 +79,7 @@ public class MyFragment extends BaseFragment implements EventCallback {
 
     /**
      * 在触发事件的地方调用接口，给其设置参数
+     *
      * @param o 要启动的fragment的索引
      */
     @SuppressWarnings("unchecked")
