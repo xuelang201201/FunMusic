@@ -171,30 +171,36 @@ public class TimerFragment extends BaseFragment {
     }
 
     private void resetTimer() {
-        mTimerNoText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-        mTimerNoImage.setVisibility(View.INVISIBLE);
-        mTimerTenText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-        mTimerTenImage.setVisibility(View.INVISIBLE);
-        mTimerTwentyText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-        mTimerTwentyImage.setVisibility(View.INVISIBLE);
-        mTimerThirtyText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-        mTimerThirtyImage.setVisibility(View.INVISIBLE);
-        mTimerAnHourText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-        mTimerAnHourImage.setVisibility(View.INVISIBLE);
-        mTimerCustomText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
-        mTimerCustomImage.setVisibility(View.INVISIBLE);
+        if (getActivity() != null) {
+            mTimerNoText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+            mTimerNoImage.setVisibility(View.INVISIBLE);
+            mTimerTenText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+            mTimerTenImage.setVisibility(View.INVISIBLE);
+            mTimerTwentyText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+            mTimerTwentyImage.setVisibility(View.INVISIBLE);
+            mTimerThirtyText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+            mTimerThirtyImage.setVisibility(View.INVISIBLE);
+            mTimerAnHourText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+            mTimerAnHourImage.setVisibility(View.INVISIBLE);
+            mTimerCustomText.setTextColor(ContextCompat.getColor(getActivity(), R.color.black));
+            mTimerCustomImage.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void setSelectedTimer(TextView text, ImageView image) {
-        text.setTextColor(ContextCompat.getColor(getActivity(), R.color.red));
-        image.setVisibility(View.VISIBLE);
+        if (getActivity() != null) {
+            text.setTextColor(ContextCompat.getColor(getActivity(), R.color.red));
+            image.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * 返回activity
      */
     public void onBackPressed() {
-        getActivity().onBackPressed();
+        if (getActivity() != null) {
+            getActivity().onBackPressed();
+        }
         mBack.setEnabled(false);
         mHandler.postDelayed(new Runnable() {
             @Override
