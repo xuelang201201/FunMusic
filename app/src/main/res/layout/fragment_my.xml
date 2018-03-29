@@ -1,185 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/fragment_my_user_info_layout"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_my_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:paddingBottom="15dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="15dp">
+        android:layout_height="match_parent">
 
-        <com.charles.funmusic.widget.CircleImageView
-            android:id="@+id/fragment_my_avatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:contentDescription="@null"
-            app:border_color="@color/color_grey"
-            app:border_width="0.3dp"
-            app:srcCompat="@drawable/ic_default_avatar"/>
-
-        <TextView
-            android:id="@+id/fragment_my_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/my"
-            android:textColor="@color/black"
-            android:textSize="16sp"/>
-
-        <View
-            android:layout_width="0dp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_my_recycler_view"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:paddingBottom="@dimen/play_bar_height" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:drawableEnd="@drawable/ic_arrow_right"
-            android:drawableRight="@drawable/ic_arrow_right"
-            android:gravity="center_vertical"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            android:text="@string/setting"
-            android:textColor="#AAAAAA"
-            android:textSize="16sp"/>
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/fragment_music_head_line"
-        android:layout_width="match_parent"
-        android:layout_height="0.3dp"
-        android:layout_below="@id/fragment_my_user_info_layout"
-        android:background="#CCCCCC"/>
-
-    <LinearLayout
-        android:id="@+id/fragment_my_local"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_music_head_line"
-        android:background="@drawable/touch_bg"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/fragment_my_local_text"
-            style="@style/FragmentMy"
-            android:drawableLeft="@drawable/ic_local"
-            android:drawableStart="@drawable/ic_local"
-            android:text="@string/local_musics"/>
-
-    </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.1dp"
-        android:layout_below="@id/fragment_my_local"
-        android:layout_marginLeft="60sp"
-        android:layout_marginStart="60sp"
-        android:background="#CCCCCC"/>
-
-    <LinearLayout
-        android:id="@+id/fragment_my_recent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fragment_my_local"
-        android:layout_marginTop="0.1dp"
-        android:background="@drawable/touch_bg"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/fragment_my_recent_text"
-            style="@style/FragmentMy"
-            android:drawableLeft="@drawable/ic_recent"
-            android:drawableStart="@drawable/ic_recent"
-            android:text="@string/recent_play"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.1dp"
-        android:layout_below="@+id/fragment_my_recent"
-        android:layout_marginLeft="60sp"
-        android:layout_marginStart="60sp"
-        android:background="#CCCCCC"/>
-
-    <LinearLayout
-        android:id="@+id/fragment_my_download"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_my_recent"
-        android:layout_marginTop="0.1dp"
-        android:background="@drawable/touch_bg"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/fragment_my_download_text"
-            style="@style/FragmentMy"
-            android:drawableLeft="@drawable/ic_download"
-            android:drawableStart="@drawable/ic_download"
-            android:text="@string/download_management"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.1dp"
-        android:layout_below="@+id/fragment_my_download"
-        android:layout_marginLeft="60sp"
-        android:layout_marginStart="60sp"
-        android:background="#CCCCCC"/>
-
-    <LinearLayout
-        android:id="@+id/fragment_my_favorite"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_my_download"
-        android:layout_marginTop="0.1dp"
-        android:background="@drawable/touch_bg"
-        android:orientation="horizontal"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp">
-
-        <TextView
-            android:id="@+id/fragment_my_favorite_text"
-            style="@style/FragmentMy"
-            android:drawableLeft="@drawable/ic_favorite"
-            android:drawableStart="@drawable/ic_favorite"
-            android:text="@string/favorites"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_below="@+id/fragment_my_favorite"
-        android:background="@color/color_normal"/>
-
-    <LinearLayout
-        android:id="@+id/fragment_my_music_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/fragment_my_favorite"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/touch_bg"
-        android:orientation="horizontal"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp">
-
-        <TextView
-            android:id="@+id/fragment_my_music_list_text"
-            style="@style/FragmentMy"
-            android:drawableLeft="@drawable/ic_music_list"
-            android:drawableStart="@drawable/ic_music_list"
-            android:text="@string/my_music_list"/>
-    </LinearLayout>
-</RelativeLayout>
+        android:layout_height="@dimen/play_bar_height"
+        android:layout_gravity="bottom" />
+</FrameLayout>

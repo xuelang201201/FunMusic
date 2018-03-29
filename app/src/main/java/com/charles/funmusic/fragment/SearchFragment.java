@@ -12,7 +12,7 @@ public class SearchFragment extends BaseFragment {
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
+    public void init(Bundle savedInstanceState) {
 
     }
 }

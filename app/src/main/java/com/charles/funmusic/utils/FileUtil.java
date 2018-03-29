@@ -24,7 +24,7 @@ public class FileUtil {
     private static final String LRC = ".lrc";
 
     private static String getAppDir() {
-        return Environment.getExternalStorageDirectory() + "/PonyMusic";
+        return Environment.getExternalStorageDirectory() + "/FunMusic";
     }
 
     public static String getMusicDir() {
@@ -53,7 +53,7 @@ public class FileUtil {
     }
 
     public static String getRelativeMusicDir() {
-        String dir = "PonyMusic/Music/";
+        String dir = "Fun/Music/";
         return mkdirs(dir);
     }
 
@@ -144,8 +144,8 @@ public class FileUtil {
         return m.replaceAll("").trim();
     }
 
-    public static float b2mb(int b) {
-        String mb = String.format(Locale.getDefault(), "%.2f", (float) b / 1024 / 1024);
+    public static float b2mb(float b) {
+        String mb = String.format(Locale.getDefault(), "%.2f", b / 1024 / 1024);
         return Float.valueOf(mb);
     }
 

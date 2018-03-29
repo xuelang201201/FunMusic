@@ -1,5 +1,6 @@
 package com.charles.funmusic.application;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -7,25 +8,35 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.charles.funmusic.model.Music;
-import com.charles.funmusic.service.PlayService;
-import com.charles.funmusic.utils.CoverLoader;
+import com.charles.funmusic.service.MusicService;
+import com.charles.funmusic.utils.loader.CoverLoader;
 import com.charles.funmusic.utils.Preferences;
 import com.charles.funmusic.utils.ScreenUtil;
 import com.charles.funmusic.utils.ToastUtil;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppCache {
     private Context mContext;
-    private PlayService mPlayService;
+    private MusicService mMusicService;
     private final List<Music> mMusics = new ArrayList<>();
     private final List<Activity> mActivityStack = new ArrayList<>();
+    private static Gson sGson;
+
+    public static Gson gsonInstance() {
+        if (sGson == null) {
+            sGson = new Gson();
+        }
+        return sGson;
+    }
 
     private AppCache() {
     }
 
     private static class SingletonHolder {
+        @SuppressLint("StaticFieldLeak")
         private static AppCache sAppCache = new AppCache();
     }
 
@@ -50,12 +61,12 @@ public class AppCache {
         return getInstance().mContext;
     }
 
-    public static PlayService getPlayService() {
-        return getInstance().mPlayService;
+    public static MusicService getMusicService() {
+        return getInstance().mMusicService;
     }
 
-    public static void setPlayService(PlayService service) {
-        getInstance().mPlayService = service;
+    public static void setMusicService(MusicService service) {
+        getInstance().mMusicService = service;
     }
 
     public static List<Music> getMusics() {

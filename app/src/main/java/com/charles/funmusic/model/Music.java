@@ -1,6 +1,27 @@
 package com.charles.funmusic.model;
 
-public class Music {
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.List;
+
+public class Music implements Parcelable {
+
+    private static final String KEY_SONG_ID = "song_id";
+    private static final String KEY_ALBUM_ID = "album_id";
+    private static final String KEY_ALBUM_NAME = "album_name";
+    private static final String KEY_ALBUM_ART = "album_art";
+    private static final String KEY_DURATION = "duration";
+    private static final String KEY_MUSIC_NAME = "music_name";
+    private static final String KEY_ARTIST = "artist";
+    private static final String KEY_ARTIST_ID = "artist_id";
+    private static final String KEY_DATA = "data";
+    private static final String KEY_FOLDER = "folder";
+    private static final String KEY_SIZE = "size";
+    private static final String KEY_LRC = "lrc";
+    private static final String KEY_IS_LOCAL = "is_local";
+    private static final String KEY_SORT = "sort";
 
     /**
      * 歌曲类型：本地/网络
@@ -22,6 +43,8 @@ public class Music {
      * 艺术家
      */
     private String mArtist;
+    
+    private long mArtistId;
     /**
      * 艺术家的拼音
      */
@@ -38,6 +61,8 @@ public class Music {
      * [本地歌曲]专辑id
      */
     private long mAlbumId;
+
+    private String mAlbumArt;
     /**
      * [在线歌曲]专辑封面路径
      */
@@ -57,7 +82,15 @@ public class Music {
     /**
      * 文件大小
      */
-    private long mFileSize;
+    private float mFileSize;
+
+    private String mFolder;
+
+    private String mLrc;
+
+    private boolean isLocal;
+
+    private String mSort;
 
     public Music() {
     }
@@ -111,6 +144,14 @@ public class Music {
         mArtist = artist;
     }
 
+    public long getArtistId() {
+        return mArtistId;
+    }
+
+    public void setArtistId(long artistId) {
+        mArtistId = artistId;
+    }
+
     public String getArtistPinyin() {
         return mArtistPinyin;
     }
@@ -141,6 +182,14 @@ public class Music {
 
     public void setAlbumId(long albumId) {
         mAlbumId = albumId;
+    }
+
+    public String getAlbumArt() {
+        return mAlbumArt;
+    }
+
+    public void setAlbumArt(String albumArt) {
+        mAlbumArt = albumArt;
     }
 
     public String getCoverUrl() {
@@ -175,12 +224,44 @@ public class Music {
         mFileName = fileName;
     }
 
-    public long getFileSize() {
+    public float getFileSize() {
         return mFileSize;
     }
 
-    public void setFileSize(long fileSize) {
+    public void setFileSize(float fileSize) {
         mFileSize = fileSize;
+    }
+
+    public String getFolder() {
+        return mFolder;
+    }
+
+    public void setFolder(String folder) {
+        mFolder = folder;
+    }
+
+    public String getLrc() {
+        return mLrc;
+    }
+
+    public void setLrc(String lrc) {
+        mLrc = lrc;
+    }
+
+    public boolean isLocal() {
+        return isLocal;
+    }
+
+    public void setLocal(boolean local) {
+        isLocal = local;
+    }
+
+    public String getSort() {
+        return mSort;
+    }
+
+    public void setSort(String sort) {
+        mSort = sort;
     }
 
     /**
@@ -190,4 +271,78 @@ public class Music {
     public boolean equals(Object obj) {
         return obj instanceof Music && this.getId() == ((Music) obj).getId();
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        Bundle bundle = new Bundle();
+        bundle.putLong(KEY_SONG_ID, mId);
+        bundle.putLong(KEY_ALBUM_ID, mAlbumId);
+        bundle.putString(KEY_ALBUM_NAME, mAlbum);
+        bundle.putString(KEY_ALBUM_ART, mAlbumArt);
+        bundle.putLong(KEY_DURATION, mDuration);
+        bundle.putString(KEY_MUSIC_NAME, mTitle);
+        bundle.putString(KEY_ARTIST, mArtist);
+        bundle.putLong(KEY_ARTIST_ID, mArtistId);
+        bundle.putString(KEY_DATA, mUrl);
+        bundle.putString(KEY_FOLDER, mFolder);
+        bundle.putFloat(KEY_SIZE, mFileSize);
+        bundle.putString(KEY_LRC, mLrc);
+        bundle.putBoolean(KEY_IS_LOCAL, isLocal());
+        bundle.putString(KEY_SORT, mSort);
+        dest.writeBundle(bundle);
+    }
+
+    protected Music(Parcel in) {
+        mId = in.readLong();
+        mTitle = in.readString();
+        mTitlePinyin = in.readString();
+        mArtist = in.readString();
+        mArtistId = in.readLong();
+        mArtistPinyin = in.readString();
+        mAlbum = in.readString();
+        mAlbumPinyin = in.readString();
+        mAlbumId = in.readLong();
+        mAlbumArt = in.readString();
+        mCoverUrl = in.readString();
+        mDuration = in.readLong();
+        mUrl = in.readString();
+        mFileName = in.readString();
+        mFileSize = in.readLong();
+        mSort = in.readString();
+        isLocal = in.readByte() != 0;
+    }
+
+    public static final Creator<Music> CREATOR = new Creator<Music>() {
+        @Override
+        public Music createFromParcel(Parcel source) {
+            Music music = new Music();
+            Bundle bundle = source.readBundle(getClass().getClassLoader());
+            music.mId = bundle.getLong(KEY_SONG_ID);
+            music.mAlbumId = bundle.getLong(KEY_ALBUM_ID);
+            music.mAlbum = bundle.getString(KEY_ALBUM_NAME);
+            music.mDuration = bundle.getLong(KEY_DURATION);
+            music.mTitle = bundle.getString(KEY_MUSIC_NAME);
+            music.mArtist = bundle.getString(KEY_ARTIST);
+            music.mArtistId = bundle.getLong(KEY_ARTIST_ID);
+            music.mUrl = bundle.getString(KEY_DATA);
+            music.mFolder = bundle.getString(KEY_FOLDER);
+            music.mAlbumArt = bundle.getString(KEY_ALBUM_ART);
+            music.mFileSize = bundle.getLong(KEY_SIZE);
+            music.mLrc = bundle.getString(KEY_LRC);
+            music.mSort = bundle.getString(KEY_SORT);
+            music.isLocal = bundle.getBoolean(KEY_IS_LOCAL);
+            return music;
+        }
+
+        @Override
+        public Music[] newArray(int size) {
+            return new Music[size];
+        }
+    };
 }

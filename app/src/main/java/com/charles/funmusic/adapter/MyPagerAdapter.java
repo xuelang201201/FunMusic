@@ -1,9 +1,11 @@
 package com.charles.funmusic.adapter;
 
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,18 +13,24 @@ import java.util.List;
  */
 public class MyPagerAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> mFragments;
-    private String[] mTitles;
+    private List<Fragment> mFragments = new ArrayList<>();
+    private List<String> mTitles = new ArrayList<>();
 
-    public MyPagerAdapter(FragmentManager fm, List<Fragment> fragments, String[] titles) {
+    public MyPagerAdapter(FragmentManager fm) {
         super(fm);
-        mFragments = fragments;
-        mTitles = titles;
+    }
+
+    public void addFragment(Fragment fragment, String title) {
+        mFragments.add(fragment);
+        mTitles.add(title);
     }
 
     @Override
     public Fragment getItem(int position) {
-        return mFragments.get(position);
+        if (mFragments.size() > position) {
+            return mFragments.get(position);
+        }
+        return null;
     }
 
     /**
@@ -33,7 +41,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
      */
     @Override
     public CharSequence getPageTitle(int position) {
-        return mTitles[position];
+        return mTitles.get(position);
     }
 
     /**
@@ -42,5 +50,9 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return mFragments.size();
+    }
+
+    @Override
+    public void restoreState(Parcelable state, ClassLoader loader) {
     }
 }

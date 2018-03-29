@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.service.MusicService;
 import com.charles.funmusic.service.QuitTimer;
 import com.charles.funmusic.utils.ScreenUtil;
 import com.charles.funmusic.utils.ToastUtil;
@@ -74,7 +76,7 @@ public class TimerFragment extends BaseFragment {
     }
 
     @Override
-    public void initView(Bundle savedInstanceState) {
+    public void init(Bundle savedInstanceState) {
         mTitle.setText(getString(R.string.menu_timer));
 
         setSelectedTimer(mTimerNoText, mTimerNoImage);
@@ -159,7 +161,8 @@ public class TimerFragment extends BaseFragment {
     }
 
     private void startTimer(int minute) {
-        QuitTimer.getInstance().start(minute * 60 * 1000);
+//        QuitTimer.getInstance().start(minute * 60 * 1000);
+        MusicPlayer.timer(minute * 60 * 1000);
         if (minute > 0) {
             ToastUtil.show(getString(R.string.timer_set, String.valueOf(minute)));
         }
@@ -189,7 +192,7 @@ public class TimerFragment extends BaseFragment {
 
     private void setSelectedTimer(TextView text, ImageView image) {
         if (getActivity() != null) {
-            text.setTextColor(ContextCompat.getColor(getActivity(), R.color.red));
+            text.setTextColor(ContextCompat.getColor(getActivity(), R.color.theme_color_primary));
             image.setVisibility(View.VISIBLE);
         }
     }

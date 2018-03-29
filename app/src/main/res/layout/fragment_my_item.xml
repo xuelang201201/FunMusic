@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/fragment_my_item_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@null"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:scaleX="0.7"
+        android:scaleY="0.7" />
+
+    <TextView
+        android:id="@+id/fragment_my_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/fragment_my_item_image_view"
+        android:layout_toRightOf="@+id/fragment_my_item_image_view"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/fragment_my_item_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:layout_toEndOf="@+id/fragment_my_item_title"
+        android:layout_toRightOf="@+id/fragment_my_item_title"
+        android:gravity="center_vertical"
+        android:textColor="#888888"
+        android:textSize="12sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:layout_alignLeft="@+id/fragment_my_item_title"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/fragment_my_item_title"
+        android:background="#DEDEDE" />
+
+</RelativeLayout>

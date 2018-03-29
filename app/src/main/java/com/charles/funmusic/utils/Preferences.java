@@ -1,7 +1,9 @@
 package com.charles.funmusic.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 
@@ -17,10 +19,49 @@ public class Preferences {
     private static final String NIGHT_MODE = "night_mode";
     private static final String SORT_WAY = "sort_way";
 
+    private static final String ARTIST_SORT_ORDER = "artist_sort_order";
+    private static final String ALBUM_SORT_ORDER = "album_sort_order";
+    private static final String SONG_SORT_ORDER = "song_sort_order";
+    private static final String FOLDER_SORT_ORDER = "folder_sort_order";
+    private static final String DOWN_MUSIC_BIT = "down_music_bit";
+
     private static Context sContext;
+    private static Preferences sInstance;
+    private static SharedPreferences sPreferences;
+
+    public Preferences(Context context) {
+        sPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    }
 
     public static void init(Context context) {
         sContext = context.getApplicationContext();
+    }
+
+    public static Preferences getInstance(final Context context) {
+        if (sInstance == null) {
+            sInstance = new Preferences(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    public void setPlayLink(long id, String link) {
+        final SharedPreferences.Editor editor = sPreferences.edit();
+        editor.putString(id + "", link);
+        editor.apply();
+    }
+
+    public String getPlayLink(long id) {
+        return sPreferences.getString(id + "", null);
+    }
+
+    public void setDownMusicBit(int bit) {
+        final SharedPreferences.Editor editor = sPreferences.edit();
+        editor.putInt(DOWN_MUSIC_BIT, bit);
+        editor.apply();
+    }
+
+    public int getDownMusicBit() {
+        return getInt(DOWN_MUSIC_BIT, 192);
     }
 
     public static long getCurrentSongId() {
@@ -73,6 +114,53 @@ public class Preferences {
 
     public static void saveNightMode(boolean on) {
         saveBoolean(NIGHT_MODE, on);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void saveSortOrder(final String key, final String value) {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                final SharedPreferences.Editor editor = sPreferences.edit();
+                editor.putString(key, value);
+                editor.apply();
+
+                return null;
+            }
+        };
+    }
+
+    public final String getArtistSortOrder() {
+        return Preferences.getString(ARTIST_SORT_ORDER, SortOrder.ArtistSortOrder.ARTIST_A_Z);
+    }
+
+    public void saveArtistSortOrder(String value) {
+        saveSortOrder(ARTIST_SORT_ORDER, value);
+    }
+
+    public final String getAlbumSortOrder() {
+        return Preferences.getString(ALBUM_SORT_ORDER, SortOrder.AlbumSortOrder.ALBUM_A_Z);
+    }
+
+    public void saveAlbumSortOrder(final String value) {
+        saveSortOrder(ALBUM_SORT_ORDER, value);
+    }
+
+    public final String getSongSortOrder() {
+        return Preferences.getString(SONG_SORT_ORDER, SortOrder.SongSortOrder.SONG_A_Z);
+    }
+
+    public void saveSongSortOrder(final String value) {
+        saveSortOrder(SONG_SORT_ORDER, value);
+    }
+
+    public final String getFolderSortOrder() {
+        return Preferences.getString(FOLDER_SORT_ORDER, SortOrder.FolderSortOrder.FOLDER_A_Z);
+    }
+
+    public void saveFolderSortOrder(final String value) {
+        saveSortOrder(FOLDER_SORT_ORDER, value);
     }
 
     public static String getFilterSize() {

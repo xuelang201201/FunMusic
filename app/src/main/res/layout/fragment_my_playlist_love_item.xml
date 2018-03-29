@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <FrameLayout
+        android:id="@+id/fragment_my_playlist_love_item_layout"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/fragment_my_playlist_love_item_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#be000000" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@null"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/note_love" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_toEndOf="@+id/fragment_my_playlist_love_item_layout"
+        android:layout_toLeftOf="@+id/fragment_my_playlist_love_item_menu"
+        android:layout_toRightOf="@+id/fragment_my_playlist_love_item_layout"
+        android:layout_toStartOf="@+id/fragment_my_playlist_love_item_menu"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/fragment_my_playlist_love_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/fragment_my_playlist_love_item_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLength="20"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="#757575"
+            android:textSize="11sp"
+            tools:ignore="SmallSp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/fragment_my_playlist_love_item_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@null"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_list_more" />
+
+</RelativeLayout>

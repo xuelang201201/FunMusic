@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
@@ -18,12 +19,9 @@ import android.widget.TextView;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.application.AppCache;
-import com.charles.funmusic.model.Music;
 import com.charles.funmusic.utils.FontUtil;
 import com.charles.funmusic.utils.Preferences;
-
-import java.util.Collections;
-import java.util.Comparator;
+import com.charles.funmusic.utils.SortOrder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,6 +68,14 @@ public class SortDialogFragment extends DialogFragment {
     @BindView(R.id.dialog_sort_by_play_time)
     LinearLayout mPlayTimeView;
 
+    Preferences mPreferences;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPreferences = Preferences.getInstance(AppCache.getContext());
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -83,28 +89,28 @@ public class SortDialogFragment extends DialogFragment {
         switch (sortWay) {
             case SORT_BY_SINGLE:
                 mSingleImage.setVisibility(View.VISIBLE);
-                mSingleText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.red));
+                mSingleText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.theme_color_primary));
                 break;
 
             case SORT_BY_ADD_TIME:
                 mAddTimeImage.setVisibility(View.VISIBLE);
-                mAddTimeText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.red));
+                mAddTimeText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.theme_color_primary));
                 break;
 
             case SORT_BY_ALBUM:
                 mAlbumImage.setVisibility(View.VISIBLE);
-                mAlbumText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.red));
+                mAlbumText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.theme_color_primary));
                 break;
 
             case SORT_BY_PLAY_TIME:
                 mPlayTimeImage.setVisibility(View.VISIBLE);
-                mPlayTimeText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.red));
+                mPlayTimeText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.theme_color_primary));
                 break;
 
             case SORT_BY_ARTIST:
             default:
                 mArtistImage.setVisibility(View.VISIBLE);
-                mArtistText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.red));
+                mArtistText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.theme_color_primary));
                 break;
         }
 
@@ -145,25 +151,27 @@ public class SortDialogFragment extends DialogFragment {
         switch (view.getId()) {
             case R.id.dialog_sort_by_artist:
                 Preferences.saveSortWay(SORT_BY_ARTIST);
+                mPreferences.saveArtistSortOrder(SortOrder.SongSortOrder.SONG_ARTIST);
+
                 dismiss();
-                sort();
                 break;
 
             case R.id.dialog_sort_by_single:
                 Preferences.saveSortWay(SORT_BY_SINGLE);
+                mPreferences.saveSongSortOrder(SortOrder.SongSortOrder.SONG_A_Z);
                 dismiss();
-                sort();
                 break;
 
             case R.id.dialog_sort_by_add_time:
                 Preferences.saveSortWay(SORT_BY_ADD_TIME);
+                mPreferences.saveAlbumSortOrder(SortOrder.SongSortOrder.SONG_DATE);
                 dismiss();
                 break;
 
             case R.id.dialog_sort_by_album:
                 Preferences.saveSortWay(SORT_BY_ALBUM);
+                mPreferences.saveAlbumSortOrder(SortOrder.SongSortOrder.SONG_ALBUM);
                 dismiss();
-                sort();
                 break;
 
             case R.id.dialog_sort_by_play_time:
@@ -175,25 +183,5 @@ public class SortDialogFragment extends DialogFragment {
                 dismiss();
                 break;
         }
-    }
-
-    public void sort() {
-        // 对数据根据拼音进行排序
-        Collections.sort(AppCache.getMusics(), new Comparator<Music>() {
-            @Override
-            public int compare(Music lhs, Music rhs) {
-                int result = Preferences.getSortWay();
-                if (Preferences.getSortWay() == SORT_BY_SINGLE) {
-                    result = lhs.getTitlePinyin().compareTo(rhs.getTitlePinyin());
-                }
-                if (Preferences.getSortWay() == SORT_BY_ARTIST) {
-                    result = lhs.getArtistPinyin().compareTo(rhs.getArtistPinyin());
-                }
-                if (Preferences.getSortWay() == SORT_BY_ALBUM) {
-                    result = lhs.getAlbumPinyin().compareTo(rhs.getAlbumPinyin());
-                }
-                return result;
-            }
-        });
     }
 }

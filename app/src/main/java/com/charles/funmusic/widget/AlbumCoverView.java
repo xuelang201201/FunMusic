@@ -12,10 +12,10 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.charles.funmusic.R;
-import com.charles.funmusic.utils.CoverLoader;
+import com.charles.funmusic.utils.ScreenUtil;
+import com.charles.funmusic.utils.loader.CoverLoader;
 import com.charles.funmusic.utils.ImageUtil;
 
 /**
@@ -68,17 +68,17 @@ public class AlbumCoverView extends View implements ValueAnimator.AnimatorUpdate
     private void init(Context context) {
 //        mTopLine = getResources().getDrawable(R.drawable.play_page_cover_top_line_shape);
         mTopLine = ContextCompat.getDrawable(context, R.drawable.play_page_cover_top_line_shape);
-//        mCoverBorder = getResources().getDrawable(R.drawable.play_page_cover_border_shape);
+        mCoverBorder = getResources().getDrawable(R.drawable.play_page_cover_border_shape);
         mCoverBorder = ContextCompat.getDrawable(context, R.drawable.play_page_cover_border_shape);
         mDiscBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.play_page_disc);
-        mDiscBitmap = ImageUtil.resizeImage(mDiscBitmap, (int) (getScreenWidth() * 0.75),
-                (int) (getScreenWidth() * 0.75));
+        mDiscBitmap = ImageUtil.resizeImage(mDiscBitmap,
+                (int) (ScreenUtil.getScreenWidth() * 0.75), (int) (ScreenUtil.getScreenWidth() * 0.75));
         mCoverBitmap = CoverLoader.getInstance().loadRound(null);
         mNeedleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.play_page_needle);
-        mNeedleBitmap = ImageUtil.resizeImage(mNeedleBitmap, (int) (getScreenWidth() * 0.25),
-                (int) (getScreenWidth() * 0.375));
-        mTopLineHeight = dp2px(1);
-        mCoverBorderWidth = dp2px(1);
+        mNeedleBitmap = ImageUtil.resizeImage(mNeedleBitmap, (int) (ScreenUtil.getScreenWidth() * 0.25),
+                (int) (ScreenUtil.getScreenWidth() * 0.375));
+        mTopLineHeight = ScreenUtil.dp2px(1);
+        mCoverBorderWidth = ScreenUtil.dp2px(1);
 
         mPlayAnimator = ValueAnimator.ofFloat(NEEDLE_ROTATION_PAUSE, NEEDLE_ROTATION_PLAY);
         mPlayAnimator.setDuration(300);
@@ -191,18 +191,4 @@ public class AlbumCoverView extends View implements ValueAnimator.AnimatorUpdate
             mHandler.postDelayed(this, TIME_UPDATE);
         }
     };
-
-    private int getScreenWidth() {
-        Point size = new Point();
-        WindowManager manager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        if (manager != null) {
-            manager.getDefaultDisplay().getSize(size);
-        }
-        return size.x;
-    }
-
-    private int dp2px(float dpValue) {
-        float scale = getContext().getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
 }

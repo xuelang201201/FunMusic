@@ -2,9 +2,9 @@ package com.charles.funmusic.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,28 +16,31 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.charles.funmusic.activity.BaseActivity;
+import com.charles.funmusic.activity.MusicStateListener;
 import com.charles.funmusic.activity.SplashActivity;
 import com.charles.funmusic.application.AppCache;
-import com.charles.funmusic.service.EventCallback;
-import com.charles.funmusic.service.PlayService;
+import com.charles.funmusic.service.MusicService;
 import com.charles.funmusic.utils.FontUtil;
+import com.charles.funmusic.utils.HandlerUtil;
+import com.charles.funmusic.utils.ScreenUtil;
 
 import butterknife.ButterKnife;
 
 /**
  * 基类
  */
-public abstract class BaseFragment extends Fragment implements View.OnTouchListener {
+public abstract class BaseFragment extends Fragment implements View.OnTouchListener, MusicStateListener {
     private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
-    protected Handler mHandler = new Handler(Looper.getMainLooper());
+    protected Handler mHandler;
 
     public abstract int getLayoutId();
 
-    public abstract void initView(Bundle savedInstanceState);
+    public abstract void init(Bundle savedInstanceState);
 
     public View mView;
 
-    public EventCallback mListener;
+    public Context mContext;
 
     /**
      * 重写fragment的onAttach()方法，fragment第一次附属于activity时调用，
@@ -46,7 +49,7 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (EventCallback) context;
+        mContext = context;
     }
 
     @Override
@@ -64,6 +67,24 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
                 ft.commitAllowingStateLoss();
             }
         }
+        mHandler = HandlerUtil.getInstance(mContext);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() != null) {
+            ((BaseActivity) getActivity()).setMusicStateListener(this);
+        }
+        reloadAdapter();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (getActivity() != null) {
+            ((BaseActivity) getActivity()).removeMusicStateListener(this);
+        }
     }
 
     @Override
@@ -78,23 +99,23 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
             mView = inflater.inflate(getLayoutId(), container, false);
 
             ButterKnife.bind(this, mView);
-            initView(savedInstanceState);
+            init(savedInstanceState);
         }
 
         mView.setOnTouchListener(this); // 防止fragment被击穿
         return mView;
     }
 
-    protected PlayService getPlayService() {
-        PlayService playService = AppCache.getPlayService();
-        if (playService == null) {
-            throw new NullPointerException("play service is null");
+    protected MusicService getMusicService() {
+        MusicService musicService = AppCache.getMusicService();
+        if (musicService == null) {
+            throw new NullPointerException("music service is null");
         }
-        return playService;
+        return musicService;
     }
 
     protected boolean checkServiceAlive() {
-        if (AppCache.getPlayService() == null) {
+        if (AppCache.getMusicService() == null) {
             startActivity(new Intent(getActivity(), SplashActivity.class));
             AppCache.clearStack();
             return false;
@@ -149,5 +170,36 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
             SortDialogFragment sortDialog = new SortDialogFragment();
             sortDialog.show(getFragmentManager(), "sort");
         }
+    }
+
+    /**
+     * 沉浸式状态栏
+     */
+    public void initSystemBar(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int top = ScreenUtil.getStatusBarHeight();
+            view.setPadding(0, top, 0, 0);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void updateTrackInfo() {
+    }
+
+    @Override
+    public void updateTime() {
+    }
+
+    @Override
+    public void changeTheme() {
+    }
+
+    @Override
+    public void reloadAdapter() {
     }
 }

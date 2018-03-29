@@ -1,25 +1,287 @@
 package com.charles.funmusic.utils;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v8.renderscript.RenderScript;
 
 import com.charles.funmusic.constant.RequestCode;
+import com.charles.funmusic.utils.loader.CoverLoader;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * 图像工具类
  */
 public class ImageUtil {
     private static final int BLUR_RADIUS = 50;
+    private static final BitmapFactory.Options sBitmapOptionsCache = new BitmapFactory.Options();
+    private static final BitmapFactory.Options sBitmapOptions = new BitmapFactory.Options();
+    private static final Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+
+    static {
+        // for the cache,
+        // 565 is faster to decode and display
+        // and we don't want to dither here because the image will be scaled
+        // down later
+        sBitmapOptionsCache.inPreferredConfig = Bitmap.Config.RGB_565;
+        sBitmapOptionsCache.inDither = false;
+
+        sBitmapOptions.inPreferredConfig = Bitmap.Config.RGB_565;
+        sBitmapOptions.inDither = false;
+    }
+
+    public static Drawable createBlurredImageFromBitmap(Bitmap bitmap, Context context, int inSampleSize) {
+
+        RenderScript rs = RenderScript.create(context);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = inSampleSize;
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] imageInByte = stream.toByteArray();
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageInByte);
+        Bitmap blurTemplate = BitmapFactory.decodeStream(bis, null, options);
+
+        final android.support.v8.renderscript.Allocation input = android.support.v8.renderscript.Allocation.createFromBitmap(rs, blurTemplate);
+        final android.support.v8.renderscript.Allocation output = android.support.v8.renderscript.Allocation.createTyped(rs, input.getType());
+        final android.support.v8.renderscript.ScriptIntrinsicBlur script = android.support.v8.renderscript.ScriptIntrinsicBlur.create(rs, android.support.v8.renderscript.Element.U8_4(rs));
+        script.setRadius(8f);
+        script.setInput(input);
+        script.forEach(output);
+        output.copyTo(blurTemplate);
+
+        return new BitmapDrawable(context.getResources(), blurTemplate);
+    }
+
+
+    public static Bitmap getBitmapFromDrawable(Drawable drawable) {
+        final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
+        final int COLOR_DRAWABLE_DIMENSION = 2;
+
+        if (drawable == null) {
+            return null;
+        }
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        try {
+            Bitmap bitmap;
+
+            if (drawable instanceof ColorDrawable) {
+                bitmap = Bitmap.createBitmap(COLOR_DRAWABLE_DIMENSION, COLOR_DRAWABLE_DIMENSION, BITMAP_CONFIG);
+            } else {
+                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), BITMAP_CONFIG);
+            }
+
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        } catch (OutOfMemoryError e) {
+            return null;
+        }
+    }
+
+    public static Bitmap getArtworkQuick(File file, int w, int h) {
+        // NOTE: There is in fact a 1 pixel border on the right side in the
+        // ImageView
+        // used to display this drawable. Take it into account now, so we don't
+        // have to
+        // scale later.
+        w -= 1;
+        try {
+            int sampleSize = 1;
+
+            // Compute the closest power-of-two scale factor
+            // and pass that to sBitmapOptionsCache.inSampleSize, which will
+            // result in faster decoding and better quality
+            sBitmapOptionsCache.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(file.getAbsolutePath(), sBitmapOptionsCache);
+            int nextWidth = sBitmapOptionsCache.outWidth >> 1;
+            int nextHeight = sBitmapOptionsCache.outHeight >> 1;
+            while (nextWidth > w && nextHeight > h) {
+                sampleSize <<= 1;
+                nextWidth >>= 1;
+                nextHeight >>= 1;
+            }
+
+            sBitmapOptionsCache.inSampleSize = sampleSize;
+            sBitmapOptionsCache.inJustDecodeBounds = false;
+            Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath(), sBitmapOptionsCache);
+
+            if (b != null) {
+                // finally rescale to exactly the size we need
+                if (sBitmapOptionsCache.outWidth != w
+                        || sBitmapOptionsCache.outHeight != h) {
+                    Bitmap tmp = Bitmap.createScaledBitmap(b, w, h, true);
+                    // Bitmap.createScaledBitmap() can return the same
+                    // bitmap
+                    if (tmp != b)
+                        b.recycle();
+                    b = tmp;
+                }
+            }
+
+            return b;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Bitmap getArtworkQuick(Context context, Uri uri, int w, int h) throws IOException {
+        // NOTE: There is in fact a 1 pixel border on the right side in the
+        // ImageView
+        // used to display this drawable. Take it into account now, so we don't
+        // have to
+        // scale later.
+        w -= 1;
+        ContentResolver res = context.getContentResolver();
+
+        if (uri != null) {
+            ParcelFileDescriptor fd = null;
+            try {
+                fd = res.openFileDescriptor(uri, "r");
+                if (fd == null) {
+                    return null;
+                }
+                int sampleSize = 1;
+
+                // Compute the closest power-of-two scale factor
+                // and pass that to sBitmapOptionsCache.inSampleSize, which will
+                // result in faster decoding and better quality
+                sBitmapOptionsCache.inJustDecodeBounds = true;
+                BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(),
+                        null, sBitmapOptionsCache);
+                int nextWidth = sBitmapOptionsCache.outWidth >> 1;
+                int nextHeight = sBitmapOptionsCache.outHeight >> 1;
+                while (nextWidth > w && nextHeight > h) {
+                    sampleSize <<= 1;
+                    nextWidth >>= 1;
+                    nextHeight >>= 1;
+                }
+
+                sBitmapOptionsCache.inSampleSize = sampleSize;
+                sBitmapOptionsCache.inJustDecodeBounds = false;
+                Bitmap b = BitmapFactory.decodeFileDescriptor(
+                        fd.getFileDescriptor(), null, sBitmapOptionsCache);
+
+                if (b != null) {
+                    // finally rescale to exactly the size we need
+                    if (sBitmapOptionsCache.outWidth != w
+                            || sBitmapOptionsCache.outHeight != h) {
+                        Bitmap tmp = Bitmap.createScaledBitmap(b, w, h, true);
+                        // Bitmap.createScaledBitmap() can return the same
+                        // bitmap
+                        if (tmp != b)
+                            b.recycle();
+                        b = tmp;
+                    }
+                }
+
+                return b;
+            } catch (FileNotFoundException ignored) {
+            } finally {
+                if (fd != null)
+                    fd.close();
+            }
+        }
+        return null;
+    }
+
+    // Get album art for specified album. This method will not try to
+    // fall back to getting artwork directly from the file, nor will
+    // it attempt to repair the database.
+    public static Bitmap getArtworkQuick(Context context, long albumId, int w, int h) {
+        // NOTE: There is in fact a 1 pixel border on the right side in the
+        // ImageView
+        // used to display this drawable. Take it into account now, so we don't
+        // have to
+        // scale later.
+        w -= 1;
+        ContentResolver res = context.getContentResolver();
+        Uri uri = ContentUris.withAppendedId(sArtworkUri, albumId);
+//        Cursor cursor = res.query(uri, new String[]{}, null, null, null);
+//        if(cursor == null){
+//            return null;
+//        }else {
+
+        if (uri != null) {
+            ParcelFileDescriptor fd = null;
+            try {
+                fd = res.openFileDescriptor(uri, "r");
+                if (fd == null) {
+                    return null;
+                }
+                int sampleSize = 1;
+
+                // Compute the closest power-of-two scale factor
+                // and pass that to sBitmapOptionsCache.inSampleSize, which will
+                // result in faster decoding and better quality
+                sBitmapOptionsCache.inJustDecodeBounds = true;
+                BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(),
+                        null, sBitmapOptionsCache);
+                int nextWidth = sBitmapOptionsCache.outWidth >> 1;
+                int nextHeight = sBitmapOptionsCache.outHeight >> 1;
+                while (nextWidth > w && nextHeight > h) {
+                    sampleSize <<= 1;
+                    nextWidth >>= 1;
+                    nextHeight >>= 1;
+                }
+
+                sBitmapOptionsCache.inSampleSize = sampleSize;
+                sBitmapOptionsCache.inJustDecodeBounds = false;
+                Bitmap b = BitmapFactory.decodeFileDescriptor(
+                        fd.getFileDescriptor(), null, sBitmapOptionsCache);
+
+                if (b != null) {
+                    // finally rescale to exactly the size we need
+                    if (sBitmapOptionsCache.outWidth != w
+                            || sBitmapOptionsCache.outHeight != h) {
+                        Bitmap tmp = Bitmap.createScaledBitmap(b, w, h, true);
+                        // Bitmap.createScaledBitmap() can return the same
+                        // bitmap
+                        if (tmp != b)
+                            b.recycle();
+                        b = tmp;
+                    }
+                }
+
+                return b;
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fd != null)
+                        fd.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+        return null;
+    }
 
     @Nullable
     public static Bitmap blur(Bitmap source) {

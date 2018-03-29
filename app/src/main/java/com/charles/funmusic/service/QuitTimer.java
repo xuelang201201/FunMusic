@@ -7,7 +7,7 @@ import android.text.format.DateUtils;
 import com.charles.funmusic.application.AppCache;
 
 public class QuitTimer {
-    private PlayService mPlayService;
+    private MusicService mMusicService;
     private EventCallback<Long> mTimerCallback;
     private Handler mHandler;
     private long mTimerRemain;
@@ -23,8 +23,8 @@ public class QuitTimer {
     private QuitTimer() {
     }
 
-    public void init(@NonNull PlayService playService, @NonNull Handler handler, @NonNull EventCallback<Long> timerCallback) {
-        mPlayService = playService;
+    public void init(@NonNull MusicService musicService, @NonNull Handler handler, @NonNull EventCallback<Long> timerCallback) {
+        mMusicService = musicService;
         mHandler = handler;
         mTimerCallback = timerCallback;
     }
@@ -53,7 +53,7 @@ public class QuitTimer {
                 mHandler.postDelayed(this, DateUtils.SECOND_IN_MILLIS);
             } else {
                 AppCache.clearStack();
-                mPlayService.quit();
+                mMusicService.exit();
             }
         }
     };

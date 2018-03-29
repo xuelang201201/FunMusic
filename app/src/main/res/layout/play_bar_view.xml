@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/play_bar_height"
     android:layout_gravity="bottom"
     android:background="@drawable/touch_bg">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/play_bar_cover"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_default_album_cover"/>
+        app:placeholderImage="@drawable/ic_default_album_cover"
+        app:placeholderImageScaleType="centerCrop" />
 
-    <ProgressBar
+    <com.charles.funmusic.widget.TintProgressBar
         android:id="@+id/play_bar_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:layout_marginTop="5dp"
-        android:progressDrawable="@drawable/progress_bar_style"/>
+        android:progress="0"
+        app:progressTint="@color/theme_color_primary" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,7 +54,7 @@
                 android:singleLine="true"
                 android:text="@string/app_name"
                 android:textColor="@android:color/black"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
 
             <com.charles.funmusic.widget.MarqueeTextView
                 android:id="@+id/play_bar_artist"
@@ -64,7 +65,7 @@
                 android:singleLine="true"
                 android:text="@string/slogan"
                 android:textColor="#888888"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -72,7 +73,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.charles.funmusic.widget.TintImageView
                 android:id="@+id/play_bar_play_or_pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,9 +82,9 @@
                 android:contentDescription="@null"
                 android:scaleX="0.85"
                 android:scaleY="0.85"
-                android:src="@drawable/selector_play_bar_play_or_pause"/>
+                android:src="@drawable/selector_play_bar_play_or_pause" />
 
-            <ImageView
+            <com.charles.funmusic.widget.TintImageView
                 android:id="@+id/play_bar_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -92,9 +93,9 @@
                 android:contentDescription="@null"
                 android:scaleX="0.85"
                 android:scaleY="0.85"
-                android:src="@drawable/selector_play_bar_next"/>
+                android:src="@drawable/selector_play_bar_next" />
 
-            <ImageView
+            <com.charles.funmusic.widget.TintImageView
                 android:id="@+id/play_bar_playlist"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -103,7 +104,7 @@
                 android:contentDescription="@null"
                 android:scaleX="0.75"
                 android:scaleY="0.75"
-                android:src="@drawable/ic_play_bar_playlist"/>
+                android:src="@drawable/ic_play_bar_playlist" />
         </LinearLayout>
     </LinearLayout>
 
@@ -111,5 +112,5 @@
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_alignParentTop="true"
-        android:background="#CCCCCC"/>
+        android:background="#CCCCCC" />
 </RelativeLayout>

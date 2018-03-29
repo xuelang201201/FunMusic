@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/red">
+    android:background="@color/theme_color_primary">
 
     <ImageView
         android:id="@+id/header_view_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@null"
         android:padding="6dp"
         android:src="@drawable/ic_arrow_back"/>
@@ -36,7 +36,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@null"
         android:padding="6dp"
         android:scaleX="0.9"
@@ -51,7 +51,7 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/header_view_more"
         android:layout_toStartOf="@+id/header_view_more"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@null"
         android:padding="6dp"
         android:scaleX="0.75"
@@ -99,7 +99,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="end|center_vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@null"
             android:padding="10dp"
             android:src="@drawable/ic_close"
@@ -115,7 +115,7 @@
         android:layout_centerVertical="true"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:textColor="@color/white"
         android:textSize="14sp"

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/red"
+    android:background="@color/theme_color_primary"
     android:fitsSystemWindows="true"
     android:gravity="center_vertical"
     android:orientation="horizontal">
@@ -15,51 +14,43 @@
         android:id="@+id/toolbar_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@null"
         android:padding="6dp"
         android:scaleX="0.7"
         android:scaleY="0.7"
-        android:src="@drawable/ic_menu"/>
+        android:src="@drawable/ic_menu" />
 
     <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
-    <com.flyco.tablayout.SlidingTabLayout
+    <android.support.design.widget.TabLayout
         android:id="@+id/toolbar_tabs"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:background="?attr/colorPrimary"
-        app:tl_indicator_color="@color/white"
-        app:tl_indicator_corner_radius="1.5dp"
-        app:tl_indicator_gravity="BOTTOM"
-        app:tl_indicator_height="3dp"
-        app:tl_indicator_margin_bottom="4dp"
-        app:tl_indicator_width="25dp"
-        app:tl_indicator_width_equal_title="true"
-        app:tl_tab_space_equal="true"
-        app:tl_textBold="SELECT"
-        app:tl_textSelectColor="@color/white"
-        app:tl_textUnselectColor="#EEEEEE"
-        app:tl_textsize="18sp"/>
+        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorHeight="2dp"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextAppearance="@style/TabText"
+        app:tabTextColor="@color/color_grey" />
 
     <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <ImageView
         android:id="@+id/toolbar_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@null"
         android:padding="6dp"
         android:scaleX="0.7"
         android:scaleY="0.7"
-        android:src="@drawable/ic_search"/>
+        android:src="@drawable/ic_search" />
 
 </LinearLayout>

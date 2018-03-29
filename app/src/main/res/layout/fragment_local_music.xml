@@ -1,45 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_local_music"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/play_bar_height"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <include
+        android:id="@+id/header_view"
+        layout="@layout/header_view" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/fragment_local_music_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:tag="tab_indicator_accent_color,bg_primary_color"
+        app:tabIndicatorColor="@color/theme_color_primary"
+        app:tabSelectedTextColor="@color/theme_color_primary"
+        app:tabTextColor="@color/light_black" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.3dp"
+        android:background="#CCCCCC" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/fragment_local_music_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <include
-            android:id="@+id/header_view"
-            layout="@layout/header_view"/>
-
-        <com.flyco.tablayout.SlidingTabLayout
-            android:id="@+id/fragment_local_music_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            app:tl_indicator_color="@color/red"
-            app:tl_indicator_gravity="BOTTOM"
-            app:tl_indicator_height="2dp"
-            app:tl_indicator_style="NORMAL"
-            app:tl_tab_space_equal="true"
-            app:tl_textSelectColor="@color/red"
-            app:tl_textUnselectColor="@color/light_black"
-            app:tl_textsize="14sp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.3dp"
-            android:background="#CCCCCC"/>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/fragment_local_music_view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</LinearLayout>

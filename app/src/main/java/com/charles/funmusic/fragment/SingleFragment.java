@@ -1,49 +1,105 @@
 package com.charles.funmusic.fragment;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
-import com.charles.funmusic.adapter.MusicAdapter;
-import com.charles.funmusic.application.AppCache;
+import com.charles.funmusic.activity.SelectActivity;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Music;
-import com.charles.funmusic.service.EventCallback;
+import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.HandlerUtil;
+import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.Preferences;
-import com.charles.funmusic.widget.IndexBar;
+import com.charles.funmusic.utils.SortOrder;
+import com.charles.funmusic.utils.comparator.MusicComparator;
+import com.charles.funmusic.widget.SideBar;
+import com.charles.funmusic.widget.TintImageView;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.HashMap;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
-import static com.charles.funmusic.fragment.MyFragment.SHOW_PLAY_FRAGMENT;
-import static com.charles.funmusic.fragment.SortDialogFragment.SORT_BY_ALBUM;
-import static com.charles.funmusic.fragment.SortDialogFragment.SORT_BY_ARTIST;
-import static com.charles.funmusic.fragment.SortDialogFragment.SORT_BY_SINGLE;
+public class SingleFragment extends BaseFragment {
 
-public class SingleFragment extends BaseFragment implements EventCallback {
-
-    @BindView(R.id.fragment_single_recycler_view)
+    @BindView(R.id.fragment_common_recycler_view)
     RecyclerView mRecyclerView;
-    @BindView(R.id.fragment_single_empty)
+    @BindView(R.id.fragment_common_empty)
     TextView mEmpty;
-    @BindView(R.id.fragment_single_index_bar)
-    IndexBar mIndexBar;
-    @BindView(R.id.fragment_single_letter)
+    @BindView(R.id.fragment_common_index_bar)
+    SideBar mSideBar;
+    @BindView(R.id.fragment_common_letter)
     TextView mLetter;
+    @BindView(R.id.load_frame)
+    FrameLayout mFrameLayout;
 
+    private View mView;
     private MusicAdapter mAdapter;
     private static final String TAG = SingleFragment.class.getSimpleName();
-    private LinearLayoutManager mLinearLayoutManager;
+    private boolean mIsAZSort = true;
+    private Preferences mPreferences;
+    private HashMap<String, Integer> mPositionMap = new HashMap<>();
+    private boolean isFirstLoad = true;
+
+    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                mSideBar.setVisibility(View.VISIBLE);
+            }
+        }
+    };
+
+    @Override
+    public int getLayoutId() {
+        return 0;
+    }
+
+    @Override
+    public void init(Bundle savedInstanceState) {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPreferences = Preferences.getInstance(mContext);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.layout_load_frame, container, false);
+        mFrameLayout = view.findViewById(R.id.load_frame);
+        View loadView = LayoutInflater.from(mContext).inflate(R.layout.layout_loading, mFrameLayout, false);
+        mFrameLayout.addView(loadView);
+
+        isFirstLoad = true;
+        mIsAZSort = mPreferences.getSongSortOrder().equals(SortOrder.SongSortOrder.SONG_A_Z);
+
+        if (getUserVisibleHint()) {
+            loadView();
+        }
+
+        return view;
+    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -59,156 +115,268 @@ public class SingleFragment extends BaseFragment implements EventCallback {
     }
 
     @Override
-    public int getLayoutId() {
-        return R.layout.fragment_single;
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            loadView();
+        }
     }
 
+    private void loadView() {
+        if (mView == null && mContext != null) {
+            mView = LayoutInflater.from(mContext).inflate(R.layout.fragment_common, mFrameLayout, false);
+
+            mLetter = mView.findViewById(R.id.fragment_common_letter);
+            mRecyclerView = mView.findViewById(R.id.fragment_common_recycler_view);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+            mAdapter = new MusicAdapter(null);
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setHasFixedSize(true);
+
+            mSideBar = mView.findViewById(R.id.fragment_common_index_bar);
+            mSideBar.setOnTouchingLetterChangedListener(new SideBar.OnTouchingLetterChangedListener() {
+                @Override
+                public void onTouchingLetterChanged(String s) {
+                    mLetter.setText(s);
+                    mSideBar.setView(mLetter);
+                    if (mPositionMap.get(s) != null) {
+                        int i = mPositionMap.get(s);
+                        ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                                .scrollToPositionWithOffset(i + 1, 0);
+                    }
+                }
+            });
+            reloadAdapter();
+            Log.e("MusicFragment", "load l");
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
     @Override
-    public void initView(final Bundle savedInstanceState) {
-        if (getPlayService().getPlayingMusic() != null && getPlayService().getPlayingMusic().getType() == Music.Type.LOCAL) {
-            mRecyclerView.smoothScrollToPosition(getPlayService().getPlayingPosition());
+    public void reloadAdapter() {
+        if (mAdapter == null) {
+            return;
         }
 
-        mHandler.postDelayed(new Runnable() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void run() {
-                initRecyclerView(savedInstanceState);
-                // 对数据根据拼音进行排序
-                Collections.sort(AppCache.getMusics(), new Comparator<Music>() {
+            protected Void doInBackground(final Void... unused) {
+                mIsAZSort = mPreferences.getSongSortOrder().equals(SortOrder.SongSortOrder.SONG_A_Z);
+                ArrayList<Music> songList = (ArrayList) MusicUtil.queryMusics(mContext, Keys.START_FROM_LOCAL);
+                // 名称排序时，重新排序并加入位置信息
+                if (mIsAZSort) {
+                    Collections.sort(songList, new MusicComparator());
+                    for (int i = 0; i < songList.size(); i++) {
+                        if (mPositionMap.get(songList.get(i).getSort()) == null) {
+                            mPositionMap.put(songList.get(i).getSort(), i);
+                        }
+                    }
+                }
+                mAdapter.updateDataSet(songList);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                mAdapter.notifyDataSetChanged();
+                if (mIsAZSort) {
+                    mRecyclerView.addOnScrollListener(mOnScrollListener);
+                } else {
+                    mSideBar.setVisibility(View.INVISIBLE);
+                    mRecyclerView.removeOnScrollListener(mOnScrollListener);
+                }
+                Log.e("MusicFragment", "load t");
+                if (isFirstLoad) {
+                    Log.e("MusicFragment", "load");
+                    mFrameLayout.removeAllViews();
+                    // frameLayout 创建了新的实例
+                    ViewGroup p = (ViewGroup) mView.getParent();
+                    if (p != null) {
+                        p.removeAllViewsInLayout();
+                    }
+                    mFrameLayout.addView(mView);
+                    isFirstLoad = false;
+                }
+            }
+        }.execute();
+    }
+
+    public class MusicAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        final static int FIRST_ITEM = 0;
+        final static int ITEM = 1;
+        private ArrayList<Music> mMusics;
+        PlayMusic mPlayMusic;
+        Handler mHandler;
+
+        MusicAdapter(ArrayList<Music> musics) {
+            mHandler = HandlerUtil.getInstance(mContext);
+            mMusics = musics;
+        }
+
+        /**
+         * 更新adapter数据
+         */
+        private void updateDataSet(ArrayList<Music> musics) {
+            mMusics = musics;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == FIRST_ITEM) {
+                return new CommonItemViewHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.header, parent, false));
+            } else {
+                return new ListItemViewHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.music_item, parent, false));
+            }
+        }
+
+        /**
+         * 判断布局类型
+         */
+        @Override
+        public int getItemViewType(int position) {
+            return position == FIRST_ITEM ? FIRST_ITEM : ITEM;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            Music music = null;
+            if (position > 0) {
+                music = mMusics.get(position - 1);
+            }
+            if (holder instanceof ListItemViewHolder) {
+                ((ListItemViewHolder) holder).mTitle.setText(music.getTitle());
+                String artistAndAlbum = music.getArtist() + " | " + music.getAlbum();
+                ((ListItemViewHolder) holder).mArtistAndAlbum.setText(artistAndAlbum);
+
+                // 判断该条目是否在播放
+                if (MusicPlayer.getCurrentAudioId() == music.getId()) {
+                    ((ListItemViewHolder) holder).mPlayState.setVisibility(View.VISIBLE);
+                    ((ListItemViewHolder) holder).mPlayState.setImageResource(R.drawable.playing);
+//                    ((ListItemViewHolder) holder).mPlayState.setImageTintList(R.color.theme_color_primary);
+                } else {
+                    ((ListItemViewHolder) holder).mPlayState.setVisibility(View.GONE);
+                }
+            } else if (holder instanceof CommonItemViewHolder) {
+                String musicSize = "（共" + mMusics.size() + "首）";
+                ((CommonItemViewHolder) holder).mTextView.setText(musicSize);
+
+                ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public int compare(Music lhs, Music rhs) {
-                        int result = Preferences.getSortWay();
-                        if (Preferences.getSortWay() == SORT_BY_SINGLE) {
-                            result = lhs.getTitlePinyin().compareTo(rhs.getTitlePinyin());
-                        }
-                        if (Preferences.getSortWay() == SORT_BY_ARTIST) {
-                            result = lhs.getArtistPinyin().compareTo(rhs.getArtistPinyin());
-                        }
-                        if (Preferences.getSortWay() == SORT_BY_ALBUM) {
-                            result = lhs.getAlbumPinyin().compareTo(rhs.getAlbumPinyin());
-                        }
-                        return result;
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, SelectActivity.class);
+                        intent.putParcelableArrayListExtra("ids", mMusics);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        mContext.startActivity(intent);
                     }
                 });
-                updateView();
             }
-        }, 500);
-
-        initIndexBar();
-    }
-
-    private void initIndexBar() {
-        mIndexBar.setListener(new IndexBar.OnTouchLetterListener() {
-            @Override
-            public void onTouchLetter(String str) {
-                // 1）挪动RecyclerView
-                int position = mAdapter.getPositionForSection(str.charAt(0));
-                if (position != -1) {
-                    mLinearLayoutManager.scrollToPositionWithOffset(position + 1, 0);
-                }
-//                mRecyclerView.smoothScrollToPosition(mAdapter.getPositionForSection(str.charAt(0)));
-                // 2）显示大字母
-                mLetter.setVisibility(View.VISIBLE);
-                mLetter.setText(str);
-            }
-
-            @Override
-            public void onFinishTouch() {
-                mLetter.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
-
-    private void initRecyclerView(Bundle savedInstanceState) {
-
-        mLinearLayoutManager = new LinearLayoutManager(AppCache.getContext());
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mAdapter = new MusicAdapter(AppCache.getContext(), new MusicAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                if (getPlayService().getPlayingPosition() == position - 1) {
-                    onEvent(SHOW_PLAY_FRAGMENT);
-                } else {
-                    getPlayService().play(position - 1);
-                }
-            }
-        }, new MusicAdapter.OnItemLongClickListener() {
-            @Override
-            public void onItemLongClick(int position) {
-
-            }
-        });
-
-        mRecyclerView.setAdapter(mAdapter);
-
-        Log.d(TAG, "onCreateView state: " + savedInstanceState);
-        if (savedInstanceState != null) {
-            int position = savedInstanceState.getInt(Keys.LOCAL_MUSIC_POSITION);
-            int offset = savedInstanceState.getInt(Keys.LOCAL_MUSIC_OFFSET);
-            mRecyclerView.setScrollY(position);
-            ((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(position, offset);
         }
 
-        if (!AppCache.getMusics().isEmpty()) {
-            addHeaderView(mRecyclerView);
-            addFooterView(mRecyclerView);
-        }
-    }
-
-    private void updateView() {
-        if (AppCache.getMusics().isEmpty()) {
-            mEmpty.setVisibility(View.INVISIBLE);
-        } else {
-            mEmpty.setVisibility(View.GONE);
+        @Override
+        public int getItemCount() {
+            return null != mMusics ? mMusics.size() + 1 : 0;
         }
 
-        mAdapter.updatePlayingPosition(getPlayService());
-        mAdapter.notifyDataSetChanged();
-    }
+        public class CommonItemViewHolder extends RecyclerView.ViewHolder
+                implements View.OnClickListener {
+            @BindView(R.id.header_play_all_number)
+            TextView mTextView;
+            @BindView(R.id.header_select)
+            ImageView mSelect;
 
-    private void addHeaderView(RecyclerView recyclerView) {
-        View header = LayoutInflater.from(getActivity()).inflate(R.layout.header, recyclerView, false);
-        mAdapter.setHeaderView(header);
-        TextView randomPlay = header.findViewById(R.id.header_random_play);
-        changeFont(randomPlay, false);
-        randomPlay.setOnClickListener(new View.OnClickListener() {
+            CommonItemViewHolder(View itemView) {
+                super(itemView);
+
+                ButterKnife.bind(this, itemView);
+                itemView.setOnClickListener(this);
+
+                changeFont(mTextView, false);
+            }
+
             @Override
             public void onClick(View v) {
-                long seed = System.nanoTime();
-                int position = new Random(seed).nextInt(AppCache.getMusics().size());
-                getPlayService().play(position);
+                if (mPlayMusic != null) {
+                    mHandler.removeCallbacks(mPlayMusic);
+                }
+                if (getAdapterPosition() > -1) {
+                    mPlayMusic = new PlayMusic(0);
+                    mHandler.postDelayed(mPlayMusic, 70);
+                }
             }
-        });
-        final ImageView sort = header.findViewById(R.id.header_sort);
-        sort.setOnClickListener(new View.OnClickListener() {
+        }
+
+        public class ListItemViewHolder extends RecyclerView.ViewHolder
+                implements View.OnClickListener, View.OnLongClickListener {
+
+            @BindView(R.id.music_item_title)
+            TextView mTitle;
+            @BindView(R.id.music_item_artist_and_album)
+            TextView mArtistAndAlbum;
+            @BindView(R.id.music_item_play_state)
+            TintImageView mPlayState;
+            @BindView(R.id.music_item_more)
+            TintImageView mMoreOverFlow;
+
+            ListItemViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+
+                mMoreOverFlow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        MoreFragment moreFragment = MoreFragment.newInstance(mMusics.get(getAdapterPosition() - 1), Keys.MUSIC_OVERFLOW);
+                        moreFragment.show(getFragmentManager(), "music");
+                    }
+                });
+                itemView.setOnClickListener(this);
+                itemView.setOnLongClickListener(this);
+
+                changeFont(mTitle, false);
+                changeFont(mArtistAndAlbum, false);
+            }
+
             @Override
             public void onClick(View v) {
-                showSortDialog();
-                sort();
+                if (mPlayMusic != null) {
+                    mHandler.removeCallbacks(mPlayMusic);
+                }
+                if (getAdapterPosition() > -1) {
+                    mPlayMusic = new PlayMusic(getAdapterPosition() - 1);
+                    mHandler.postDelayed(mPlayMusic, 70);
+                }
             }
-        });
-    }
 
-    private void addFooterView(RecyclerView recyclerView) {
-        View footer = LayoutInflater.from(getActivity()).inflate(R.layout.footer, recyclerView, false);
-        mAdapter.setFooterView(footer);
-        TextView footerText = footer.findViewById(R.id.footer_view_text);
-        String size = "共" + AppCache.getMusics().size() + "首歌曲";
-        footerText.setText(size);
-        changeFont(footerText, false);
-    }
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onEvent(Object o) {
-        mListener.onEvent(o);
-    }
+        private class PlayMusic implements Runnable {
+            int mPosition;
 
-    public void onItemPlay() {
-        updateView();
-    }
+            PlayMusic(int position) {
+                mPosition = position;
+            }
 
-    public void sort() {
-        mAdapter.notifyDataSetChanged();
+            @Override
+            public void run() {
+                long[] musics = new long[mMusics.size()];
+                @SuppressLint("UseSparseArrays") HashMap<Long, Music> map = new HashMap<>();
+                for (int i = 0; i < mMusics.size(); i++) {
+                    Music music = mMusics.get(i);
+                    musics[i] = music.getId();
+                    music.setLocal(true);
+                    music.setAlbumArt(MusicUtil.getAlbumArtUri(music.getAlbumId()) + "");
+                    map.put(musics[i], mMusics.get(i));
+                }
+                if (mPosition > -1) {
+                    MusicPlayer.playAll(map, musics, mPosition, false);
+                }
+            }
+        }
     }
 }
