@@ -221,8 +221,9 @@ public class SingleFragment extends BaseFragment {
             mMusics = musics;
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             if (viewType == FIRST_ITEM) {
                 return new CommonItemViewHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.header, parent, false));
@@ -241,7 +242,7 @@ public class SingleFragment extends BaseFragment {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             Music music = null;
             if (position > 0) {
                 music = mMusics.get(position - 1);

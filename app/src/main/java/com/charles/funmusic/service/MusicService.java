@@ -204,8 +204,6 @@ public class MusicService extends Service {
     private int mCardId;
 
     private ArrayList<MusicPlaybackTrack> mPlaylist = new ArrayList<>(100);
-    private long[] mAudioShuffleList = null;
-
     @SuppressLint("UseSparseArrays")
     private HashMap<Long, Music> mPlaylistInfo = new HashMap<>();
     private long[] mAutoShuffleList = null;
@@ -2030,7 +2028,7 @@ public class MusicService extends Service {
         mPlayerHandler.sendEmptyMessage(FADE_UP);
         setIsSupposedToBePlaying(true, true);
         cancelShutdown();
-//        updateNotification();
+        updateNotification();
         notifyChange(META_CHANGED);
     }
 
@@ -3068,249 +3066,247 @@ public class MusicService extends Service {
         }
 
         @Override
-        public void openFile(String path) throws RemoteException {
+        public void openFile(String path) {
             mService.get().openFile(path);
         }
 
         @Override
-        public void open(final Map infos, final long[] list, final int position)
-                throws RemoteException {
+        public void open(final Map infos, final long[] list, final int position) {
             mService.get().open((HashMap<Long, Music>) infos, list, position);
         }
 
         @Override
-        public void stop() throws RemoteException {
+        public void stop() {
             mService.get().stop();
         }
 
         @Override
-        public void pause() throws RemoteException {
+        public void pause() {
             mService.get().pause();
         }
 
         @Override
-        public void play() throws RemoteException {
+        public void play() {
             mService.get().play();
         }
 
         @Override
-        public void prev(boolean forcePrevious) throws RemoteException {
+        public void prev(boolean forcePrevious) {
             mService.get().prev(forcePrevious);
         }
 
         @Override
-        public void next() throws RemoteException {
+        public void next() {
             mService.get().gotoNext(true);
         }
 
         @Override
-        public void enqueue(long[] list, Map infos, int action) throws RemoteException {
+        public void enqueue(long[] list, Map infos, int action) {
             mService.get().enqueue(list, (HashMap<Long, Music>) infos, action);
         }
 
         @Override
-        public Map getPlayInfos() throws RemoteException {
+        public Map getPlayInfos() {
             return mService.get().getPlayInfos();
         }
 
         @Override
-        public void setQueuePosition(int index) throws RemoteException {
+        public void setQueuePosition(int index) {
             mService.get().setQueuePosition(index);
         }
 
         @Override
-        public void setShuffleMode(int shuffleMode) throws RemoteException {
+        public void setShuffleMode(int shuffleMode) {
             mService.get().setShuffleMode(shuffleMode);
         }
 
         @Override
-        public void setRepeatMode(int repeatMode) throws RemoteException {
+        public void setRepeatMode(int repeatMode) {
             mService.get().setRepeatMode(repeatMode);
         }
 
         @Override
-        public void moveQueueItem(int from, int to) throws RemoteException {
+        public void moveQueueItem(int from, int to) {
             mService.get().moveQueueItem(from, to);
         }
 
         @Override
-        public void refresh() throws RemoteException {
+        public void refresh() {
             mService.get().refresh();
         }
 
         @Override
-        public void playlistChanged() throws RemoteException {
+        public void playlistChanged() {
             mService.get().playlistChanged();
         }
 
         @Override
-        public boolean isPlaying() throws RemoteException {
+        public boolean isPlaying() {
             return mService.get().isPlaying();
         }
 
         @Override
-        public long[] getQueue() throws RemoteException {
+        public long[] getQueue() {
             return mService.get().getQueue();
         }
 
         @Override
-        public long getQueueItemAtPosition(int position) throws RemoteException {
+        public long getQueueItemAtPosition(int position) {
             return mService.get().getQueueItemAtPosition(position);
         }
 
         @Override
-        public int getQueueSize() throws RemoteException {
+        public int getQueueSize() {
             return mService.get().getQueueSize();
         }
 
         @Override
-        public int getQueuePosition() throws RemoteException {
+        public int getQueuePosition() {
             return mService.get().getQueuePosition();
         }
 
         @Override
-        public int getQueueHistoryPosition(int position) throws RemoteException {
+        public int getQueueHistoryPosition(int position) {
             return mService.get().getQueueHistoryPosition(position);
         }
 
         @Override
-        public int getQueueHistorySize() throws RemoteException {
+        public int getQueueHistorySize() {
             return mService.get().getQueueHistorySize();
         }
 
         @Override
-        public int[] getQueueHistoryList() throws RemoteException {
+        public int[] getQueueHistoryList() {
             return mService.get().getQueueHistoryList();
         }
 
         @Override
-        public long duration() throws RemoteException {
+        public long duration() {
             return mService.get().duration();
         }
 
         @Override
-        public long position() throws RemoteException {
+        public long position() {
             return mService.get().position();
         }
 
         @Override
-        public int secondPosition() throws RemoteException {
+        public int secondPosition() {
             return mService.get().getSecondPosition();
         }
 
         @Override
-        public long seek(long position) throws RemoteException {
+        public long seek(long position) {
             return mService.get().seek(position);
         }
 
         @Override
-        public void seekRelative(long deltaInMs) throws RemoteException {
+        public void seekRelative(long deltaInMs) {
             mService.get().seekRelative(deltaInMs);
         }
 
         @Override
-        public long getAudioId() throws RemoteException {
+        public long getAudioId() {
             return mService.get().getAudioId();
         }
 
         @Override
-        public MusicPlaybackTrack getCurrentTrack() throws RemoteException {
+        public MusicPlaybackTrack getCurrentTrack() {
             return mService.get().getCurrentTrack();
         }
 
         @Override
-        public MusicPlaybackTrack getTrack(int index) throws RemoteException {
+        public MusicPlaybackTrack getTrack(int index) {
             return mService.get().getTrack(index);
         }
 
         @Override
-        public long getNextAudioId() throws RemoteException {
+        public long getNextAudioId() {
             return mService.get().getNextAudioId();
         }
 
         @Override
-        public long getPreviousAudioId() throws RemoteException {
+        public long getPreviousAudioId() {
             return mService.get().getPreviousAudioId();
         }
 
         @Override
-        public long getArtistId() throws RemoteException {
+        public long getArtistId() {
             return mService.get().getArtistId();
         }
 
         @Override
-        public long getAlbumId() throws RemoteException {
+        public long getAlbumId() {
             return mService.get().getAlbumId();
         }
 
         @Override
-        public String getArtistName() throws RemoteException {
+        public String getArtistName() {
             return mService.get().getArtistName();
         }
 
         @Override
-        public String getTrackName() throws RemoteException {
+        public String getTrackName() {
             return mService.get().getTrackName();
         }
 
         @Override
-        public boolean isTrackLocal() throws RemoteException {
+        public boolean isTrackLocal() {
             return mService.get().isTrackLocal();
         }
 
         @Override
-        public String getAlbumName() throws RemoteException {
+        public String getAlbumName() {
             return mService.get().getAlbumName();
         }
 
         @Override
-        public String getAlbumPath() throws RemoteException {
+        public String getAlbumPath() {
             return mService.get().getAlbumPath();
         }
 
         @Override
-        public String[] getAlbumPathAll() throws RemoteException {
+        public String[] getAlbumPathAll() {
             return mService.get().getAlbumPathAll();
         }
 
         @Override
-        public String getPath() throws RemoteException {
+        public String getPath() {
             return mService.get().getPath();
         }
 
         @Override
-        public int getShuffleMode() throws RemoteException {
+        public int getShuffleMode() {
             return mService.get().getShuffleMode();
         }
 
         @Override
-        public int removeTracks(final int first, final int last) throws RemoteException {
+        public int removeTracks(final int first, final int last) {
             return mService.get().removeTracks(first, last);
         }
 
         @Override
-        public int removeTrack(final long id) throws RemoteException {
+        public int removeTrack(final long id) {
             return mService.get().removeTrack(id);
         }
 
         @Override
-        public boolean removeTrackAtPosition(final long id, final int position)
-                throws RemoteException {
+        public boolean removeTrackAtPosition(final long id, final int position) {
             return mService.get().removeTrackAtPosition(id, position);
         }
 
         @Override
-        public int getRepeatMode() throws RemoteException {
+        public int getRepeatMode() {
             return mService.get().getRepeatMode();
         }
 
         @Override
-        public int getMediaMountedCount() throws RemoteException {
+        public int getMediaMountedCount() {
             return mService.get().getMediaMountedCount();
         }
 
         @Override
-        public int getAudioSessionId() throws RemoteException {
+        public int getAudioSessionId() {
             return mService.get().getAudioSessionId();
         }
 
@@ -3320,12 +3316,12 @@ public class MusicService extends Service {
         }
 
         @Override
-        public void exit() throws RemoteException {
+        public void exit() {
             mService.get().exit();
         }
 
         @Override
-        public void timer(int time) throws RemoteException {
+        public void timer(int time) {
             mService.get().timer(time);
         }
     }
