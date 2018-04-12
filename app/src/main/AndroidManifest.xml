@@ -68,7 +68,7 @@
             android:name=".activity.SearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SelectActivity"
+            android:name=".activity.MultipleActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.DownloaderActivity"

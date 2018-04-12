@@ -820,15 +820,6 @@ public class MusicService extends Service {
         }
     }
 
-    private void scheduleDelayedShutDown() {
-        if (D) {
-            Log.v(TAG, "Scheduling shutdown in " + IDLE_DELAY + " ms");
-        }
-        mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + IDLE_DELAY, mShutdownIntent);
-        mShutdownScheduled = true;
-    }
-
     private void cancelShutdown() {
         if (D) Log.d(TAG, "Cancelling delayed shutdown, scheduled = " + mShutdownScheduled);
         if (mShutdownScheduled) {
@@ -940,13 +931,13 @@ public class MusicService extends Service {
         }
     }
 
-    private void updateCursor(long trackId) {
+    private void updateCursor(final long trackId) {
         Music music = mPlaylistInfo.get(trackId);
         if (mPlaylistInfo.get(trackId) != null) {
             MatrixCursor cursor = new MatrixCursor(PROJECTION);
             cursor.addRow(new Object[]{
                     music.getId(), music.getArtist(), music.getAlbum(), music.getTitle(),
-                    music.getUrl(), music.getAlbumId(), music.getArtistId()
+                    music.getUrl(), music.getAlbumArt(), music.getAlbumId(), music.getArtistId()
             });
             cursor.moveToFirst();
             mCursor = cursor;
@@ -1892,9 +1883,8 @@ public class MusicService extends Service {
         if (D) {
             Log.v(TAG, "Scheduling shutdown in " + IDLE_DELAY + " ms");
         }
-        // TODO
-//        mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-//                SystemClock.elapsedRealtime() + IDLE_DELAY, mShutdownIntent);
+        mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + IDLE_DELAY, mShutdownIntent);
         mShutdownScheduled = true;
     }
 

@@ -69,6 +69,14 @@ public class AddPlaylistFragment extends AttachDialogFragment {
         return fragment;
     }
 
+    public static AddPlaylistFragment newInstance(long[] songList) {
+        AddPlaylistFragment fragment = new AddPlaylistFragment();
+        Bundle args = new Bundle();
+        args.putLongArray("songs", songList);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static AddPlaylistFragment newInstance(Music music) {
         ArrayList<Music> musics = new ArrayList<>();
         musics.add(music);

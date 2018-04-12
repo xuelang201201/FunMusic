@@ -190,7 +190,7 @@ public class MusicActivity extends BaseActivity implements NavigationView.OnNavi
         super.onBackPressed();
     }
 
-    @OnClick({R.id.toolbar_menu, R.id.toolbar_search})
+    @OnClick({R.id.toolbar_menu, R.id.toolbar_search, R.id.play_bar})
     public void doClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_menu:
@@ -199,6 +199,9 @@ public class MusicActivity extends BaseActivity implements NavigationView.OnNavi
 
             case R.id.toolbar_search:
                 showSearchActivity();
+                break;
+
+            case R.id.play_bar:
                 break;
         }
     }

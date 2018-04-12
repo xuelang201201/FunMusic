@@ -15,11 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
-import com.charles.funmusic.activity.SelectActivity;
+import com.charles.funmusic.activity.MultipleActivity;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.MusicPlayer;
@@ -267,18 +266,25 @@ public class SingleFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mContext, SelectActivity.class);
-                        intent.putParcelableArrayListExtra("ids", mMusics);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        mContext.startActivity(intent);
+                        multiple();
                     }
                 });
             }
         }
 
+        /**
+         * 多选
+         */
+        private void multiple() {
+            Intent intent = new Intent(mContext, MultipleActivity.class);
+            intent.putParcelableArrayListExtra("ids", mMusics);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            mContext.startActivity(intent);
+        }
+
         @Override
         public int getItemCount() {
-            return null != mMusics ? mMusics.size() + 1 : 0;
+            return (null != mMusics ? mMusics.size() + 1 : 0);
         }
 
         public class CommonItemViewHolder extends RecyclerView.ViewHolder
@@ -352,11 +358,12 @@ public class SingleFragment extends BaseFragment {
 
             @Override
             public boolean onLongClick(View v) {
+                multiple();
                 return false;
             }
         }
 
-        private class PlayMusic implements Runnable {
+        class PlayMusic implements Runnable {
             int mPosition;
 
             PlayMusic(int position) {
@@ -366,7 +373,7 @@ public class SingleFragment extends BaseFragment {
             @Override
             public void run() {
                 long[] musics = new long[mMusics.size()];
-                @SuppressLint("UseSparseArrays") HashMap<Long, Music> map = new HashMap<>();
+                HashMap<Long, Music> map = new HashMap();
                 for (int i = 0; i < mMusics.size(); i++) {
                     Music music = mMusics.get(i);
                     musics[i] = music.getId();

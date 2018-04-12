@@ -65,7 +65,7 @@
     <string name="update_quality">升级音质</string>
     <string name="loading">努力加载中…</string>
     <string name="clear_all">清空</string>
-    <string name="next_play">已加入下一首播放</string>
+    <string name="added_to_next_play">已加入下一首播放</string>
 
     <string name="duration_format" translatable="false">
         <xliff:g id="hours">%1$s</xliff:g>
@@ -137,5 +137,8 @@
     <string name="sort_order_entry_album">按专辑排序</string>
     <string name="playlist">播放列表</string>
     <string name="_6_30">下午 6：30</string>
+    <string name="next_play">下一首播放</string>
+    <string name="delete">删除</string>
+    <string name="sure_to_remove_from_local_list">确定将所选音乐从本地列表中移除吗？</string>
 
 </resources>

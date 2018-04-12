@@ -3,6 +3,7 @@ package com.charles.funmusic.activity;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -119,8 +120,9 @@ public class RecentPlayActivity extends BaseActivity {
             notifyDataSetChanged();
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             if (viewType == FIRST_ITEM) {
                 return new CommonItemViewHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.header, parent, false));
@@ -136,7 +138,7 @@ public class RecentPlayActivity extends BaseActivity {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             Song song = null;
             if (position > 0) {
                 song = mSongs.get(position - 1);

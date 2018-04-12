@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,14 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
-import com.charles.funmusic.activity.SelectActivity;
+import com.charles.funmusic.activity.MultipleActivity;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
-import com.charles.funmusic.utils.SystemUtil;
 import com.charles.funmusic.widget.SideBar;
 import com.charles.funmusic.widget.TintImageView;
 
@@ -169,7 +167,7 @@ public class FolderDetailFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mContext, SelectActivity.class);
+                        Intent intent = new Intent(mContext, MultipleActivity.class);
                         intent.putParcelableArrayListExtra("ids", (ArrayList) mMusics);
                         mContext.startActivity(intent);
                     }

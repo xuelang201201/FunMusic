@@ -652,7 +652,7 @@ public class MusicPlayer {
 
             sService.enqueue(list, map, MusicService.NEXT);
 
-            Toast.makeText(context, R.string.next_play, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.added_to_next_play, Toast.LENGTH_SHORT).show();
         } catch (RemoteException ignored) {
             ignored.printStackTrace();
         }

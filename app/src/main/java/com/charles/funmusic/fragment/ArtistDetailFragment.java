@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
-import com.charles.funmusic.activity.SelectActivity;
+import com.charles.funmusic.activity.MultipleActivity;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Artist;
 import com.charles.funmusic.model.Music;
@@ -160,7 +160,7 @@ public class ArtistDetailFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mContext, SelectActivity.class);
+                        Intent intent = new Intent(mContext, MultipleActivity.class);
                         intent.putParcelableArrayListExtra("ids", mMusics);
                         mContext.startActivity(intent);
                     }

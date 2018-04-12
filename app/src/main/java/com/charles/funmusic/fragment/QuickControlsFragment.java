@@ -93,8 +93,8 @@ public class QuickControlsFragment extends BaseFragment {
 
             case R.id.play_bar_play_or_pause:
                 mPlayPause.setImageResource(MusicPlayer.isPlaying() ?
-                        R.drawable.selector_play_bar_pause : R.drawable.selector_play_bar_play);
-                mPlayPause.setImageTintList(R.color.theme_color_primary);
+                        R.drawable.ic_play_bar_btn_pause_normal : R.drawable.ic_play_bar_btn_play_normal);
+//                mPlayPause.setImageTintList(R.color.theme_color_primary);
 
                 if (MusicPlayer.getQueueSize() == 0) {
                     ToastUtil.show(getResources().getString(R.string.queue_is_empty));
@@ -211,12 +211,12 @@ public class QuickControlsFragment extends BaseFragment {
 
     private void updateState() {
         if (MusicPlayer.isPlaying()) {
-//            mPlayPause.setImageResource(R.drawable.selector_play_bar_play_or_pause);
+            mPlayPause.setImageResource(R.drawable.ic_play_bar_btn_pause_normal);
 //            mPlayPause.setImageTintList(R.color.theme_color_primary);
             mProgress.removeCallbacks(mUpdateProgress);
             mProgress.postDelayed(mUpdateProgress, 50);
         } else {
-//            mPlayPause.setImageResource(R.drawable.selector_play_bar_play);
+            mPlayPause.setImageResource(R.drawable.ic_play_bar_btn_play_normal);
 //            mPlayPause.setImageTintList(R.color.theme_color_primary);
             mProgress.removeCallbacks(mUpdateProgress);
         }
