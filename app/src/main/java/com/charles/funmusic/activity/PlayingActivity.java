@@ -62,6 +62,10 @@ public class PlayingActivity extends BaseActivity {
 //    private static final int VIEWPAGER_SCROLL_TIME = 390;
 //    private static final int TIME_DELAY = 500;
 
+    private static final int LOOP = 0;
+    private static final int SHUFFLE = 1;
+    private static final int SINGLE = 2;
+
     @BindView(R.id.activity_playing_bg)
     ImageView mPlayingBg;
     @BindView(R.id.activity_playing_back)
@@ -74,7 +78,7 @@ public class PlayingActivity extends BaseActivity {
     ImageView mShare;
     @BindView(R.id.activity_playing_view_pager)
     AlbumViewPager mViewPager;
-//    @BindView(R.id.activity_playing_needle)
+    //    @BindView(R.id.activity_playing_needle)
 //    ImageView mNeedle;
     @BindView(R.id.activity_playing_volume_seek)
     SeekBar mVolumeSeekBar;
@@ -118,7 +122,7 @@ public class PlayingActivity extends BaseActivity {
     AlbumCoverView mAlbumCoverView;
 
     private ObjectAnimator mRotateAnim;
-//    private ObjectAnimator mNeedleAnim;
+    //    private ObjectAnimator mNeedleAnim;
 //    private AnimatorSet mAnimatorSet;
 //    private FragmentAdapter mAdapter;
 //    private BitmapFactory.Options mNewOpts;
@@ -203,7 +207,8 @@ public class PlayingActivity extends BaseActivity {
 
     @SuppressLint("WrongConstant")
     private void initView() {
-        initPlayMode();
+        initPlayMode(); // 初始化播放模式
+
         mAlbumCoverView.initNeedle(MusicPlayer.isPlaying());
 
 //        mNeedleAnim = ObjectAnimator.ofFloat(mNeedle, "rotation", -25, 0);
@@ -216,6 +221,20 @@ public class PlayingActivity extends BaseActivity {
         mProgressSeekBar.setMax(1000);
 
         setCoverAndBg(MusicPlayer.getCurrentTrack());
+    }
+
+    private void initPlayMode() {
+        switch (Preferences.getPlayMode()) {
+            case LOOP: // LOOP
+                mPlayMode.setImageResource(R.drawable.selector_play_btn_loop);
+                break;
+            case SHUFFLE: // SHUFFLE
+                mPlayMode.setImageResource(R.drawable.selector_play_btn_shuffle);
+                break;
+            case SINGLE: // SINGLE
+                mPlayMode.setImageResource(R.drawable.selector_play_btn_loop_single);
+                break;
+        }
     }
 
     /**
@@ -460,6 +479,9 @@ public class PlayingActivity extends BaseActivity {
         mArtist.setText(MusicPlayer.getArtist());
         mDuration.setText(MusicUtil.makeShortTimeString(
                 PlayingActivity.this.getApplication(), MusicPlayer.duration() / 1000));
+
+        changeFont(mTitle, false);
+        changeFont(mArtist, false);
     }
 
     @SuppressLint("ObjectAnimatorBinding")
@@ -589,7 +611,8 @@ public class PlayingActivity extends BaseActivity {
                 break;
 
             case R.id.play_play_mode:
-                switchPlayMode();
+                MusicPlayer.cycleRepeat();
+                updatePlayMode();
                 break;
 
             case R.id.play_prev:
@@ -614,6 +637,29 @@ public class PlayingActivity extends BaseActivity {
         }
     }
 
+    private void updatePlayMode() {
+
+        if (MusicPlayer.getShuffleMode() == MusicService.SHUFFLE_NORMAL) {
+            mPlayMode.setImageResource(R.drawable.selector_play_btn_shuffle);
+            ToastUtil.show(getString(R.string.mode_shuffle));
+            Preferences.savePlayMode(SHUFFLE);
+        } else {
+            switch (MusicPlayer.getRepeatMode()) {
+                case MusicService.REPEAT_ALL:
+                    mPlayMode.setImageResource(R.drawable.selector_play_btn_loop);
+                    ToastUtil.show(getString(R.string.mode_loop));
+                    Preferences.savePlayMode(LOOP);
+                    break;
+
+                case MusicService.REPEAT_CURRENT:
+                    mPlayMode.setImageResource(R.drawable.selector_play_btn_loop_single);
+                    ToastUtil.show(getString(R.string.mode_loop_single));
+                    Preferences.savePlayMode(SINGLE);
+                    break;
+            }
+        }
+    }
+
     private void share() {
         Music music = MusicUtil.getMusics(PlayingActivity.this,
                 MusicPlayer.getCurrentAudioId());
@@ -628,7 +674,7 @@ public class PlayingActivity extends BaseActivity {
 
     private void more() {
         SimpleMoreFragment moreFragment = SimpleMoreFragment.newInstance(
-                MusicPlayer.getCurrentAlbumId());
+                MusicPlayer.getCurrentAudioId());
         moreFragment.show(getSupportFragmentManager(), "music");
     }
 
@@ -661,6 +707,11 @@ public class PlayingActivity extends BaseActivity {
     }
 
     private void playOrPause() {
+        if (MusicPlayer.isPlaying()) {
+            mPlayOrPause.setImageResource(R.drawable.selector_play_btn_pause);
+        } else {
+            mPlayOrPause.setImageResource(R.drawable.selector_play_btn_play);
+        }
         if (MusicPlayer.getQueueSize() != 0) {
             MusicPlayer.playOrPause();
         }
@@ -694,41 +745,6 @@ public class PlayingActivity extends BaseActivity {
         super.onBackPressed();
         stopAnim();
         mProgressSeekBar.removeCallbacks(mUpdateProgress);
-    }
-
-    /**
-     * 切换播放模式
-     */
-    private void switchPlayMode() {
-        PlayModeEnum mode = PlayModeEnum.valueOf(Preferences.getPlayMode());
-        switch (mode) {
-            case LOOP:
-                mode = PlayModeEnum.SHUFFLE;
-                ToastUtil.show(getString(R.string.mode_shuffle));
-                break;
-
-            case SHUFFLE:
-                mode = PlayModeEnum.SINGLE;
-                ToastUtil.show(getString(R.string.mode_loop_single));
-                break;
-
-            case SINGLE:
-                mode = PlayModeEnum.LOOP;
-                ToastUtil.show(getString(R.string.mode_loop));
-                break;
-        }
-        Preferences.savePlayMode(mode.value());
-        initPlayMode();
-    }
-
-    private void initPlayMode() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                int mode = Preferences.getPlayMode();
-                mPlayMode.setImageLevel(mode);
-            }
-        });
     }
 
 //    private class PlayBarPagerTransformer implements ViewPager.PageTransformer {

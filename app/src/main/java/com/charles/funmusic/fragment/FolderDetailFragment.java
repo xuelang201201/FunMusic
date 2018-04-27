@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -142,8 +143,9 @@ public class FolderDetailFragment extends BaseFragment {
             mMusics = musics;
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             if (viewType == FIRST_ITEM) {
                 return new CommonItemViewHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.header, parent, false));
@@ -159,7 +161,7 @@ public class FolderDetailFragment extends BaseFragment {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof CommonItemViewHolder) {
                 String playAll = "（共" + mMusics.size() + "首）";
                 ((CommonItemViewHolder) holder).mPlayAll.setText(playAll);
@@ -167,9 +169,7 @@ public class FolderDetailFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mContext, MultipleActivity.class);
-                        intent.putParcelableArrayListExtra("ids", (ArrayList) mMusics);
-                        mContext.startActivity(intent);
+                        multiple();
                     }
                 });
             }
@@ -187,6 +187,12 @@ public class FolderDetailFragment extends BaseFragment {
                     ((ListItemViewHolder) holder).mPlayState.setVisibility(View.GONE);
                 }
             }
+        }
+
+        private void multiple() {
+            Intent intent = new Intent(mContext, MultipleActivity.class);
+            intent.putParcelableArrayListExtra("ids", (ArrayList) mMusics);
+            mContext.startActivity(intent);
         }
 
         @Override
@@ -230,7 +236,8 @@ public class FolderDetailFragment extends BaseFragment {
 
         }
 
-        public class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ListItemViewHolder extends RecyclerView.ViewHolder
+                implements View.OnClickListener, View.OnLongClickListener {
             @BindView(R.id.music_item_more)
             ImageView mMoreOverFlow;
             @BindView(R.id.music_item_title)
@@ -255,6 +262,7 @@ public class FolderDetailFragment extends BaseFragment {
                     }
                 });
                 itemView.setOnClickListener(this);
+                itemView.setOnLongClickListener(this);
 
                 changeFont(mTitle, false);
                 changeFont(mArtistAndAlbum, false);
@@ -279,6 +287,12 @@ public class FolderDetailFragment extends BaseFragment {
                             MusicPlayer.playAll(maps, musics, getAdapterPosition() - 1, false);
                     }
                 }, 70);
+            }
+
+            @Override
+            public boolean onLongClick(View v) {
+                multiple();
+                return false;
             }
         }
     }

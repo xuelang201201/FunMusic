@@ -14,7 +14,7 @@ public class RecentStore {
 
     private static RecentStore sInstance = null;
 
-    private DatabaseHelper mDatabaseHelper = null;
+    private DatabaseHelper mDatabaseHelper;
 
     private RecentStore(final Context context) {
         mDatabaseHelper = DatabaseHelper.getInstance(context);

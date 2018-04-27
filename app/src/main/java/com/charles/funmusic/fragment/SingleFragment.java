@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.activity.MultipleActivity;
+import com.charles.funmusic.activity.PlayingActivity;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.MusicPlayer;
@@ -284,7 +285,7 @@ public class SingleFragment extends BaseFragment {
 
         @Override
         public int getItemCount() {
-            return (null != mMusics ? mMusics.size() + 1 : 0);
+            return null != mMusics ? mMusics.size() + 1 : 0;
         }
 
         public class CommonItemViewHolder extends RecyclerView.ViewHolder
@@ -334,7 +335,9 @@ public class SingleFragment extends BaseFragment {
                 mMoreOverFlow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MoreFragment moreFragment = MoreFragment.newInstance(mMusics.get(getAdapterPosition() - 1), Keys.MUSIC_OVERFLOW);
+                        MoreFragment moreFragment = MoreFragment.newInstance(
+                                mMusics.get(getAdapterPosition() - 1).getId() + "",
+                                Keys.MUSIC_OVERFLOW);
                         moreFragment.show(getFragmentManager(), "music");
                     }
                 });

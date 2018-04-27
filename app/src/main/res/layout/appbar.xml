@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/theme_color_primary">
@@ -13,7 +12,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@null"
         android:padding="6dp"
-        android:src="@drawable/ic_arrow_back"/>
+        android:src="@drawable/ic_arrow_back" />
 
     <TextView
         android:id="@+id/header_view_title_text_view"
@@ -27,7 +26,7 @@
         android:layout_toStartOf="@+id/header_view_more"
         android:textColor="@color/white"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/header_view_more"
@@ -36,13 +35,15 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/header_view_text_right"
+        android:layout_toRightOf="@+id/header_view_text_right"
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@null"
         android:padding="6dp"
         android:scaleX="0.9"
         android:scaleY="0.9"
         android:src="@drawable/ic_more"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/header_view_search"
@@ -57,54 +58,7 @@
         android:scaleX="0.75"
         android:scaleY="0.75"
         android:src="@drawable/ic_search"
-        android:visibility="gone"/>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="1dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="1dp"
-        android:layout_toEndOf="@+id/header_view_image_view"
-        android:layout_toLeftOf="@+id/header_view_text_right"
-        android:layout_toRightOf="@+id/header_view_image_view"
-        android:layout_toStartOf="@+id/header_view_text_right">
-
-        <EditText
-            android:id="@+id/header_view_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/selector_edittext"
-            android:hint="@string/search_local"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingBottom="7dp"
-            android:paddingEnd="25dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="25dp"
-            android:paddingStart="10dp"
-            android:paddingTop="7dp"
-            android:textColor="@color/light_black"
-            android:textColorHint="#AAAAAA"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="14sp"
-            android:visibility="gone"/>
-
-        <ImageView
-            android:id="@+id/header_view_clear"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="end|center_vertical"
-            android:background="?android:attr/selectableItemBackground"
-            android:contentDescription="@null"
-            android:padding="10dp"
-            android:src="@drawable/ic_close"
-            android:visibility="gone"/>
-    </FrameLayout>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/header_view_text_right"
@@ -113,12 +67,12 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:textColor="@color/white"
         android:textSize="14sp"
-        android:visibility="gone"/>
+        android:visibility="invisible" />
 
 </RelativeLayout>

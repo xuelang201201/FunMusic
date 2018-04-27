@@ -31,7 +31,6 @@ public class LocalMusicActivity extends BaseActivity {
         }
 
         if (mAlbumId != 0) {
-
         }
 
         String[] title = {"单曲", "歌手", "专辑", "文件夹"};

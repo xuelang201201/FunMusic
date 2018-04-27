@@ -23,6 +23,7 @@ import com.charles.funmusic.R;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.provider.MusicPlaybackState;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.service.MusicService;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.loader.QueueLoader;
 import com.charles.funmusic.widget.TintImageView;
@@ -30,6 +31,7 @@ import com.charles.funmusic.widget.TintImageView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,15 +42,15 @@ public class PlayQueueFragment extends AttachDialogFragment {
     @BindView(R.id.fragment_play_queue_number)
     TextView mPlaylistNumber;
     @BindView(R.id.fragment_play_queue_clear_all)
-    TextView mClearAll;
-    @BindView(R.id.fragment_play_queue_add_to_favorite)
+    ImageView mClearAll;
+    @BindView(R.id.fragment_play_queue_add_to_playlist)
     TextView mAddToPlaylist;
     @BindView(R.id.fragment_play_queue_recycler_view)
     RecyclerView mRecyclerView;
 
     private PlaylistAdapter mAdapter;
     private ArrayList<Music> mPlaylist;
-    private int mCurrentPlayPosition = 0;
+    private int mCurrentlyPlayingPosition = 0;
     private Handler mHandler;
     private PlayQueueListener mQueueListener;
 
@@ -104,12 +106,19 @@ public class PlayQueueFragment extends AttachDialogFragment {
         mRecyclerView.setHasFixedSize(true);
 
         new loadSongs().execute();
+
+        changeFont(mPlaylistNumber, false);
+        changeFont(mAddToPlaylist, false);
     }
 
-    @OnClick({R.id.fragment_play_queue_add_to_favorite, R.id.fragment_play_queue_clear_all})
+    @OnClick({R.id.fragment_play_queue_number, R.id.fragment_play_queue_add_to_playlist, R.id.fragment_play_queue_clear_all})
     public void doClick(View view) {
         switch (view.getId()) {
-            case R.id.fragment_play_queue_add_to_favorite:
+            case R.id.fragment_play_queue_number:
+                break;
+
+            case R.id.fragment_play_queue_add_to_playlist:
+                AddNetPlaylistFragment.newInstance(mPlaylist).show(getFragmentManager(), "add");
                 break;
 
             case R.id.fragment_play_queue_clear_all:
@@ -174,25 +183,26 @@ public class PlayQueueFragment extends AttachDialogFragment {
     }
 
     class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistHolder> {
-        private ArrayList<Music> mMusics = new ArrayList<>();
+        private ArrayList<Music> mPlaylist;
 
-        PlaylistAdapter(ArrayList<Music> musics) {
-            mMusics = musics;
+        PlaylistAdapter(ArrayList<Music> playlist) {
+            mPlaylist = playlist;
         }
 
-        void updateDataSet(ArrayList<Music> musics) {
-            mMusics = musics;
+        void updateDataSet(ArrayList<Music> playlist) {
+            mPlaylist = playlist;
         }
 
+        @NonNull
         @Override
-        public PlaylistHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public PlaylistHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new PlaylistHolder(LayoutInflater.from(mContext)
-                    .inflate(R.layout.fragment_play_queue, parent, false));
+                    .inflate(R.layout.playlist_item, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(PlaylistHolder holder, @SuppressLint("RecyclerView") int position) {
-            Music music = mMusics.get(position);
+        public void onBindViewHolder(@NonNull PlaylistHolder holder, @SuppressLint("RecyclerView") int position) {
+            Music music = mPlaylist.get(position);
             holder.mTitle.setText(music.getTitle());
             String artistStr = " - " + music.getArtist();
             holder.mArtist.setText(artistStr);
@@ -203,7 +213,7 @@ public class PlayQueueFragment extends AttachDialogFragment {
                 holder.mPlayState.setVisibility(View.VISIBLE);
                 holder.mPlayState.setImageResource(R.drawable.playing);
 //                holder.mPlayState.setImageTintList(R.color.theme_color_primary);
-                mCurrentPlayPosition = position;
+                mCurrentlyPlayingPosition = position;
             } else {
                 holder.mPlayState.setVisibility(View.GONE);
             }
@@ -211,7 +221,7 @@ public class PlayQueueFragment extends AttachDialogFragment {
 
         @Override
         public int getItemCount() {
-            return mMusics == null ? 0 : mMusics.size();
+            return mPlaylist == null ? 0 : mPlaylist.size();
         }
 
         class PlaylistHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -229,30 +239,34 @@ public class PlayQueueFragment extends AttachDialogFragment {
                 super(itemView);
 
                 ButterKnife.bind(this, itemView);
+
+                changeFont(mTitle, false);
+                changeFont(mArtist, false);
+
                 itemView.setOnClickListener(this);
 
                 mDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         int position = getAdapterPosition();
-                        long deleteId = mMusics.get(position).getId();
+                        long deleteId = mPlaylist.get(position).getId();
 
                         notifyItemRemoved(position);
                         MusicPlayer.removeTrack(deleteId);
 
                         updateDataSet(QueueLoader.getQueueSongs(mContext));
-                        if (mMusics == null) {
+                        if (mPlaylist == null) {
                             MusicPlayer.stop();
                         }
                         if (MusicPlayer.isPlaying() && (MusicPlayer.getCurrentAudioId() == deleteId)) {
                             MusicPlayer.next();
                         }
                         notifyDataSetChanged();
-                        if (mMusics != null) {
-                            String text = "播放列表（" + mMusics.size() + "）";
+                        if (mPlaylist != null) {
+                            String text = "随机播放（" + mPlaylist.size() + "）";
                             mPlaylistNumber.setText(text);
                         } else {
-                            mPlaylistNumber.setText("播放列表");
+                            mPlaylistNumber.setText("随机播放");
                         }
                     }
                 });
@@ -268,13 +282,13 @@ public class PlayQueueFragment extends AttachDialogFragment {
                             return;
                         }
                         long[] ids = new long[1];
-                        ids[0] = mMusics.get(position).getId();
+                        ids[0] = mPlaylist.get(position).getId();
                         MusicPlayer.setQueuePosition(position);
 
                         if (mQueueListener != null) {
                             mQueueListener.onPlay(position);
 
-                            notifyItemChanged(mCurrentPlayPosition);
+                            notifyItemChanged(mCurrentlyPlayingPosition);
                             notifyItemChanged(position);
                         }
                     }

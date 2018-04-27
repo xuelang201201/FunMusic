@@ -149,7 +149,7 @@ public class MusicService extends Service {
     public static final int SHUFFLE_NONE = 0;
     public static final int SHUFFLE_NORMAL = 1;
     public static final int SHUFFLE_AUTO = 2;
-    public static final int REPEAT_NONE = 0;
+    public static final int REPEAT_NONE = 2;
     public static final int REPEAT_CURRENT = 1;
     public static final int REPEAT_ALL = 2;
     public static final int MAX_HISTORY_SIZE = 1000;

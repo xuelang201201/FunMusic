@@ -1,6 +1,7 @@
 package com.charles.funmusic.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -9,18 +10,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.activity.LocalSearchActivity;
 import com.charles.funmusic.adapter.MyPagerAdapter;
 
 import butterknife.BindView;
@@ -43,12 +41,6 @@ public class LocalMusicFragment extends AttachDialogFragment {
     ViewPager mViewPager;
     @BindView(R.id.header_view_search)
     ImageView mSearch;
-    @BindView(R.id.header_view_edit_text)
-    EditText mEditText;
-    @BindView(R.id.header_view_clear)
-    ImageView mClear;
-    @BindView(R.id.header_view_text_right)
-    TextView mCancel;
 
     private SingleFragment mSingleFragment;
     private ArtistFragment mArtistFragment;
@@ -137,51 +129,10 @@ public class LocalMusicFragment extends AttachDialogFragment {
         mMore.setVisibility(View.VISIBLE);
         mSearch.setVisibility(View.VISIBLE);
         mTitle.setText(R.string.local_musics);
-        mCancel.setText(R.string.cancel);
         changeFont(mTitle, true);
-
-        setEditText();
     }
 
-    private void setEditText() {
-        mEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!TextUtils.isEmpty(s)) {
-                    mClear.setVisibility(View.VISIBLE);
-                    mClear.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mEditText.getText().clear();
-                        }
-                    });
-                } else {
-                    mClear.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
-    public void updateView() {
-        mTitle.setVisibility(View.VISIBLE);
-        mSearch.setVisibility(View.VISIBLE);
-        mMore.setVisibility(View.VISIBLE);
-        mEditText.setVisibility(View.GONE);
-        mCancel.setVisibility(View.GONE);
-        mClear.setVisibility(View.GONE);
-        mEditText.getText().clear();
-    }
-
-    @OnClick({R.id.header_view_image_view, R.id.header_view_more, R.id.header_view_search,
-            R.id.header_view_edit_text, R.id.header_view_clear, R.id.header_view_text_right})
+    @OnClick({R.id.header_view_image_view, R.id.header_view_more, R.id.header_view_search})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.header_view_image_view:
@@ -194,15 +145,6 @@ public class LocalMusicFragment extends AttachDialogFragment {
 
             case R.id.header_view_search:
                 setSearchMode();
-                break;
-
-            case R.id.header_view_edit_text:
-                break;
-
-            case R.id.header_view_text_right:
-                updateView();
-                // 强制隐藏软键盘
-                hideSoftInput();
                 break;
         }
     }
@@ -269,25 +211,16 @@ public class LocalMusicFragment extends AttachDialogFragment {
     }
 
     /**
-     * 显示搜索框
+     * 显示搜索界面
      */
     private void setSearchMode() {
-        updateView();
-        mSearch.setVisibility(View.GONE);
-        mCancel.setVisibility(View.VISIBLE);
-        mMore.setVisibility(View.GONE);
-        mTitle.setVisibility(View.GONE);
-        mEditText.setVisibility(View.VISIBLE);
-        mEditText.clearFocus();
-        mEditText.requestFocus();
-        // 显示软键盘
-        showSoftInput();
+        Intent intent = new Intent(mContext, LocalSearchActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        mContext.startActivity(intent);
     }
 
     public void onBackPressed() {
         if (getActivity() != null) {
-            hideSoftInput();
-            updateView();
             getActivity().onBackPressed();
         }
 

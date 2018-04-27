@@ -40,7 +40,6 @@ import com.charles.funmusic.provider.DownloadStore;
 import com.charles.funmusic.provider.PlaylistInfo;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.SystemUtil;
-//import com.charles.funmusic.utils.ThemeUtils;
 import com.charles.funmusic.utils.loader.TopTracksLoader;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -48,6 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+
+//import com.charles.funmusic.utils.ThemeUtils;
 
 /**
  * 本地音乐列表和一些基础设置
@@ -175,10 +176,9 @@ public class MyFragment extends BaseFragment {
 
             @Override
             protected Void doInBackground(Void... voids) {
-                ArrayList results = new ArrayList();
                 setMusicInfo();
                 ArrayList<Playlist> playLists = mPlaylistInfo.getPlaylist();
-                results.addAll(mList);
+                ArrayList results = new ArrayList(mList);
                 results.add(mContext.getResources().getString(R.string.created_play_lists));
                 results.addAll(playLists);
                 if (mAdapter == null) {
@@ -223,8 +223,9 @@ public class MyFragment extends BaseFragment {
             mPlayLists = playLists;
         }
 
+        @NonNull
         @Override
-        public ItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             switch (viewType) {
                 case 0:
                     View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_my_item, parent, false);
@@ -244,7 +245,7 @@ public class MyFragment extends BaseFragment {
         }
 
         @Override
-        public void onBindViewHolder(ItemHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ItemHolder holder, int position) {
             switch (getItemViewType(position)) {
                 case 0:
                     MyFragmentItem item = (MyFragmentItem) mItemResults.get(position);
@@ -277,7 +278,7 @@ public class MyFragment extends BaseFragment {
         }
 
         @Override
-        public void onViewRecycled(ItemHolder holder) {
+        public void onViewRecycled(@NonNull ItemHolder holder) {
         }
 
         @Override

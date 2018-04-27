@@ -83,7 +83,7 @@
                 android:contentDescription="@null"
                 android:scaleX="0.85"
                 android:scaleY="0.85"
-                android:src="@drawable/ic_play_bar_btn_play_normal" />
+                android:src="@drawable/selector_play_bar_play_or_pause" />
 
             <com.charles.funmusic.widget.TintImageView
                 android:id="@+id/play_bar_next"

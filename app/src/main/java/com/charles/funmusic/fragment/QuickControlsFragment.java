@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,7 +13,6 @@ import com.charles.funmusic.activity.PlayingActivity;
 import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.HandlerUtil;
-//import com.charles.funmusic.utils.ThemeUtils;
 import com.charles.funmusic.utils.ToastUtil;
 import com.charles.funmusic.widget.TintImageView;
 import com.charles.funmusic.widget.TintProgressBar;
@@ -80,6 +80,9 @@ public class QuickControlsFragment extends BaseFragment {
 //        mProgress.setProgressTintList(
 //                ThemeUtils.getThemeColorStateList(mContext, R.color.theme_color_primary));
         mProgress.postDelayed(mUpdateProgress, 0);
+
+        changeFont(mTitle, false);
+        changeFont(mArtist, false);
     }
 
     @OnClick({R.id.play_bar, R.id.play_bar_play_or_pause, R.id.play_bar_next, R.id.play_bar_playlist})
@@ -94,6 +97,11 @@ public class QuickControlsFragment extends BaseFragment {
             case R.id.play_bar_play_or_pause:
                 mPlayPause.setImageResource(MusicPlayer.isPlaying() ?
                         R.drawable.ic_play_bar_btn_pause_normal : R.drawable.ic_play_bar_btn_play_normal);
+//                if (MusicPlayer.isPlaying()) {
+//                    mPlayPause.setSelected(false);
+//                } else {
+//                    mPlayPause.setSelected(true);
+//                }
 //                mPlayPause.setImageTintList(R.color.theme_color_primary);
 
                 if (MusicPlayer.getQueueSize() == 0) {
@@ -118,7 +126,8 @@ public class QuickControlsFragment extends BaseFragment {
                 break;
 
             case R.id.play_bar_playlist:
-                mHandler.postDelayed(new Runnable() {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         PlayQueueFragment playQueueFragment = new PlayQueueFragment();
@@ -211,13 +220,15 @@ public class QuickControlsFragment extends BaseFragment {
 
     private void updateState() {
         if (MusicPlayer.isPlaying()) {
-            mPlayPause.setImageResource(R.drawable.ic_play_bar_btn_pause_normal);
+//            mPlayPause.setImageResource(R.drawable.ic_play_bar_btn_pause_normal);
 //            mPlayPause.setImageTintList(R.color.theme_color_primary);
+            mPlayPause.setSelected(false);
             mProgress.removeCallbacks(mUpdateProgress);
             mProgress.postDelayed(mUpdateProgress, 50);
         } else {
-            mPlayPause.setImageResource(R.drawable.ic_play_bar_btn_play_normal);
+//            mPlayPause.setImageResource(R.drawable.ic_play_bar_btn_play_normal);
 //            mPlayPause.setImageTintList(R.color.theme_color_primary);
+            mPlayPause.setSelected(true);
             mProgress.removeCallbacks(mUpdateProgress);
         }
     }

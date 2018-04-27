@@ -70,26 +70,4 @@ public abstract class AttachDialogFragment extends DialogFragment {
             textView.getPaint().setFakeBoldText(false); // 不设置为粗体
         }
     }
-
-    /**
-     * 显示软键盘
-     */
-    public void showSoftInput() {
-        InputMethodManager inputMethodManager = (InputMethodManager) AppCache
-                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (inputMethodManager != null) {
-            inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-    /**
-     * 隐藏软键盘
-     */
-    public void hideSoftInput() {
-        InputMethodManager manager = (InputMethodManager) AppCache
-                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (manager != null) {
-            manager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-        }
-    }
 }

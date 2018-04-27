@@ -61,12 +61,16 @@ public class MultipleActivity extends BaseActivity {
     private ArrayList<Music> mMusics;
     private MultipleAdapter mAdapter;
 
+    private SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiple);
 
-        mNumberOfChosen.setText("已选择0项");
+        mNumberOfChosen.setText(R.string.selected_zero);
+        mSelectAll.setVisibility(View.VISIBLE);
+        mSelectAll.setText(R.string.select_all);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
@@ -78,20 +82,38 @@ public class MultipleActivity extends BaseActivity {
 
     @OnClick({R.id.header_view_image_view, R.id.header_view_text_right, R.id.activity_multiple_next_play, R.id.activity_multiple_add_to_playlist, R.id.activity_multiple_delete})
     public void onViewClicked(View view) {
-        final ArrayList<Music> selectedItems = mAdapter.getSelectedItem();
+        final ArrayList<Music> selectedItems = getSelectedItem();
         switch (view.getId()) {
             case R.id.header_view_image_view:
                 onBackPressed();
                 break;
 
             case R.id.header_view_text_right:
+                String str = "已选择" + getSelectedItem().size() + "项";
+                if (mSelectAll.getText() == getString(R.string.select_all)) {
+                    for (int i = 0; i < mMusics.size(); i++) {
+                        setItemChecked(i, true);
+                    }
+                    mAdapter.notifyDataSetChanged();
+
+                    mSelectAll.setText(R.string.select_none);
+                    mNumberOfChosen.setText(str);
+                } else {
+                    for (int i = 0; i < mMusics.size(); i++) {
+                        setItemChecked(i, false);
+                    }
+                    mAdapter.notifyDataSetChanged();
+
+                    mSelectAll.setText(R.string.select_all);
+                    mNumberOfChosen.setText(str);
+                }
                 break;
 
             case R.id.activity_multiple_next_play:
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        ArrayList<Music> selectedMusics = mAdapter.getSelectedItem();
+                        ArrayList<Music> selectedMusics = getSelectedItem();
                         long currentAudioId = MusicPlayer.getCurrentAudioId();
 
                         for (int i = 0; i < selectedMusics.size(); i++) {
@@ -119,7 +141,7 @@ public class MultipleActivity extends BaseActivity {
 
             case R.id.activity_multiple_add_to_playlist:
                 long[] list = new long[selectedItems.size()];
-                for (int i = 0; i < mAdapter.getSelectedItem().size(); i++) {
+                for (int i = 0; i < getSelectedItem().size(); i++) {
                     list[i] = selectedItems.get(i).getId();
                 }
                 AddPlaylistFragment.newInstance(list).show(getSupportFragmentManager(), "add");
@@ -208,10 +230,27 @@ public class MultipleActivity extends BaseActivity {
         }
     }
 
+    void setItemChecked(int position, boolean isChecked) {
+        mSelectedPositions.put(position, isChecked);
+    }
+
+    boolean isItemChecked(int position) {
+        return mSelectedPositions.get(position);
+    }
+
+    public ArrayList<Music> getSelectedItem() {
+        ArrayList<Music> selectItem = new ArrayList<>();
+        for (int i = 0; i < mMusics.size(); i++) {
+            if (isItemChecked(i)) {
+                selectItem.add(mMusics.get(i));
+            }
+        }
+        return selectItem;
+    }
+
     public class MultipleAdapter extends RecyclerView.Adapter<MultipleAdapter.MultipleHolder> {
 
         private ArrayList<Music> mMusics;
-        private SparseBooleanArray mSelectedPositions = new SparseBooleanArray();
 
         MultipleAdapter(ArrayList<Music> musics) {
             if (musics == null) {
@@ -220,21 +259,11 @@ public class MultipleActivity extends BaseActivity {
             mMusics = musics;
         }
 
-        public ArrayList<Music> getSelectedItem() {
-            ArrayList<Music> selectItem = new ArrayList<>();
-            for (int i = 0; i < mMusics.size(); i++) {
-                if (isItemChecked(i)) {
-                    selectItem.add(mMusics.get(i));
-                }
-            }
-            return selectItem;
-        }
-
         /**
          * 更新adapter的数据
          */
         public void updateDateSet() {
-            mNumberOfChosen.setText("已选择0项");
+            mNumberOfChosen.setText(R.string.selected_zero);
             mMusics.removeAll(getSelectedItem());
             mSelectedPositions.clear();
         }
@@ -245,14 +274,6 @@ public class MultipleActivity extends BaseActivity {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.multiple_item, parent, false);
             return new MultipleHolder(view);
-        }
-
-        private void setItemChecked(int position, boolean isChecked) {
-            mSelectedPositions.put(position, isChecked);
-        }
-
-        private boolean isItemChecked(int position) {
-            return mSelectedPositions.get(position);
         }
 
         @Override
@@ -307,9 +328,10 @@ public class MultipleActivity extends BaseActivity {
                 super(itemView);
 
                 ButterKnife.bind(this, itemView);
+
+                changeFont(mTitle, false);
+                changeFont(mArtistAndAlbum, false);
             }
         }
-
-
     }
 }

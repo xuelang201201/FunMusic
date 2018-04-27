@@ -161,18 +161,14 @@ public class MusicPlayer {
                 } else {
                     switch (sService.getRepeatMode()) {
                         case MusicService.REPEAT_CURRENT:
-                            sService.setRepeatMode(MusicService.REPEAT_CURRENT);
+                            sService.setRepeatMode(MusicService.REPEAT_ALL);
                             break;
 
                         case MusicService.REPEAT_ALL:
-                            sService.setShuffleMode(MusicService.REPEAT_CURRENT);
-                            if (sService.getShuffleMode() != MusicService.SHUFFLE_NONE) {
-                                sService.setShuffleMode(MusicService.SHUFFLE_NONE);
-                            }
-                            break;
-
-                        default:
-                            sService.setRepeatMode(MusicService.REPEAT_NONE);
+                            sService.setShuffleMode(MusicService.SHUFFLE_NORMAL);
+//                            if (sService.getShuffleMode() != MusicService.SHUFFLE_NONE) {
+//                                sService.setShuffleMode(MusicService.SHUFFLE_NONE);
+//                            }
                             break;
                     }
                 }

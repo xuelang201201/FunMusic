@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
+    android:background="@color/white"
     android:orientation="vertical"
     android:scrollbars="none">
 
@@ -29,7 +30,7 @@
             android:id="@+id/fragment_simple_more_pop_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fadeScrollbars="true"/>
+            android:fadeScrollbars="true" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

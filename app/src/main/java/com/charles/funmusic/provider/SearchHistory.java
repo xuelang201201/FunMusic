@@ -10,9 +10,9 @@ import java.util.ArrayList;
 public class SearchHistory {
     private static final int MAX_ITEMS_IN_DB = 25;
     private static SearchHistory sInstance = null;
-    private DatabaseHelper mDatabaseHelper = null;
+    private DatabaseHelper mDatabaseHelper;
 
-    SearchHistory(final Context context) {
+    private SearchHistory(final Context context) {
         mDatabaseHelper = DatabaseHelper.getInstance(context);
     }
 

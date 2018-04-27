@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.charles.funmusic.IFunMusicService;
@@ -331,6 +332,28 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
         Intent intent = new Intent(context, cls);
         context.startActivity(intent);
         this.overridePendingTransition(0, 0);
+    }
+
+    /**
+     * 显示软键盘
+     */
+    public void showSoftInput() {
+        InputMethodManager inputMethodManager = (InputMethodManager) AppCache
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null) {
+            inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    public void hideSoftInput() {
+        InputMethodManager manager = (InputMethodManager) AppCache
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (manager != null) {
+            manager.hideSoftInputFromWindow(new View(this).getWindowToken(), 0);
+        }
     }
 
     private final static class PlaybackStatus extends BroadcastReceiver {

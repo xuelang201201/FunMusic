@@ -93,10 +93,10 @@ public class MoreFragment extends AttachDialogFragment {
         return fragment;
     }
 
-    public static MoreFragment newInstance(Music info, long playlistId) {
+    public static MoreFragment newInstance(Music music, long playlistId) {
         MoreFragment fragment = new MoreFragment();
         Bundle args = new Bundle();
-        args.putParcelable("music", info);
+        args.putParcelable("music", music);
         args.putLong("playlist_id", playlistId);
         fragment.setArguments(args);
         return fragment;

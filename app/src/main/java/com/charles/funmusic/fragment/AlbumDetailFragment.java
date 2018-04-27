@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,8 +57,9 @@ public class AlbumDetailFragment extends BaseFragment {
         Bundle args = new Bundle();
         args.putLong("album_id", id);
         args.putBoolean("transition", useTransition);
-        if (useTransition)
+        if (useTransition) {
             args.putString("transition_name", transitionName);
+        }
         fragment.setArguments(args);
         return fragment;
     }
@@ -143,8 +145,9 @@ public class AlbumDetailFragment extends BaseFragment {
             mMusics = musics;
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             if (viewType == FIRST_ITEM) {
                 return new CommonItemViewHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.header, parent, false));
@@ -160,16 +163,14 @@ public class AlbumDetailFragment extends BaseFragment {
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             if (holder instanceof CommonItemViewHolder) {
                 String text = "（共" + mMusics.size() + "首）";
                 ((CommonItemViewHolder) holder).mPlayAll.setText(text);
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mContext, MultipleActivity.class);
-                        intent.putParcelableArrayListExtra("ids", mMusics);
-                        mContext.startActivity(intent);
+                        multiple();
                     }
                 });
             }
@@ -187,6 +188,12 @@ public class AlbumDetailFragment extends BaseFragment {
                     ((ListItemViewHolder) holder).mPlayState.setVisibility(View.GONE);
                 }
             }
+        }
+
+        private void multiple() {
+            Intent intent = new Intent(mContext, MultipleActivity.class);
+            intent.putParcelableArrayListExtra("ids", mMusics);
+            mContext.startActivity(intent);
         }
 
         @Override
@@ -228,7 +235,8 @@ public class AlbumDetailFragment extends BaseFragment {
             }
         }
 
-        public class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ListItemViewHolder extends RecyclerView.ViewHolder
+                implements View.OnClickListener, View.OnLongClickListener {
             @BindView(R.id.music_item_more)
             ImageView mMoreOverFlow;
             @BindView(R.id.music_item_title)
@@ -243,6 +251,7 @@ public class AlbumDetailFragment extends BaseFragment {
                 ButterKnife.bind(this, itemView);
 
                 itemView.setOnClickListener(this);
+                itemView.setOnLongClickListener(this);
                 // 设置弹出菜单
                 mMoreOverFlow.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -276,6 +285,12 @@ public class AlbumDetailFragment extends BaseFragment {
                         }
                     }
                 }, 60);
+            }
+
+            @Override
+            public boolean onLongClick(View v) {
+                multiple();
+                return false;
             }
         }
     }

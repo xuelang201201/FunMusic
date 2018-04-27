@@ -1,6 +1,7 @@
 package com.charles.funmusic.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,12 +18,14 @@ import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.fragment.MoreFragment;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.model.Song;
+import com.charles.funmusic.provider.RecentStore;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.loader.SongLoader;
 import com.charles.funmusic.utils.loader.TopTracksLoader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,6 +60,7 @@ public class RecentPlayActivity extends BaseActivity {
         mRecyclerView.setHasFixedSize(true);
 
         mClearAll.setVisibility(View.VISIBLE);
+        mClearAll.setText(getString(R.string.clear_all));
         mTitle.setText(getString(R.string.recent_play));
 
         new loadSongs().execute("");
@@ -98,6 +102,8 @@ public class RecentPlayActivity extends BaseActivity {
                 break;
 
             case R.id.header_view_text_right:
+                RecentStore.getInstance(this).deleteAll();
+                mAdapter.updateDataSet(mSongs);
                 break;
         }
     }
@@ -162,9 +168,9 @@ public class RecentPlayActivity extends BaseActivity {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        Intent intent = new Intent(RecentPlayActivity.this, SelectActivity.class);
-//                        intent.putParcelableArrayListExtra("ids", (ArrayList) mSongs);
-//                        startActivity(intent);
+                        Intent intent = new Intent(RecentPlayActivity.this, MultipleActivity.class);
+                        intent.putParcelableArrayListExtra("ids", (ArrayList) mSongs);
+                        startActivity(intent);
                     }
                 });
             }
@@ -235,6 +241,9 @@ public class RecentPlayActivity extends BaseActivity {
                     }
                 });
                 itemView.setOnClickListener(this);
+
+                changeFont(mTitle, false);
+                changeFont(mArtistAndAlbum, false);
             }
 
             @Override

@@ -1,5 +1,6 @@
 package com.charles.funmusic.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
@@ -42,6 +43,21 @@ public class ScreenUtil {
             result = sContext.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static int getStatusHeight(Context context) {
+
+        int statusHeight = -1;
+        try {
+            @SuppressLint("PrivateApi") Class clazz = Class.forName("com.android.internal.R$dimen");
+            Object object = clazz.newInstance();
+            int height = Integer.parseInt(clazz.getField("status_bar_height")
+                    .get(object).toString());
+            statusHeight = context.getResources().getDimensionPixelSize(height);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return statusHeight;
     }
 
     public static int dp2px(float dpValue) {
