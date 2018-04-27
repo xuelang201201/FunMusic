@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.charles.funmusic.R;
 import com.charles.funmusic.constant.Actions;
 import com.charles.funmusic.constant.Keys;
-import com.charles.funmusic.enums.PlayModeEnum;
 import com.charles.funmusic.fragment.PlayQueueFragment;
 import com.charles.funmusic.fragment.SimpleMoreFragment;
 import com.charles.funmusic.lyric.DefaultLrcParser;
