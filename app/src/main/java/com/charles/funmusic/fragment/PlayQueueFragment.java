@@ -287,10 +287,10 @@ public class PlayQueueFragment extends AttachDialogFragment {
 
                         if (mQueueListener != null) {
                             mQueueListener.onPlay(position);
-
-                            notifyItemChanged(mCurrentlyPlayingPosition);
-                            notifyItemChanged(position);
                         }
+
+                        notifyItemChanged(mCurrentlyPlayingPosition);
+                        notifyItemChanged(position);
                     }
                 }, 70);
             }
