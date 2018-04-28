@@ -336,8 +336,7 @@ public class SingleFragment extends BaseFragment {
                     @Override
                     public void onClick(View v) {
                         MoreFragment moreFragment = MoreFragment.newInstance(
-                                mMusics.get(getAdapterPosition() - 1).getId() + "",
-                                Keys.MUSIC_OVERFLOW);
+                                mMusics.get(getAdapterPosition() - 1), Keys.MUSIC_OVERFLOW);
                         moreFragment.show(getFragmentManager(), "music");
                     }
                 });

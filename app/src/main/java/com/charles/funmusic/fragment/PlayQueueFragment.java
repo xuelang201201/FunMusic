@@ -23,7 +23,6 @@ import com.charles.funmusic.R;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.provider.MusicPlaybackState;
 import com.charles.funmusic.service.MusicPlayer;
-import com.charles.funmusic.service.MusicService;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.loader.QueueLoader;
 import com.charles.funmusic.widget.TintImageView;
@@ -31,7 +30,6 @@ import com.charles.funmusic.widget.TintImageView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

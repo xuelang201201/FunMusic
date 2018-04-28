@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,17 +25,27 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.activity.AlbumsDetailActivity;
+import com.charles.funmusic.activity.ArtistDetailActivity;
 import com.charles.funmusic.adapter.MusicFlowAdapter;
 import com.charles.funmusic.adapter.OverFlowAdapter;
+import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Actions;
 import com.charles.funmusic.constant.Keys;
+import com.charles.funmusic.json.SearchAlbumInfo;
+import com.charles.funmusic.json.SearchArtistInfo;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.model.OverFlowItem;
+import com.charles.funmusic.net.BMA;
+import com.charles.funmusic.net.HttpUtil;
 import com.charles.funmusic.provider.PlaylistManager;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.ToastUtil;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -262,99 +271,99 @@ public class MoreFragment extends AttachDialogFragment {
                             dismiss();
                             break;
                         case 4:
-//                            if (mMusic.isLocal()) {
-//                                new AsyncTask<Void, Void, Void>() {
-//
-//                                    @Override
-//                                    protected Void doInBackground(Void... params) {
-//                                        ArrayList<SearchArtist> artistResults = new ArrayList<>();
-//                                        try {
-//                                            JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Search.searchMerge(mMusic.getArtist(), 1, 50)).get("result").getAsJsonObject();
-//                                            JsonObject artistObject = jsonObject.get("artist_info").getAsJsonObject();
-//                                            JsonArray artistArray = artistObject.get("artist_list").getAsJsonArray();
-//                                            for (JsonElement o : artistArray) {
-//                                                SearchArtist artist = AppCache.gsonInstance().fromJson(o, SearchArtist.class);
-//                                                artistResults.add(artist);
-//                                            }
-//                                        } catch (Exception e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                        if (artistResults.size() == 0) {
-//                                            mHandler.post(new Runnable() {
-//                                                @Override
-//                                                public void run() {
-//                                                    ToastUtil.show("没有找到该艺术家");
-//                                                }
-//                                            });
-//
-//                                        } else {
-//                                            SearchArtist info = artistResults.get(0);
-//                                            Intent intent = new Intent(mContext, ArtistDetailActivity.class);
-//                                            intent.putExtra("artist_id", info.getArtistId());
-//                                            intent.putExtra("artist", info.getAuthor());
-//                                            mContext.startActivity(intent);
-//                                        }
-//                                        return null;
-//                                    }
-//                                }.execute();
-//                            } else {
-//
-//                                Intent intent = new Intent(mContext, ArtistDetailActivity.class);
-//                                intent.putExtra("artist_id", mMusic.getArtistId() + "");
-//                                intent.putExtra("artist", mMusic.getArtist());
-//                                mContext.startActivity(intent);
-//                            }
-//                            dismiss();
+                            if (mMusic.isLocal()) {
+                                new AsyncTask<Void, Void, Void>() {
+
+                                    @Override
+                                    protected Void doInBackground(Void... params) {
+                                        ArrayList<SearchArtistInfo> artistResults = new ArrayList<>();
+                                        try {
+                                            JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Search.searchMerge(mMusic.getArtist(), 1, 50)).get("result").getAsJsonObject();
+                                            JsonObject artistObject = jsonObject.get("artist_info").getAsJsonObject();
+                                            JsonArray artistArray = artistObject.get("artist_list").getAsJsonArray();
+                                            for (JsonElement o : artistArray) {
+                                                SearchArtistInfo artist = AppCache.gsonInstance().fromJson(o, SearchArtistInfo.class);
+                                                artistResults.add(artist);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        if (artistResults.size() == 0) {
+                                            mHandler.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    ToastUtil.show("没有找到该艺术家");
+                                                }
+                                            });
+
+                                        } else {
+                                            SearchArtistInfo info = artistResults.get(0);
+                                            Intent intent = new Intent(mContext, ArtistDetailActivity.class);
+                                            intent.putExtra("artist_id", info.getArtist_id());
+                                            intent.putExtra("artist", info.getAuthor());
+                                            mContext.startActivity(intent);
+                                        }
+                                        return null;
+                                    }
+                                }.execute();
+                            } else {
+
+                                Intent intent = new Intent(mContext, ArtistDetailActivity.class);
+                                intent.putExtra("artist_id", mMusic.getArtistId() + "");
+                                intent.putExtra("artist", mMusic.getArtist());
+                                mContext.startActivity(intent);
+                            }
+                            dismiss();
                             break;
                         case 5:
-//                            if (mMusic.isLocal()) {
-//                                new AsyncTask<Void, Void, Void>() {
-//
-//                                    @Override
-//                                    protected Void doInBackground(Void... params) {
-//                                        ArrayList<SearchAlbum> albumResults = new ArrayList<SearchAlbum>();
-//                                        try {
-//
-//                                            JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Search.searchMerge(mMusic.getAlbum(), 1, 10)).get("result").getAsJsonObject();
-//                                            JsonObject albumObject = jsonObject.get("album_info").getAsJsonObject();
-//                                            JsonArray albumArray = albumObject.get("album_list").getAsJsonArray();
-//                                            for (JsonElement o : albumArray) {
-//                                                SearchAlbum albumInfo = AppCache.gsonInstance().fromJson(o, SearchAlbum.class);
-//                                                albumResults.add(albumInfo);
-//                                            }
-//                                        } catch (Exception e) {
-//                                            e.printStackTrace();
-//                                        }
-//
-//                                        if (albumResults.size() == 0) {
-//                                            mHandler.post(new Runnable() {
-//                                                @Override
-//                                                public void run() {
-//                                                    Toast.makeText(mContext, "没有找到所属专辑", Toast.LENGTH_SHORT).show();
-//                                                }
-//                                            });
-//
-//                                        } else {
-//                                            SearchAlbum info = albumResults.get(0);
-//                                            Intent intent = new Intent(mContext, AlbumsDetailActivity.class);
-//                                            intent.putExtra("album_id", info.getAlbumId());
-//                                            intent.putExtra("album_art", info.getPicSmall());
-//                                            intent.putExtra("album", info.getTitle());
-//                                            intent.putExtra("album_detail", info.getAlbumDesc());
-//                                            mContext.startActivity(intent);
-//                                        }
-//                                        return null;
-//                                    }
-//                                };
-//                            } else {
-//
-//                                Intent intent = new Intent(mContext, AlbumsDetailActivity.class);
-//                                intent.putExtra("album_id", mMusic.getAlbumId() + "");
-//                                intent.putExtra("album_art", mMusic.getAlbumArt());
-//                                intent.putExtra("album", mMusic.getAlbum());
-//                                mContext.startActivity(intent);
-//                            }
-//                            dismiss();
+                            if (mMusic.isLocal()) {
+                                new AsyncTask<Void, Void, Void>() {
+
+                                    @Override
+                                    protected Void doInBackground(Void... params) {
+                                        ArrayList<SearchAlbumInfo> albumResults = new ArrayList<>();
+                                        try {
+
+                                            JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Search.searchMerge(mMusic.getAlbum(), 1, 10)).get("result").getAsJsonObject();
+                                            JsonObject albumObject = jsonObject.get("album_info").getAsJsonObject();
+                                            JsonArray albumArray = albumObject.get("album_list").getAsJsonArray();
+                                            for (JsonElement o : albumArray) {
+                                                SearchAlbumInfo albumInfo = AppCache.gsonInstance().fromJson(o, SearchAlbumInfo.class);
+                                                albumResults.add(albumInfo);
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        if (albumResults.size() == 0) {
+                                            mHandler.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    ToastUtil.show("没有找到所属专辑");
+                                                }
+                                            });
+
+                                        } else {
+                                            SearchAlbumInfo info = albumResults.get(0);
+                                            Intent intent = new Intent(mContext, AlbumsDetailActivity.class);
+                                            intent.putExtra("album_id", info.getAlbum_id());
+                                            intent.putExtra("album_art", info.getPic_small());
+                                            intent.putExtra("album", info.getTitle());
+                                            intent.putExtra("album_detail", info.getAlbum_desc());
+                                            mContext.startActivity(intent);
+                                        }
+                                        return null;
+                                    }
+                                };
+                            } else {
+
+                                Intent intent = new Intent(mContext, AlbumsDetailActivity.class);
+                                intent.putExtra("album_id", mMusic.getAlbumId() + "");
+                                intent.putExtra("album_art", mMusic.getAlbumArt());
+                                intent.putExtra("album", mMusic.getAlbum());
+                                mContext.startActivity(intent);
+                            }
+                            dismiss();
                             break;
                         case 6:
                             if (mMusic.isLocal()) {
