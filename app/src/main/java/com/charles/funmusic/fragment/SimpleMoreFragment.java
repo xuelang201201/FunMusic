@@ -1,7 +1,6 @@
 package com.charles.funmusic.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ContentUris;
 import android.content.DialogInterface;
@@ -12,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore.Audio.Media;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -23,7 +23,9 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.activity.PlayingActivity;
 import com.charles.funmusic.adapter.MusicFlowAdapter;
+import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Actions;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.model.OverFlowItem;
@@ -134,21 +136,26 @@ public class SimpleMoreFragment extends AttachDialogFragment {
                     switch (Integer.parseInt(data)) {
                         case 0:
                             nextPlay();
+                            dismiss();
                             break;
                         case 1:
                             addToPlaylist();
+                            dismiss();
                             break;
                         case 2:
                             share();
+                            dismiss();
                             break;
                         case 3:
                             delete();
+                            dismiss();
                             break;
                         case 4:
                             setAsRingtone();
                             break;
                         case 5:
                             detail();
+                            dismiss();
                             break;
                     }
                 }
@@ -172,12 +179,10 @@ public class SimpleMoreFragment extends AttachDialogFragment {
                 }
             }, 100);
         }
-        dismiss();
     }
 
     private void addToPlaylist() {
         AddPlaylistFragment.newInstance(mMusic).show(getChildFragmentManager(), "add");
-        dismiss();
     }
 
     private void share() {
@@ -186,52 +191,41 @@ public class SimpleMoreFragment extends AttachDialogFragment {
         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + mMusic.getAlbumArt()));
         shareIntent.setType("audio/*");
         mContext.startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
-        dismiss();
     }
 
     private void delete() {
         if (mMusic.isLocal()) {
-            new AlertDialog.Builder(mContext).setTitle(R.string.sure_to_delete_music)
+            new AlertDialog.Builder(getActivity()).setTitle(R.string.sure_to_delete_music)
                     .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            confirmDelete();
-                            dismiss();
+                            Uri uri = ContentUris.withAppendedId(Media.EXTERNAL_CONTENT_URI, mMusic.getId());
+                            mContext.getContentResolver().delete(uri, null, null);
+                            if (MusicPlayer.getCurrentAudioId() == mMusic.getId()) {
+                                if (MusicPlayer.getQueueSize() == 0) {
+                                    MusicPlayer.stop();
+                                } else {
+                                    MusicPlayer.next();
+                                }
+                            }
+
+                            HandlerUtil.getInstance(mContext).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    PlaylistManager.getInstance(mContext).deleteMusic(mContext, mMusic.getId());
+                                    mContext.sendBroadcast(new Intent(Actions.ACTION_MUSIC_COUNT_CHANGED));
+                                }
+                            }, 200);
                         }
                     })
-                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dismiss();
-                        }
-                    })
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .show();
         }
     }
 
-    private void confirmDelete() {
-        Uri uri = ContentUris.withAppendedId(Media.EXTERNAL_CONTENT_URI, mMusic.getId());
-        mContext.getContentResolver().delete(uri, null, null);
-        if (MusicPlayer.getCurrentAudioId() == mMusic.getId()) {
-            if (MusicPlayer.getQueueSize() == 0) {
-                MusicPlayer.stop();
-            } else {
-                MusicPlayer.next();
-            }
-        }
-        HandlerUtil.getInstance(mContext).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                PlaylistManager.getInstance(mContext).deleteMusic(mContext, mMusic.getId());
-                mContext.sendBroadcast(new Intent(Actions.ACTION_MUSIC_COUNT_CHANGED));
-            }
-        }, 200);
-        dismiss();
-    }
-
     private void setAsRingtone() {
         if (mMusic.isLocal()) {
-            new AlertDialog.Builder(mContext).setTitle(getString(R.string.sure_to_set_ringtone))
+            new AlertDialog.Builder(getActivity()).setTitle(getString(R.string.sure_to_set_ringtone))
                     .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -239,15 +233,9 @@ public class SimpleMoreFragment extends AttachDialogFragment {
                             RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
                             dialog.dismiss();
                             ToastUtil.show(getString(R.string.set_ringtone_success));
-                            dismiss();
                         }
                     })
-                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).show();
+                    .setNegativeButton(getString(R.string.cancel), null).show();
         }
     }
 
@@ -256,7 +244,6 @@ public class SimpleMoreFragment extends AttachDialogFragment {
         if (getActivity() != null) {
             detailFragment.show(getActivity().getSupportFragmentManager(), "detail");
         }
-        dismiss();
     }
 
     /**

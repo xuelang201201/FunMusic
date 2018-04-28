@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Audio.Media;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -226,7 +227,6 @@ public class MoreFragment extends AttachDialogFragment {
                             break;
                         case 6:
                             setAsRingtone();
-                            dismiss();
                             break;
                         case 7:
                             detail();
@@ -313,7 +313,7 @@ public class MoreFragment extends AttachDialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try {
-                            Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mMusic.getId());
+                            Uri uri = ContentUris.withAppendedId(Media.EXTERNAL_CONTENT_URI, mMusic.getId());
                             mContext.getContentResolver().delete(uri, null, null);
 
                             if (MusicPlayer.getCurrentAudioId() == mMusic.getId()) {
@@ -334,15 +334,9 @@ public class MoreFragment extends AttachDialogFragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        dismiss();
                     }
                 })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dismiss();
-                    }
-                }).show();
+                .setNegativeButton(getString(R.string.cancel), null).show();
     }
 
     /**
@@ -459,16 +453,11 @@ public class MoreFragment extends AttachDialogFragment {
                         public void onClick(DialogInterface dialog, int which) {
                             Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
                             RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
-                            dialog.dismiss();
+                            dismiss();
                             ToastUtil.show(getString(R.string.set_ringtone_success));
                         }
                     })
-                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).show();
+                    .setNegativeButton(getString(R.string.cancel), null).show();
         }
     }
 
@@ -519,7 +508,7 @@ public class MoreFragment extends AttachDialogFragment {
                             MusicPlayer.next();
                         }
                     }
-                    Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music.getId());
+                    Uri uri = ContentUris.withAppendedId(Media.EXTERNAL_CONTENT_URI, music.getId());
                     mContext.getContentResolver().delete(uri, null, null);
                     PlaylistManager.getInstance(mContext).deleteMusic(mContext, music.getId());
                 }
