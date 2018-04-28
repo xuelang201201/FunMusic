@@ -256,7 +256,7 @@ public class PlayQueueFragment extends AttachDialogFragment {
                         if (mPlaylist == null) {
                             MusicPlayer.stop();
                         }
-                        if (MusicPlayer.isPlaying() && (MusicPlayer.getCurrentAudioId() == deleteId)) {
+                        if (MusicPlayer.isPlaying() && MusicPlayer.getCurrentAudioId() == deleteId) {
                             MusicPlayer.next();
                         }
                         notifyDataSetChanged();

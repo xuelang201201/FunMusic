@@ -22,6 +22,8 @@ public class QueueLoader {
             music.setAlbum(cursor.getString(4));
             music.setTitle(cursor.getString(1));
             music.setArtist(cursor.getString(2));
+
+            musicQueues.add(music);
         }
 
         cursor.close();
