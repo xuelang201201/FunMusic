@@ -197,198 +197,39 @@ public class MoreFragment extends AttachDialogFragment {
     private void setClick() {
         if (mMusicFlowAdapter != null) {
             mMusicFlowAdapter.setOnItemClickListener(new MusicFlowAdapter.IOnRecyclerViewItemClickListener() {
-                @SuppressLint("StaticFieldLeak")
                 @Override
                 public void onItemClick(View view, final String data) {
                     switch (Integer.parseInt(data)) {
                         case 0:
-                            mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mMusic.getId() == MusicPlayer.getCurrentAudioId()) {
-                                        return;
-                                    }
-                                    long[] ids = new long[1];
-                                    ids[0] = mMusic.getId();
-                                    @SuppressLint("UseSparseArrays") HashMap<Long, Music> map = new HashMap<>();
-                                    map.put(ids[0], mMusic);
-                                    MusicPlayer.playNext(mContext, map, ids);
-                                }
-                            }, 100);
+                            nextPlay();
                             dismiss();
                             break;
                         case 1:
-                            ArrayList<Music> musics = new ArrayList<>();
-                            musics.add(mMusic);
-                            AddNetPlaylistFragment.newInstance(musics).show(getFragmentManager(), "add");
+                            addToPlaylist();
                             dismiss();
                             break;
                         case 2:
-                            Intent shareIntent = new Intent();
-                            shareIntent.setAction(Intent.ACTION_SEND);
-                            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + mMusic.getUrl()));
-                            shareIntent.setType("audio/*");
-                            mContext.startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
+                            share();
                             dismiss();
                             break;
                         case 3:
-                            new AlertDialog.Builder(mContext)
-                                    .setTitle(getString(R.string.sure_to_delete_music))
-                                    .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            try {
-                                                Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mMusic.getId());
-                                                mContext.getContentResolver().delete(uri, null, null);
-
-                                                if (MusicPlayer.getCurrentAudioId() == mMusic.getId()) {
-                                                    if (MusicPlayer.getQueueSize() == 0) {
-                                                        MusicPlayer.stop();
-                                                    } else {
-                                                        MusicPlayer.next();
-                                                    }
-                                                }
-
-                                                mHandler.postDelayed(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        PlaylistManager.getInstance(mContext).deleteMusic(mContext, mMusic.getId());
-                                                        mContext.sendBroadcast(new Intent(Actions.ACTION_MUSIC_COUNT_CHANGED));
-                                                    }
-                                                }, 200);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                            dismiss();
-                                        }
-                                    })
-                                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dismiss();
-                                        }
-                                    }).show();
+                            delete();
                             dismiss();
                             break;
                         case 4:
-                            if (mMusic.isLocal()) {
-                                new AsyncTask<Void, Void, Void>() {
-
-                                    @Override
-                                    protected Void doInBackground(Void... params) {
-                                        ArrayList<SearchArtistInfo> artistResults = new ArrayList<>();
-                                        try {
-                                            JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Search.searchMerge(mMusic.getArtist(), 1, 50)).get("result").getAsJsonObject();
-                                            JsonObject artistObject = jsonObject.get("artist_info").getAsJsonObject();
-                                            JsonArray artistArray = artistObject.get("artist_list").getAsJsonArray();
-                                            for (JsonElement o : artistArray) {
-                                                SearchArtistInfo artist = AppCache.gsonInstance().fromJson(o, SearchArtistInfo.class);
-                                                artistResults.add(artist);
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                        if (artistResults.size() == 0) {
-                                            mHandler.post(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    ToastUtil.show("没有找到该艺术家");
-                                                }
-                                            });
-
-                                        } else {
-                                            SearchArtistInfo info = artistResults.get(0);
-                                            Intent intent = new Intent(mContext, ArtistDetailActivity.class);
-                                            intent.putExtra("artist_id", info.getArtist_id());
-                                            intent.putExtra("artist", info.getAuthor());
-                                            mContext.startActivity(intent);
-                                        }
-                                        return null;
-                                    }
-                                }.execute();
-                            } else {
-
-                                Intent intent = new Intent(mContext, ArtistDetailActivity.class);
-                                intent.putExtra("artist_id", mMusic.getArtistId() + "");
-                                intent.putExtra("artist", mMusic.getArtist());
-                                mContext.startActivity(intent);
-                            }
+                            artistDetail();
                             dismiss();
                             break;
                         case 5:
-                            if (mMusic.isLocal()) {
-                                new AsyncTask<Void, Void, Void>() {
-
-                                    @Override
-                                    protected Void doInBackground(Void... params) {
-                                        ArrayList<SearchAlbumInfo> albumResults = new ArrayList<>();
-                                        try {
-
-                                            JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Search.searchMerge(mMusic.getAlbum(), 1, 10)).get("result").getAsJsonObject();
-                                            JsonObject albumObject = jsonObject.get("album_info").getAsJsonObject();
-                                            JsonArray albumArray = albumObject.get("album_list").getAsJsonArray();
-                                            for (JsonElement o : albumArray) {
-                                                SearchAlbumInfo albumInfo = AppCache.gsonInstance().fromJson(o, SearchAlbumInfo.class);
-                                                albumResults.add(albumInfo);
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        if (albumResults.size() == 0) {
-                                            mHandler.post(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    ToastUtil.show("没有找到所属专辑");
-                                                }
-                                            });
-
-                                        } else {
-                                            SearchAlbumInfo info = albumResults.get(0);
-                                            Intent intent = new Intent(mContext, AlbumsDetailActivity.class);
-                                            intent.putExtra("album_id", info.getAlbum_id());
-                                            intent.putExtra("album_art", info.getPic_small());
-                                            intent.putExtra("album", info.getTitle());
-                                            intent.putExtra("album_detail", info.getAlbum_desc());
-                                            mContext.startActivity(intent);
-                                        }
-                                        return null;
-                                    }
-                                };
-                            } else {
-
-                                Intent intent = new Intent(mContext, AlbumsDetailActivity.class);
-                                intent.putExtra("album_id", mMusic.getAlbumId() + "");
-                                intent.putExtra("album_art", mMusic.getAlbumArt());
-                                intent.putExtra("album", mMusic.getAlbum());
-                                mContext.startActivity(intent);
-                            }
+                            albumDetail();
                             dismiss();
                             break;
                         case 6:
-                            if (mMusic.isLocal()) {
-                                new AlertDialog.Builder(mContext).setTitle(getString(R.string.sure_to_set_ringtone))
-                                        .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
-                                                RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
-                                                dialog.dismiss();
-                                                ToastUtil.show(getString(R.string.set_ringtone_success));
-                                                dismiss();
-                                            }
-                                        })
-                                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        }).show();
-                            }
+                            setAsRingtone();
+                            dismiss();
                             break;
                         case 7:
-                            MusicDetailFragment detailFragment = MusicDetailFragment.newInstance(mMusic);
-                            detailFragment.show(getActivity().getSupportFragmentManager(), "detail");
+                            detail();
                             dismiss();
                             break;
                         default:
@@ -401,63 +242,295 @@ public class MoreFragment extends AttachDialogFragment {
         }
 
         mCommonAdapter.setOnItemClickListener(new OverFlowAdapter.IOnRecyclerViewItemClickListener() {
-            @SuppressLint("StaticFieldLeak")
+
             @Override
             public void onItemClick(View view, String data) {
                 switch (Integer.parseInt(data)) {
                     case 0:
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                @SuppressLint("UseSparseArrays") HashMap<Long, Music> map = new HashMap<>();
-                                int len = mMusics.size();
-                                long[] listId = new long[len];
-                                for (int i = 0; i < len; i++) {
-                                    Music music = mMusics.get(i);
-                                    listId[i] = music.getId();
-                                    map.put(listId[i], music);
-                                }
-
-                                MusicPlayer.playAll(map, listId, 0, false);
-                            }
-                        }, 60);
+                        play();
                         dismiss();
                         break;
                     case 1:
-                        AddNetPlaylistFragment.newInstance(mMusics).show(getFragmentManager(), "add");
+                        addToPlaylistSimple();
                         dismiss();
                         break;
                     case 2:
-                        new AsyncTask<Void, Void, Void>() {
-
-                            @Override
-                            protected Void doInBackground(Void... params) {
-                                for (Music music : mMusics) {
-                                    if (MusicPlayer.getCurrentAudioId() == music.getId()) {
-                                        if (MusicPlayer.getQueueSize() == 0) {
-                                            MusicPlayer.stop();
-                                        } else {
-                                            MusicPlayer.next();
-                                        }
-                                    }
-                                    Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music.getId());
-                                    mContext.getContentResolver().delete(uri, null, null);
-                                    PlaylistManager.getInstance(mContext).deleteMusic(mContext, music.getId());
-                                }
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Void v) {
-                                mContext.sendBroadcast(new Intent(Actions.ACTION_MUSIC_COUNT_CHANGED));
-                            }
-                        }.execute();
+                        deleteSimple();
                         dismiss();
                         break;
                 }
             }
         });
         mRecyclerView.setAdapter(mCommonAdapter);
+    }
+
+    /**
+     * 下一首播放
+     */
+    private void nextPlay() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mMusic.getId() == MusicPlayer.getCurrentAudioId()) {
+                    return;
+                }
+                long[] ids = new long[1];
+                ids[0] = mMusic.getId();
+                @SuppressLint("UseSparseArrays") HashMap<Long, Music> map = new HashMap<>();
+                map.put(ids[0], mMusic);
+                MusicPlayer.playNext(mContext, map, ids);
+            }
+        }, 100);
+    }
+
+    /**
+     * 收藏到歌单
+     */
+    private void addToPlaylist() {
+        ArrayList<Music> musics = new ArrayList<>();
+        musics.add(mMusic);
+        AddNetPlaylistFragment.newInstance(musics).show(getFragmentManager(), "add");
+    }
+
+    /**
+     * 分享
+     */
+    private void share() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + mMusic.getUrl()));
+        shareIntent.setType("audio/*");
+        mContext.startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
+    }
+
+    /**
+     * 删除
+     */
+    private void delete() {
+        new AlertDialog.Builder(mContext)
+                .setTitle(getString(R.string.sure_to_delete_music))
+                .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mMusic.getId());
+                            mContext.getContentResolver().delete(uri, null, null);
+
+                            if (MusicPlayer.getCurrentAudioId() == mMusic.getId()) {
+                                if (MusicPlayer.getQueueSize() == 0) {
+                                    MusicPlayer.stop();
+                                } else {
+                                    MusicPlayer.next();
+                                }
+                            }
+
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    PlaylistManager.getInstance(mContext).deleteMusic(mContext, mMusic.getId());
+                                    mContext.sendBroadcast(new Intent(Actions.ACTION_MUSIC_COUNT_CHANGED));
+                                }
+                            }, 200);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dismiss();
+                    }
+                }).show();
+    }
+
+    /**
+     * 跳转歌手详细页
+     */
+    @SuppressLint("StaticFieldLeak")
+    private void artistDetail() {
+        if (mMusic.isLocal()) {
+            new AsyncTask<Void, Void, Void>() {
+
+                @Override
+                protected Void doInBackground(Void... params) {
+                    ArrayList<SearchArtistInfo> artistResults = new ArrayList<>();
+                    try {
+                        JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Search.searchMerge(mMusic.getArtist(), 1, 50)).get("result").getAsJsonObject();
+                        JsonObject artistObject = jsonObject.get("artist_info").getAsJsonObject();
+                        JsonArray artistArray = artistObject.get("artist_list").getAsJsonArray();
+                        for (JsonElement o : artistArray) {
+                            SearchArtistInfo artist = AppCache.gsonInstance().fromJson(o, SearchArtistInfo.class);
+                            artistResults.add(artist);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (artistResults.size() == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.show("没有找到该艺术家");
+                            }
+                        });
+
+                    } else {
+                        SearchArtistInfo info = artistResults.get(0);
+                        Intent intent = new Intent(mContext, ArtistDetailActivity.class);
+                        intent.putExtra("artist_id", info.getArtist_id());
+                        intent.putExtra("artist", info.getAuthor());
+                        mContext.startActivity(intent);
+                    }
+                    return null;
+                }
+            }.execute();
+        } else {
+
+            Intent intent = new Intent(mContext, ArtistDetailActivity.class);
+            intent.putExtra("artist_id", mMusic.getArtistId() + "");
+            intent.putExtra("artist", mMusic.getArtist());
+            mContext.startActivity(intent);
+        }
+    }
+
+    /**
+     * 跳转专辑详细页
+     */
+    @SuppressLint("StaticFieldLeak")
+    private void albumDetail() {
+        if (mMusic.isLocal()) {
+            new AsyncTask<Void, Void, Void>() {
+
+                @Override
+                protected Void doInBackground(Void... params) {
+                    ArrayList<SearchAlbumInfo> albumResults = new ArrayList<>();
+                    try {
+
+                        JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Search.searchMerge(mMusic.getAlbum(), 1, 10)).get("result").getAsJsonObject();
+                        JsonObject albumObject = jsonObject.get("album_info").getAsJsonObject();
+                        JsonArray albumArray = albumObject.get("album_list").getAsJsonArray();
+                        for (JsonElement o : albumArray) {
+                            SearchAlbumInfo albumInfo = AppCache.gsonInstance().fromJson(o, SearchAlbumInfo.class);
+                            albumResults.add(albumInfo);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    if (albumResults.size() == 0) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.show("没有找到所属专辑");
+                            }
+                        });
+
+                    } else {
+                        SearchAlbumInfo info = albumResults.get(0);
+                        Intent intent = new Intent(mContext, AlbumsDetailActivity.class);
+                        intent.putExtra("album_id", info.getAlbum_id());
+                        intent.putExtra("album_art", info.getPic_small());
+                        intent.putExtra("album", info.getTitle());
+                        intent.putExtra("album_detail", info.getAlbum_desc());
+                        mContext.startActivity(intent);
+                    }
+                    return null;
+                }
+            };
+        } else {
+
+            Intent intent = new Intent(mContext, AlbumsDetailActivity.class);
+            intent.putExtra("album_id", mMusic.getAlbumId() + "");
+            intent.putExtra("album_art", mMusic.getAlbumArt());
+            intent.putExtra("album", mMusic.getAlbum());
+            mContext.startActivity(intent);
+        }
+    }
+
+    /**
+     * 设置铃声
+     */
+    private void setAsRingtone() {
+        if (mMusic.isLocal()) {
+            new AlertDialog.Builder(mContext).setTitle(getString(R.string.sure_to_set_ringtone))
+                    .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
+                            RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
+                            dialog.dismiss();
+                            ToastUtil.show(getString(R.string.set_ringtone_success));
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
+    }
+
+    /**
+     * 歌曲信息
+     */
+    private void detail() {
+        MusicDetailFragment detailFragment = MusicDetailFragment.newInstance(mMusic);
+        detailFragment.show(getActivity().getSupportFragmentManager(), "detail");
+    }
+
+    /**
+     * 播放
+     */
+    private void play() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                @SuppressLint("UseSparseArrays") HashMap<Long, Music> map = new HashMap<>();
+                int len = mMusics.size();
+                long[] listId = new long[len];
+                for (int i = 0; i < len; i++) {
+                    Music music = mMusics.get(i);
+                    listId[i] = music.getId();
+                    map.put(listId[i], music);
+                }
+
+                MusicPlayer.playAll(map, listId, 0, false);
+            }
+        }, 60);
+    }
+
+    private void addToPlaylistSimple() {
+        AddNetPlaylistFragment.newInstance(mMusics).show(getFragmentManager(), "add");
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void deleteSimple() {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                for (Music music : mMusics) {
+                    if (MusicPlayer.getCurrentAudioId() == music.getId()) {
+                        if (MusicPlayer.getQueueSize() == 0) {
+                            MusicPlayer.stop();
+                        } else {
+                            MusicPlayer.next();
+                        }
+                    }
+                    Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, music.getId());
+                    mContext.getContentResolver().delete(uri, null, null);
+                    PlaylistManager.getInstance(mContext).deleteMusic(mContext, music.getId());
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void v) {
+                mContext.sendBroadcast(new Intent(Actions.ACTION_MUSIC_COUNT_CHANGED));
+            }
+        }.execute();
     }
 
     /**

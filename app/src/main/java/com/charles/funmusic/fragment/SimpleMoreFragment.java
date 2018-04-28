@@ -48,8 +48,8 @@ public class SimpleMoreFragment extends AttachDialogFragment {
     RecyclerView mRecyclerView;
 
     private long mArgs;
-    private MusicFlowAdapter mMusicFlowAdapter;
-    private Music mAdapterMusic;
+    private MusicFlowAdapter mAdapter;
+    private Music mMusic;
     /**
      * 声明一个list，动态存储要显示的信息
      */
@@ -95,7 +95,7 @@ public class SimpleMoreFragment extends AttachDialogFragment {
         mRecyclerView.setHasFixedSize(true);
         getList();
         setClick();
-        mRecyclerView.setAdapter(mMusicFlowAdapter);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -112,10 +112,10 @@ public class SimpleMoreFragment extends AttachDialogFragment {
 
     private void getList() {
         long musicId = mArgs;
-        mAdapterMusic = MusicUtil.getMusics(mContext, musicId);
+        mMusic = MusicUtil.getMusics(mContext, musicId);
         String title = null;
-        if (mAdapterMusic != null) {
-            title = mAdapterMusic.getTitle();
+        if (mMusic != null) {
+            title = mMusic.getTitle();
         }
         if (title == null) {
             title = MusicPlayer.getTrackName();
@@ -123,12 +123,12 @@ public class SimpleMoreFragment extends AttachDialogFragment {
         String str = "歌曲：" + title;
         mTopTitle.setText(str);
         setMusicInfo();
-        mMusicFlowAdapter = new MusicFlowAdapter(mContext, mList, mAdapterMusic);
+        mAdapter = new MusicFlowAdapter(mContext, mList, mMusic);
     }
 
     private void setClick() {
-        if (mMusicFlowAdapter != null) {
-            mMusicFlowAdapter.setOnItemClickListener(new MusicFlowAdapter.IOnRecyclerViewItemClickListener() {
+        if (mAdapter != null) {
+            mAdapter.setOnItemClickListener(new MusicFlowAdapter.IOnRecyclerViewItemClickListener() {
                 @Override
                 public void onItemClick(View view, String data) {
                     switch (Integer.parseInt(data)) {
@@ -157,17 +157,17 @@ public class SimpleMoreFragment extends AttachDialogFragment {
     }
 
     private void nextPlay() {
-        if (mAdapterMusic.isLocal()) {
+        if (mMusic.isLocal()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (mAdapterMusic.getId() == MusicPlayer.getCurrentAudioId()) {
+                    if (mMusic.getId() == MusicPlayer.getCurrentAudioId()) {
                         return;
                     }
                     long[] ids = new long[1];
-                    ids[0] = mAdapterMusic.getId();
+                    ids[0] = mMusic.getId();
                     @SuppressLint("UseSparseArrays") HashMap<Long, Music> map = new HashMap<>();
-                    map.put(ids[0], mAdapterMusic);
+                    map.put(ids[0], mMusic);
                     MusicPlayer.playNext(mContext, map, ids);
                 }
             }, 100);
@@ -176,21 +176,21 @@ public class SimpleMoreFragment extends AttachDialogFragment {
     }
 
     private void addToPlaylist() {
-        AddPlaylistFragment.newInstance(mAdapterMusic).show(getChildFragmentManager(), "add");
+        AddPlaylistFragment.newInstance(mMusic).show(getChildFragmentManager(), "add");
         dismiss();
     }
 
     private void share() {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + mAdapterMusic.getAlbumArt()));
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + mMusic.getAlbumArt()));
         shareIntent.setType("audio/*");
         mContext.startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
         dismiss();
     }
 
     private void delete() {
-        if (mAdapterMusic.isLocal()) {
+        if (mMusic.isLocal()) {
             new AlertDialog.Builder(mContext).setTitle(R.string.sure_to_delete_music)
                     .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                         @Override
@@ -210,9 +210,9 @@ public class SimpleMoreFragment extends AttachDialogFragment {
     }
 
     private void confirmDelete() {
-        Uri uri = ContentUris.withAppendedId(Media.EXTERNAL_CONTENT_URI, mAdapterMusic.getId());
+        Uri uri = ContentUris.withAppendedId(Media.EXTERNAL_CONTENT_URI, mMusic.getId());
         mContext.getContentResolver().delete(uri, null, null);
-        if (MusicPlayer.getCurrentAudioId() == mAdapterMusic.getId()) {
+        if (MusicPlayer.getCurrentAudioId() == mMusic.getId()) {
             if (MusicPlayer.getQueueSize() == 0) {
                 MusicPlayer.stop();
             } else {
@@ -222,7 +222,7 @@ public class SimpleMoreFragment extends AttachDialogFragment {
         HandlerUtil.getInstance(mContext).postDelayed(new Runnable() {
             @Override
             public void run() {
-                PlaylistManager.getInstance(mContext).deleteMusic(mContext, mAdapterMusic.getId());
+                PlaylistManager.getInstance(mContext).deleteMusic(mContext, mMusic.getId());
                 mContext.sendBroadcast(new Intent(Actions.ACTION_MUSIC_COUNT_CHANGED));
             }
         }, 200);
@@ -230,12 +230,12 @@ public class SimpleMoreFragment extends AttachDialogFragment {
     }
 
     private void setAsRingtone() {
-        if (mAdapterMusic.isLocal()) {
+        if (mMusic.isLocal()) {
             new AlertDialog.Builder(mContext).setTitle(getString(R.string.sure_to_set_ringtone))
                     .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Uri ringUri = Uri.parse("file://" + mAdapterMusic.getUrl());
+                            Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
                             RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
                             dialog.dismiss();
                             ToastUtil.show(getString(R.string.set_ringtone_success));
@@ -252,7 +252,7 @@ public class SimpleMoreFragment extends AttachDialogFragment {
     }
 
     private void detail() {
-        MusicDetailFragment detailFragment = MusicDetailFragment.newInstance(mAdapterMusic);
+        MusicDetailFragment detailFragment = MusicDetailFragment.newInstance(mMusic);
         if (getActivity() != null) {
             detailFragment.show(getActivity().getSupportFragmentManager(), "detail");
         }
