@@ -372,7 +372,7 @@ public class MoreFragment extends AttachDialogFragment {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
-                                                RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_NOTIFICATION, ringUri);
+                                                RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
                                                 dialog.dismiss();
                                                 ToastUtil.show(getString(R.string.set_ringtone_success));
                                                 dismiss();

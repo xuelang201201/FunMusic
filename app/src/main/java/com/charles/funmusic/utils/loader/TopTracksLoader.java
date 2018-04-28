@@ -23,7 +23,7 @@ public class TopTracksLoader extends SongLoader {
         sQueryType = type;
     }
 
-    public static Cursor getCursor(Context context, QueryType queryType) {
+    private static Cursor getCursor(Context context, QueryType queryType) {
         sQueryType = queryType;
         sContext = context;
         return getCursor();

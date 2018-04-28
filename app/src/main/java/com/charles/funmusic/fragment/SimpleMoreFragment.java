@@ -231,12 +231,12 @@ public class SimpleMoreFragment extends AttachDialogFragment {
 
     private void setAsRingtone() {
         if (mAdapterMusic.isLocal()) {
-            new AlertDialog.Builder(mContext).setTitle(R.string.sure_to_set_ringtone)
+            new AlertDialog.Builder(mContext).setTitle(getString(R.string.sure_to_set_ringtone))
                     .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Uri ringUri = Uri.parse("file://" + mAdapterMusic.getAlbumArt());
-                            RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_NOTIFICATION, ringUri);
+                            Uri ringUri = Uri.parse("file://" + mAdapterMusic.getUrl());
+                            RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
                             dialog.dismiss();
                             ToastUtil.show(getString(R.string.set_ringtone_success));
                             dismiss();
@@ -247,8 +247,7 @@ public class SimpleMoreFragment extends AttachDialogFragment {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                    })
-                    .show();
+                    }).show();
         }
     }
 
