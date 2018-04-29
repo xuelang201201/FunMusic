@@ -119,15 +119,15 @@ public class FileUtil {
     }
 
     public static String getFileName(String artist, String title) {
-        artist = stringFilter(artist);
+        return getArtist(artist) + " - " + getTitle(title);
+    }
+
+    public static String getTitle(String title) {
         title = stringFilter(title);
-        if (TextUtils.isEmpty(artist)) {
-            artist = AppCache.getContext().getString(R.string.unknown_artist);
-        }
         if (TextUtils.isEmpty(title)) {
             title = AppCache.getContext().getString(R.string.unknown);
         }
-        return artist + " - " + title;
+        return title;
     }
 
     public static String getArtist(String artist) {
@@ -157,7 +157,7 @@ public class FileUtil {
         if (str == null) {
             return null;
         }
-        String regEx = "[\\/:*?\"<>|]";
+        String regEx = "[:*?\"<>|]";
         Pattern p = Pattern.compile(regEx);
         Matcher m = p.matcher(str);
         return m.replaceAll("").trim();
