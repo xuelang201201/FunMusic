@@ -19,11 +19,13 @@ import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Album;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.widget.SideBar;
 import com.charles.funmusic.widget.TintImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -177,8 +179,7 @@ public class AlbumDetailFragment extends BaseFragment {
             if (holder instanceof ListItemViewHolder) {
                 Music music = mMusics.get(position - 1);
                 ((ListItemViewHolder) holder).mTitle.setText(music.getTitle());
-                String artistAndAlbum = music.getArtist() + " - " + music.getAlbum();
-                ((ListItemViewHolder) holder).mArtistAndAlbum.setText(artistAndAlbum);
+                ((ListItemViewHolder) holder).mArtistAndAlbum.setText(FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum()));
                 // 判断该条目音乐是否播放
                 if (MusicPlayer.getCurrentAudioId() == music.getId()) {
                     ((ListItemViewHolder) holder).mPlayState.setVisibility(View.VISIBLE);
@@ -252,6 +253,10 @@ public class AlbumDetailFragment extends BaseFragment {
 
                 itemView.setOnClickListener(this);
                 itemView.setOnLongClickListener(this);
+
+                changeFont(mTitle, false);
+                changeFont(mArtistAndAlbum, false);
+
                 // 设置弹出菜单
                 mMoreOverFlow.setOnClickListener(new View.OnClickListener() {
                     @Override

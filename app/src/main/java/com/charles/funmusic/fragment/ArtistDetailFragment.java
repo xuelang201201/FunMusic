@@ -19,6 +19,7 @@ import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Artist;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.widget.SideBar;
@@ -169,7 +170,7 @@ public class ArtistDetailFragment extends BaseFragment {
             if (holder instanceof ListItemViewHolder) {
                 Music music = mMusics.get(position - 1);
                 ((ListItemViewHolder) holder).mTitle.setText(music.getTitle());
-                ((ListItemViewHolder) holder).mArtist.setText(music.getArtist());
+                ((ListItemViewHolder) holder).mArtistAndAlbum.setText(FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum()));
                 // 判断该条目音乐是否在播放
                 if (MusicPlayer.getCurrentAudioId() == music.getId()) {
                     ((ListItemViewHolder) holder).mPlayState.setVisibility(View.VISIBLE);
@@ -238,7 +239,7 @@ public class ArtistDetailFragment extends BaseFragment {
             @BindView(R.id.music_item_title)
             TextView mTitle;
             @BindView(R.id.music_item_artist_and_album)
-            TextView mArtist;
+            TextView mArtistAndAlbum;
             @BindView(R.id.music_item_play_state)
             TintImageView mPlayState;
 
@@ -259,7 +260,7 @@ public class ArtistDetailFragment extends BaseFragment {
                 });
 
                 changeFont(mTitle, false);
-                changeFont(mArtist, false);
+                changeFont(mArtistAndAlbum, false);
             }
 
             @Override

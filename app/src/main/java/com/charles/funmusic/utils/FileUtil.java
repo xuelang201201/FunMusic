@@ -21,6 +21,9 @@ import java.util.regex.Pattern;
  */
 public class FileUtil {
     private static final String MP3 = ".mp3";
+    private static final String FLAC = ".flac";
+    private static final String APE = ".ape";
+    private static final String WAVE = ".wav";
     private static final String LRC = ".lrc";
 
     private static String getAppDir() {
@@ -99,6 +102,14 @@ public class FileUtil {
         return getFileName(artist, title) + MP3;
     }
 
+    public static String getApeFileName(String artist, String title) {
+        return getFileName(artist, title) + APE;
+    }
+
+    public static String getFlacFileName(String artist, String title) {
+        return getFileName(artist, title) + FLAC;
+    }
+
     public static String getLrcFileName(String artist, String title) {
         return getFileName(artist, title) + LRC;
     }
@@ -111,7 +122,7 @@ public class FileUtil {
         artist = stringFilter(artist);
         title = stringFilter(title);
         if (TextUtils.isEmpty(artist)) {
-            artist = AppCache.getContext().getString(R.string.unknown);
+            artist = AppCache.getContext().getString(R.string.unknown_artist);
         }
         if (TextUtils.isEmpty(title)) {
             title = AppCache.getContext().getString(R.string.unknown);
@@ -120,15 +131,15 @@ public class FileUtil {
     }
 
     public static String getArtistAndAlbum(String artist, String album) {
-        if (TextUtils.isEmpty(artist) && TextUtils.isEmpty(album)) {
-            return "";
-        } else if (!TextUtils.isEmpty(artist) && TextUtils.isEmpty(album)) {
-            return artist;
-        } else if (TextUtils.isEmpty(artist) && !TextUtils.isEmpty(album)) {
-            return album;
-        } else {
-            return artist + " | " + album;
+        artist = stringFilter(artist);
+        album = stringFilter(album);
+        if (TextUtils.isEmpty(artist) || TextUtils.equals(artist, "unknown")) {
+            artist = AppCache.getContext().getString(R.string.unknown_artist);
         }
+        if (TextUtils.isEmpty(album) || TextUtils.equals(album, "Music")) {
+            album = AppCache.getContext().getString(R.string.unknown_album);
+        }
+        return artist + " | " + album;
     }
 
     /**

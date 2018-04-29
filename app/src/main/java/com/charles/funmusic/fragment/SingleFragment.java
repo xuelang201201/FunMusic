@@ -23,6 +23,7 @@ import com.charles.funmusic.activity.PlayingActivity;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.Preferences;
@@ -249,8 +250,7 @@ public class SingleFragment extends BaseFragment {
             }
             if (holder instanceof ListItemViewHolder) {
                 ((ListItemViewHolder) holder).mTitle.setText(music.getTitle());
-                String artistAndAlbum = music.getArtist() + " | " + music.getAlbum();
-                ((ListItemViewHolder) holder).mArtistAndAlbum.setText(artistAndAlbum);
+                ((ListItemViewHolder) holder).mArtistAndAlbum.setText(FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum()));
 
                 // 判断该条目是否在播放
                 if (MusicPlayer.getCurrentAudioId() == music.getId()) {
