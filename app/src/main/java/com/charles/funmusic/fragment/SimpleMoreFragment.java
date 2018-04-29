@@ -283,11 +283,9 @@ public class SimpleMoreFragment extends AttachDialogFragment {
     }
 
     private void setAsRingtone() {
-        if (mMusic.isLocal()) {
-            Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
-            RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
-            ToastUtil.show(getString(R.string.set_ringtone_success));
-        }
+        Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
+        RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
+        ToastUtil.show(getString(R.string.set_ringtone_success));
     }
 
     private void detail() {
