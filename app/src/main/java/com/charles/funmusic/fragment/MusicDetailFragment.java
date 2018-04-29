@@ -3,6 +3,7 @@ package com.charles.funmusic.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,11 +77,17 @@ public class MusicDetailFragment extends AttachDialogFragment {
         }
 
         mTitle.setText(mMusic.getTitle());
-        mFileName.setText(FileUtil.getFileName(mMusic.getArtist(), mMusic.getTitle()));
+        String[] str = mMusic.getUrl().split("/");
+        mFileName.setText(str[str.length - 1]);
         mFileDuration.setText(MusicUtil.makeShortTimeString(mContext, mMusic.getDuration() / 1000));
         String fileSize = FileUtil.b2mb(mMusic.getFileSize()) + "M";
         mFileSize.setText(fileSize);
-        mFileUrl.setText(mMusic.getUrl());
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 1; i < str.length - 1; i++) {
+            builder.append("/").append(str[i]);
+        }
+        mFileUrl.setText(builder);
     }
 
     @Override
