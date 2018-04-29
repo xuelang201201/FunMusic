@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,16 +47,16 @@ public class Permission {
     /**
      * Returns true if the Activity has access to given permissions.
      */
-    public static boolean hasPermission(Activity activity, String permission) {
-        return activity.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
+    public static boolean hasPermission(String permission) {
+        return ContextCompat.checkSelfPermission(sContext, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     /**
      * Returns true if the Activity has access to a all given permission.
      */
-    public static boolean hasPermission(Activity activity, String[] permissions) {
+    public static boolean hasPermission(String[] permissions) {
         for (String permission : permissions) {
-            if (activity.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(sContext, permission) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }
@@ -77,11 +79,11 @@ public class Permission {
         if (permissionCallback == null) {
             return;
         }
-        if (hasPermission(activity, permissions)) {
+        if (hasPermission(permissions)) {
             permissionCallback.permissionGranted();
             return;
         }
-        PermissionRequest permissionRequest = new PermissionRequest(new ArrayList<String>(Arrays.asList(permissions)), permissionCallback);
+        PermissionRequest permissionRequest = new PermissionRequest(new ArrayList<>(Arrays.asList(permissions)), permissionCallback);
         sPermissionRequests.add(permissionRequest);
 
         activity.requestPermissions(permissions, permissionRequest.getRequestCode());
@@ -158,6 +160,7 @@ public class Permission {
             permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
         for (String permission : permissions) {
             if (sContext.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
                 permissionsGranted.add(permission);

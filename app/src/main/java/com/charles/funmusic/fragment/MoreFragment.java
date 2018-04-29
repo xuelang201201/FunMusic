@@ -1,18 +1,21 @@
 package com.charles.funmusic.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Media;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,10 +42,13 @@ import com.charles.funmusic.model.Music;
 import com.charles.funmusic.model.OverFlowItem;
 import com.charles.funmusic.net.BMA;
 import com.charles.funmusic.net.HttpUtil;
+import com.charles.funmusic.premission.Permission;
+import com.charles.funmusic.premission.PermissionCallback;
 import com.charles.funmusic.provider.PlaylistManager;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
+import com.charles.funmusic.utils.SystemUtil;
 import com.charles.funmusic.utils.ToastUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -56,6 +62,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MoreFragment extends AttachDialogFragment {
+
+    private static final int REQUEST_PERMISSION_CODE = 10000;
+
     @BindView(R.id.fragment_more_pop_list_title)
     TextView mTopTitle;
     @BindView(R.id.fragment_more_pop_list)
@@ -226,7 +235,13 @@ public class MoreFragment extends AttachDialogFragment {
                             dismiss();
                             break;
                         case 6:
-                            setAsRingtone();
+                            // TODO 小米手机如何获取系统设置权限？
+                            if (SystemUtil.isMIUI()) {
+                                setRingtone();
+                            } else {
+                                setAsRingtone();
+                            }
+                            dismiss();
                             break;
                         case 7:
                             detail();
@@ -443,22 +458,66 @@ public class MoreFragment extends AttachDialogFragment {
     }
 
     /**
-     * 设置铃声
+     * 打开App详情设置
      */
+    private void openAppDetails() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage("设置铃声需要访问 “系统设置”，请到 “应用信息 -> 权限” 中授权！");
+        builder.setPositiveButton("去手动授权", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.setData(Uri.parse("package:" + mContext.getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                mContext.startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
+
     private void setAsRingtone() {
-        if (mMusic.isLocal()) {
-            new AlertDialog.Builder(mContext).setTitle(getString(R.string.sure_to_set_ringtone))
-                    .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
-                            RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
-                            dismiss();
-                            ToastUtil.show(getString(R.string.set_ringtone_success));
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.cancel), null).show();
+        if (SystemUtil.isMarshmallow()) {
+            if (Permission.hasPermission(new String[]{Manifest.permission.WRITE_SETTINGS})) {
+                setRingtone();
+            }
+
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_SETTINGS}, REQUEST_PERMISSION_CODE);
+        } else {
+            setRingtone();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_PERMISSION_CODE) {
+            boolean isAllGranted = true;
+
+            for (int grant : grantResults) {
+                if (grant != PackageManager.PERMISSION_GRANTED) {
+                    isAllGranted = false;
+                    break;
+                }
+            }
+
+            if (isAllGranted) {
+                setRingtone();
+            } else {
+                openAppDetails();
+            }
+        }
+    }
+
+    private void setRingtone() {
+        Uri ringUri = Uri.parse("file://" + mMusic.getUrl());
+        RingtoneManager.setActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_RINGTONE, ringUri);
+        ToastUtil.show(getString(R.string.set_ringtone_success));
     }
 
     /**
