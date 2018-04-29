@@ -23,6 +23,7 @@ import com.charles.funmusic.R;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.provider.MusicPlaybackState;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.loader.QueueLoader;
 import com.charles.funmusic.widget.TintImageView;
@@ -202,7 +203,7 @@ public class PlayQueueFragment extends AttachDialogFragment {
         public void onBindViewHolder(@NonNull PlaylistHolder holder, @SuppressLint("RecyclerView") int position) {
             Music music = mPlaylist.get(position);
             holder.mTitle.setText(music.getTitle());
-            String artistStr = " - " + music.getArtist();
+            String artistStr = " - " + FileUtil.getArtist(music.getArtist());
             holder.mArtist.setText(artistStr);
             // 判断该条目音乐是否在播放
             Log.e("current", MusicPlayer.getCurrentAudioId() + ":" + music.getId());

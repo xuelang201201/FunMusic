@@ -12,6 +12,7 @@ import com.charles.funmusic.R;
 import com.charles.funmusic.activity.PlayingActivity;
 import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.ToastUtil;
 import com.charles.funmusic.widget.TintImageView;
@@ -165,7 +166,7 @@ public class QuickControlsFragment extends BaseFragment {
             mTitle.setText(getString(R.string.app_name));
         }
         if (MusicPlayer.getArtist() != null) {
-            mArtist.setText(MusicPlayer.getArtist());
+            mArtist.setText(FileUtil.getArtist(MusicPlayer.getArtist()));
         } else {
             mArtist.setText(getString(R.string.slogan));
         }

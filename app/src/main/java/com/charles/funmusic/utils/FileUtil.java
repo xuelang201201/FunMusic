@@ -130,16 +130,24 @@ public class FileUtil {
         return artist + " - " + title;
     }
 
-    public static String getArtistAndAlbum(String artist, String album) {
+    public static String getArtist(String artist) {
         artist = stringFilter(artist);
-        album = stringFilter(album);
         if (TextUtils.isEmpty(artist) || TextUtils.equals(artist, "unknown")) {
             artist = AppCache.getContext().getString(R.string.unknown_artist);
         }
+        return artist;
+    }
+
+    public static String getAlbum(String album) {
+        album = stringFilter(album);
         if (TextUtils.isEmpty(album) || TextUtils.equals(album, "Music")) {
             album = AppCache.getContext().getString(R.string.unknown_album);
         }
-        return artist + " | " + album;
+        return album;
+    }
+
+    public static String getArtistAndAlbum(String artist, String album) {
+        return getArtist(artist) + " | " + getAlbum(album);
     }
 
     /**

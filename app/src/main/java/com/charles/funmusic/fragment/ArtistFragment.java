@@ -24,6 +24,7 @@ import com.charles.funmusic.lastfmapi.models.ArtistQuery;
 import com.charles.funmusic.lastfmapi.models.LastFmArtist;
 import com.charles.funmusic.model.Artist;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.Preferences;
 import com.charles.funmusic.utils.SortOrder;
@@ -170,7 +171,7 @@ public class ArtistFragment extends BaseFragment {
         public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
             Artist artist = mArtists.get(position);
             // 设置条目状态
-            ((ListItemViewHolder) holder).mArtist.setText(artist.getArtist());
+            ((ListItemViewHolder) holder).mArtist.setText(FileUtil.getArtist(artist.getArtist()));
             String count = artist.getNumberOfTracks() + "首";
             ((ListItemViewHolder) holder).mCount.setText(count);
 

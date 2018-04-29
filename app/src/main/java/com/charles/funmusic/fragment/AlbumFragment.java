@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import com.charles.funmusic.R;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Album;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.Preferences;
 import com.charles.funmusic.utils.SortOrder;
@@ -157,8 +159,9 @@ public class AlbumFragment extends BaseFragment {
             mAlbums = albums;
         }
 
+        @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new ListItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.album_item, parent, false));
         }
@@ -172,10 +175,10 @@ public class AlbumFragment extends BaseFragment {
          * 将数据与界面进行绑定
          */
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             Album album = mAlbums.get(position);
-            ((ListItemViewHolder) holder).mAlbum.setText(album.getAlbum());
-            String countAndArtist = album.getNumberOfSongs() + "首 " + album.getAlbumArtist();
+            ((ListItemViewHolder) holder).mAlbum.setText(FileUtil.getAlbum(album.getAlbum()));
+            String countAndArtist = album.getNumberOfSongs() + "首 " + FileUtil.getArtist(album.getAlbumArtist());
             ((ListItemViewHolder) holder).mCountAndArtist.setText(countAndArtist);
             ((ListItemViewHolder) holder).mDraweeView.setImageURI(Uri.parse(album.getAlbumArt() + ""));
             // 根据播放中歌曲的专辑名判断当前专辑条目是否有播放的歌曲

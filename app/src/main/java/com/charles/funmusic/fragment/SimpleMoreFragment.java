@@ -32,6 +32,7 @@ import com.charles.funmusic.model.OverFlowItem;
 import com.charles.funmusic.net.BMA;
 import com.charles.funmusic.net.HttpUtil;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.SystemUtil;
@@ -300,8 +301,8 @@ public class SimpleMoreFragment extends AttachDialogFragment {
      */
     private void setMusicInfo() {
         // 设置list，RecyclerView要显示的内容
-        setInfo("歌手：" + mMusic.getArtist(), R.drawable.ic_artist);
-        setInfo("专辑：" + mMusic.getAlbum(), R.drawable.ic_album);
+        setInfo("歌手：" + FileUtil.getArtist(mMusic.getArtist()), R.drawable.ic_artist);
+        setInfo("专辑：" + FileUtil.getAlbum(mMusic.getAlbum()), R.drawable.ic_album);
         setInfo("收藏到歌单", R.drawable.ic_add_to_playlist);
         setInfo("分享", R.drawable.ic_lay_share);
         setInfo("设为铃声", R.drawable.ic_ring);

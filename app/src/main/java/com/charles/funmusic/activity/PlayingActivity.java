@@ -32,6 +32,7 @@ import com.charles.funmusic.model.Music;
 import com.charles.funmusic.provider.PlaylistManager;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.service.MusicService;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.Preferences;
@@ -475,7 +476,7 @@ public class PlayingActivity extends BaseActivity {
         updateLrc();
 
         mTitle.setText(MusicPlayer.getTrackName());
-        mArtist.setText(MusicPlayer.getArtist());
+        mArtist.setText(FileUtil.getArtist(MusicPlayer.getArtist()));
         mDuration.setText(MusicUtil.makeShortTimeString(
                 PlayingActivity.this.getApplication(), MusicPlayer.duration() / 1000));
 
