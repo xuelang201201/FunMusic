@@ -20,6 +20,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,7 @@ import com.charles.funmusic.premission.Permission;
 import com.charles.funmusic.premission.PermissionCallback;
 import com.charles.funmusic.provider.PlaylistManager;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.SystemUtil;
@@ -168,10 +170,10 @@ public class MoreFragment extends AttachDialogFragment {
             if (mMusic == null) {
                 mMusic = new Music();
             }
-            mArtist = mMusic.getArtist();
+            mArtist = FileUtil.getArtist(mMusic.getArtist());
             String albumId = mMusic.getAlbumId() + "";
-            mAlbum = mMusic.getAlbum();
-            String title = getString(R.string.song_name) + mMusic.getTitle();
+            mAlbum = FileUtil.getAlbum(mMusic.getAlbum());
+            String title = getString(R.string.song_name) + FileUtil.getTitle(mMusic.getTitle());
             mTopTitle.setText(title);
             mHeightPercent = 0.6;
             setMusicInfo();
