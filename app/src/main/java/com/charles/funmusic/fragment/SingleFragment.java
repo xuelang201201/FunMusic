@@ -20,9 +20,12 @@ import android.widget.TextView;
 import com.charles.funmusic.R;
 import com.charles.funmusic.activity.MultipleActivity;
 import com.charles.funmusic.activity.PlayingActivity;
+import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Keys;
+import com.charles.funmusic.enums.PlayModeEnum;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.service.MusicService;
 import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
@@ -349,12 +352,22 @@ public class SingleFragment extends BaseFragment {
 
             @Override
             public void onClick(View v) {
+                int position = getAdapterPosition() - 1;
+
                 if (mPlayMusic != null) {
                     mHandler.removeCallbacks(mPlayMusic);
                 }
+                // 点击播放
                 if (getAdapterPosition() > -1) {
-                    mPlayMusic = new PlayMusic(getAdapterPosition() - 1);
-                    mHandler.postDelayed(mPlayMusic, 70);
+                    mPlayMusic = new PlayMusic(position);
+                    mHandler.postDelayed(mPlayMusic, 60);
+                }
+                // 正在播放点击跳转播放界面
+                if (mMusics.get(position).getId() == MusicPlayer.getCurrentAudioId()) {
+                    Intent intent = new Intent(AppCache.getContext(), PlayingActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    AppCache.getContext().startActivity(intent);
                 }
             }
 
