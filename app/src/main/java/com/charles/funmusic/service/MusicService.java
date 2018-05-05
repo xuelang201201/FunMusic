@@ -615,7 +615,7 @@ public class MusicService extends Service {
                 if (SystemUtil.isLollipop()) {
                     stopForeground(newNotifyMode == NOTIFY_MODE_NONE);
                 } else {
-                    stopForeground(true);
+                    stopForeground(newNotifyMode == NOTIFY_MODE_NONE || newNotifyMode == NOTIFY_MODE_BACKGROUND);
                 }
             } else if (newNotifyMode == NOTIFY_MODE_NONE) {
                 mNotificationManager.cancel(mNotificationId);
@@ -650,7 +650,7 @@ public class MusicService extends Service {
         Intent pauseIntent = new Intent(ACTION_TOGGLE_PAUSE);
         pauseIntent.putExtra("FLAG", PAUSE_FLAG);
         PendingIntent pausePIntent = PendingIntent.getBroadcast(this, 0, pauseIntent, 0);
-        remoteViews.setImageViewResource(R.id.notification_play_or_pause, isPlaying ? R.drawable.selector_status_bar_pause_dark : R.drawable.selector_status_bar_pause_dark);
+        remoteViews.setImageViewResource(R.id.notification_play_or_pause, isPlaying ? R.drawable.ic_status_bar_pause_dark : R.drawable.ic_status_bar_play_dark);
         remoteViews.setOnClickPendingIntent(R.id.notification_play_or_pause, pausePIntent);
 
         Intent nextIntent = new Intent(ACTION_NEXT);
@@ -677,7 +677,7 @@ public class MusicService extends Service {
 
         } else if (!isTrackLocal()) {
             if (mNoBit != null) {
-                remoteViews.setImageViewBitmap(R.id.image, mNoBit);
+                remoteViews.setImageViewBitmap(R.id.notification_icon, mNoBit);
                 mNoBit = null;
 
             } else {
@@ -728,7 +728,7 @@ public class MusicService extends Service {
             }
 
         } else {
-            remoteViews.setImageViewResource(R.id.image, R.drawable.ic_default_album_cover);
+            remoteViews.setImageViewResource(R.id.notification_icon, R.drawable.ic_default_album_cover);
         }
 
 
@@ -990,7 +990,7 @@ public class MusicService extends Service {
         private boolean play;
         private boolean stop;
 
-        public RequestPlayUrl(long id, boolean play) {
+        RequestPlayUrl(long id, boolean play) {
             this.id = id;
             this.play = play;
         }
