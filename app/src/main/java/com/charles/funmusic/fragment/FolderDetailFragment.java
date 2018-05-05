@@ -169,7 +169,7 @@ public class FolderDetailFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        multiple();
+                        multiple(-1);
                     }
                 });
             }
@@ -189,9 +189,10 @@ public class FolderDetailFragment extends BaseFragment {
             }
         }
 
-        private void multiple() {
+        private void multiple(int position) {
             Intent intent = new Intent(mContext, MultipleActivity.class);
             intent.putParcelableArrayListExtra("ids", (ArrayList) mMusics);
+            intent.putExtra("position", position);
             mContext.startActivity(intent);
         }
 
@@ -209,7 +210,7 @@ public class FolderDetailFragment extends BaseFragment {
             CommonItemViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
-                
+
                 itemView.setOnClickListener(this);
             }
 
@@ -291,7 +292,7 @@ public class FolderDetailFragment extends BaseFragment {
 
             @Override
             public boolean onLongClick(View v) {
-                multiple();
+                multiple(getAdapterPosition() - 1);
                 return false;
             }
         }

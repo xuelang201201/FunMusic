@@ -77,6 +77,11 @@ public class MultipleActivity extends BaseActivity {
 
         new loadSongs().execute("");
 
+        int position = getIntent().getIntExtra("position", -1);
+        setItemChecked(position, true);
+        mNumberOfChosen.setText("已选择1项");
+        mRecyclerView.scrollToPosition(position);
+
         initSystemBar(mHeaderView);
     }
 
@@ -89,24 +94,23 @@ public class MultipleActivity extends BaseActivity {
                 break;
 
             case R.id.header_view_text_right:
-                String str = "已选择" + getSelectedItem().size() + "项";
                 if (mSelectAll.getText() == getString(R.string.select_all)) {
                     for (int i = 0; i < mMusics.size(); i++) {
                         setItemChecked(i, true);
                     }
-                    mAdapter.notifyDataSetChanged();
-
                     mSelectAll.setText(R.string.select_none);
+                    String str = "已选择" + getSelectedItem().size() + "项";
                     mNumberOfChosen.setText(str);
                 } else {
                     for (int i = 0; i < mMusics.size(); i++) {
                         setItemChecked(i, false);
                     }
-                    mAdapter.notifyDataSetChanged();
-
                     mSelectAll.setText(R.string.select_all);
+                    String str = "已选择" + getSelectedItem().size() + "项";
                     mNumberOfChosen.setText(str);
                 }
+
+                mAdapter.notifyDataSetChanged();
                 break;
 
             case R.id.activity_multiple_next_play:

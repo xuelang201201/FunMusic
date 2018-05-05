@@ -270,7 +270,7 @@ public class SingleFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        multiple();
+                        multiple(-1);
                     }
                 });
             }
@@ -279,10 +279,11 @@ public class SingleFragment extends BaseFragment {
         /**
          * 多选
          */
-        private void multiple() {
+        private void multiple(int position) {
             Intent intent = new Intent(mContext, MultipleActivity.class);
             intent.putParcelableArrayListExtra("ids", mMusics);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.putExtra("position", position);
             mContext.startActivity(intent);
         }
 
@@ -373,7 +374,7 @@ public class SingleFragment extends BaseFragment {
 
             @Override
             public boolean onLongClick(View v) {
-                multiple();
+                multiple(getAdapterPosition() - 1);
                 return false;
             }
         }

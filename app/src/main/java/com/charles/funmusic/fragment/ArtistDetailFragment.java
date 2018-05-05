@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.activity.MultipleActivity;
+import com.charles.funmusic.activity.PlayingActivity;
+import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.model.Artist;
 import com.charles.funmusic.model.Music;
@@ -163,7 +165,7 @@ public class ArtistDetailFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        multiple();
+                        multiple(-1);
                     }
                 });
             }
@@ -182,9 +184,10 @@ public class ArtistDetailFragment extends BaseFragment {
             }
         }
 
-        private void multiple() {
+        private void multiple(int position) {
             Intent intent = new Intent(mContext, MultipleActivity.class);
             intent.putParcelableArrayListExtra("ids", mMusics);
+            intent.putExtra("position", position);
             mContext.startActivity(intent);
         }
 
@@ -280,13 +283,20 @@ public class ArtistDetailFragment extends BaseFragment {
                         if (getAdapterPosition() > 0) {
                             MusicPlayer.playAll(maps, musics, getAdapterPosition() - 1, false);
                         }
+                        // 正在播放点击跳转播放界面
+                        if (mMusics.get(getAdapterPosition() - 1).getId() == MusicPlayer.getCurrentAudioId()) {
+                            Intent intent = new Intent(AppCache.getContext(), PlayingActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            AppCache.getContext().startActivity(intent);
+                        }
                     }
                 }, 60);
             }
 
             @Override
             public boolean onLongClick(View v) {
-                multiple();
+                multiple(getAdapterPosition() - 1);
                 return false;
             }
         }

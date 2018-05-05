@@ -172,7 +172,7 @@ public class AlbumDetailFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        multiple();
+                        multiple(- 1);
                     }
                 });
             }
@@ -191,9 +191,10 @@ public class AlbumDetailFragment extends BaseFragment {
             }
         }
 
-        private void multiple() {
+        private void multiple(int position) {
             Intent intent = new Intent(mContext, MultipleActivity.class);
             intent.putParcelableArrayListExtra("ids", mMusics);
+            intent.putExtra("position", position);
             mContext.startActivity(intent);
         }
 
@@ -294,7 +295,7 @@ public class AlbumDetailFragment extends BaseFragment {
 
             @Override
             public boolean onLongClick(View v) {
-                multiple();
+                multiple(getAdapterPosition() - 1);
                 return false;
             }
         }
