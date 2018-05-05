@@ -52,7 +52,7 @@
         android:layout_height="match_parent"
         android:contentDescription="@null"
         android:scaleType="center"
-        android:src="@drawable/ic_status_bar_play_dark"/>
+        android:src="@drawable/ic_status_bar_pause_dark"/>
 
     <ImageView
         android:id="@+id/notification_next"

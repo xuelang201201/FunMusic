@@ -643,8 +643,8 @@ public class MusicService extends Service {
 
         remoteViews = new RemoteViews(this.getPackageName(), R.layout.notification);
         String text = TextUtils.isEmpty(albumName) ? artistName : artistName + " - " + albumName;
-        remoteViews.setTextViewText(R.id.title, getTrackName());
-        remoteViews.setTextViewText(R.id.text, text);
+        remoteViews.setTextViewText(R.id.notification_title, getTrackName());
+        remoteViews.setTextViewText(R.id.notification_subtitle, text);
 
         //此处action不能是一样的 如果一样的 接受的flag参数只是第一个设置的值
         Intent pauseIntent = new Intent(ACTION_TOGGLE_PAUSE);

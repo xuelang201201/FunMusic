@@ -1,4 +1,4 @@
 package com.charles.funmusic.activity;
 
-public class LockActivity {
+public class LockActivity extends BaseActivity {
 }
