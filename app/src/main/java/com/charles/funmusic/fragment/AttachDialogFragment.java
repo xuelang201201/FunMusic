@@ -39,13 +39,6 @@ public abstract class AttachDialogFragment extends DialogFragment {
         mContext = (Activity) context;
     }
 
-    public void showSortDialog() {
-        if (getFragmentManager() != null) {
-            SortDialogFragment sortDialog = new SortDialogFragment();
-            sortDialog.show(getFragmentManager(), "sort");
-        }
-    }
-
     /**
      * 沉浸式状态栏
      */

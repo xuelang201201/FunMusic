@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/sort_header"
+        layout="@layout/sort_header"/>
+
+    <LinearLayout
+        android:id="@+id/dialog_sort_by_artist"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/dialog_sort_by_artist_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_by_artist"
+            android:textColor="@color/light_black"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/dialog_sort_by_artist_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@null"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:src="@drawable/ic_selected"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#CCCCCC" />
+
+    <LinearLayout
+        android:id="@+id/dialog_sort_by_song_count"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/touch_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:id="@+id/dialog_sort_by_song_count_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sort_by_song_count"
+            android:textColor="@color/light_black"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/dialog_sort_by_song_count_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@null"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:src="@drawable/ic_selected"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/sort_footer"
+        layout="@layout/sort_footer"/>
+
+</LinearLayout>

@@ -17,7 +17,10 @@ public class Preferences {
     private static final String PLAY_MODE = "play_mode";
     private static final String SPLASH_URL = "splash_url";
     private static final String NIGHT_MODE = "night_mode";
-    private static final String SORT_WAY = "sort_way";
+    private static final String SINGLE_SORT_WAY = "single_sort_way";
+    private static final String ARTIST_SORT_WAY = "artist_sort_way";
+    private static final String ALBUM_SORT_WAY = "album_sort_way";
+    private static final String FOLDER_SORT_WAY = "folder_sort_way";
 
     private static final String ARTIST_SORT_ORDER = "artist_sort_order";
     private static final String ALBUM_SORT_ORDER = "album_sort_order";
@@ -88,12 +91,36 @@ public class Preferences {
         saveString(SPLASH_URL, url);
     }
 
-    public static int getSortWay() {
-        return getInt(SORT_WAY, 0);
+    public static int getSingleSortWay() {
+        return getInt(SINGLE_SORT_WAY, 1);
     }
 
-    public static void saveSortWay(int sortWay) {
-        saveInt(SORT_WAY, sortWay);
+    public static void saveSingleSortWay(int sortWay) {
+        saveInt(SINGLE_SORT_WAY, sortWay);
+    }
+
+    public static int getArtistSortWay() {
+        return getInt(ARTIST_SORT_WAY, 0);
+    }
+
+    public static void saveArtistSortWay(int sortWay) {
+        saveInt(ARTIST_SORT_WAY, sortWay);
+    }
+
+    public static int getAlbumSortWay() {
+        return getInt(ALBUM_SORT_WAY, 0);
+    }
+
+    public static void saveAlbumSortWay(int sortWay) {
+        saveInt(ALBUM_SORT_WAY, sortWay);
+    }
+
+    public static int getFolderSortWay() {
+        return getInt(FOLDER_SORT_WAY, 0);
+    }
+
+    public static void saveFolderSortWay(int sortWay) {
+        saveInt(FOLDER_SORT_WAY, sortWay);
     }
 
     public static boolean enableMobileNetworkPlay() {

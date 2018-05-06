@@ -58,6 +58,8 @@
     <string name="sort_by_album">按专辑名</string>
     <string name="sort_by_add_time">按添加时间</string>
     <string name="sort_by_play_time">按播放次数</string>
+    <string name="sort_by_song_count">按歌曲数量</string>
+    <string name="sort_by_folder_name">按文件夹名</string>
     <string name="local_musics">本地音乐</string>
     <string name="search_local">搜索本地歌曲</string>
     <string name="cancel">取消</string>

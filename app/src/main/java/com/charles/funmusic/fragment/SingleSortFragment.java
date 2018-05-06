@@ -27,13 +27,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SortDialogFragment extends DialogFragment {
+public class SingleSortFragment extends DialogFragment {
 
-    public static final int SORT_BY_ARTIST = 0;
-    public static final int SORT_BY_SINGLE = 1;
-    public static final int SORT_BY_ADD_TIME = 2;
-    public static final int SORT_BY_ALBUM = 3;
-    public static final int SORT_BY_PLAY_TIME = 4;
+    private static final int SORT_BY_ARTIST = 0;
+    private static final int SORT_BY_SINGLE = 1;
+    private static final int SORT_BY_ADD_TIME = 2;
+    private static final int SORT_BY_ALBUM = 3;
+    private static final int SORT_BY_PLAY_TIME = 4;
 
     @BindView(R.id.dialog_sort_text)
     TextView mText;
@@ -81,10 +81,10 @@ public class SortDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Dialog_Full_Screen);
-        @SuppressLint("InflateParams") View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_sort, null);
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_single_sort, null);
         ButterKnife.bind(this, view);
 
-        int sortWay = Preferences.getSortWay();
+        int sortWay = Preferences.getSingleSortWay();
 
         switch (sortWay) {
             case SORT_BY_SINGLE:
@@ -108,7 +108,6 @@ public class SortDialogFragment extends DialogFragment {
                 break;
 
             case SORT_BY_ARTIST:
-            default:
                 mArtistImage.setVisibility(View.VISIBLE);
                 mArtistText.setTextColor(ContextCompat.getColor(AppCache.getContext(), R.color.theme_color_primary));
                 break;
@@ -116,17 +115,17 @@ public class SortDialogFragment extends DialogFragment {
 
         FontUtil fontUtil = new FontUtil();
         fontUtil.changeFont(getActivity(), mText);
-        mText.getPaint().setFakeBoldText(true);
+        mText.getPaint().setFakeBoldText(false);
         fontUtil.changeFont(getActivity(), mArtistText);
-        mArtistText.getPaint().setFakeBoldText(true);
+        mArtistText.getPaint().setFakeBoldText(false);
         fontUtil.changeFont(getActivity(), mSingleText);
-        mSingleText.getPaint().setFakeBoldText(true);
+        mSingleText.getPaint().setFakeBoldText(false);
         fontUtil.changeFont(getActivity(), mAddTimeText);
-        mAddTimeText.getPaint().setFakeBoldText(true);
+        mAddTimeText.getPaint().setFakeBoldText(false);
         fontUtil.changeFont(getActivity(), mAlbumText);
-        mAlbumText.getPaint().setFakeBoldText(true);
+        mAlbumText.getPaint().setFakeBoldText(false);
         fontUtil.changeFont(getActivity(), mPlayTimeText);
-        mPlayTimeText.getPaint().setFakeBoldText(true);
+        mPlayTimeText.getPaint().setFakeBoldText(false);
 
         AlertDialog dialog = builder.setView(view).create();
         Window window = dialog.getWindow();
@@ -150,32 +149,31 @@ public class SortDialogFragment extends DialogFragment {
     public void setSortWay(View view) {
         switch (view.getId()) {
             case R.id.dialog_sort_by_artist:
-                Preferences.saveSortWay(SORT_BY_ARTIST);
+                Preferences.saveSingleSortWay(SORT_BY_ARTIST);
                 mPreferences.saveArtistSortOrder(SortOrder.SongSortOrder.SONG_ARTIST);
-
                 dismiss();
                 break;
 
             case R.id.dialog_sort_by_single:
-                Preferences.saveSortWay(SORT_BY_SINGLE);
+                Preferences.saveSingleSortWay(SORT_BY_SINGLE);
                 mPreferences.saveSongSortOrder(SortOrder.SongSortOrder.SONG_A_Z);
                 dismiss();
                 break;
 
             case R.id.dialog_sort_by_add_time:
-                Preferences.saveSortWay(SORT_BY_ADD_TIME);
+                Preferences.saveSingleSortWay(SORT_BY_ADD_TIME);
                 mPreferences.saveAlbumSortOrder(SortOrder.SongSortOrder.SONG_DATE);
                 dismiss();
                 break;
 
             case R.id.dialog_sort_by_album:
-                Preferences.saveSortWay(SORT_BY_ALBUM);
+                Preferences.saveSingleSortWay(SORT_BY_ALBUM);
                 mPreferences.saveAlbumSortOrder(SortOrder.SongSortOrder.SONG_ALBUM);
                 dismiss();
                 break;
 
             case R.id.dialog_sort_by_play_time:
-                Preferences.saveSortWay(SORT_BY_PLAY_TIME);
+                Preferences.saveSingleSortWay(SORT_BY_PLAY_TIME);
                 dismiss();
                 break;
 

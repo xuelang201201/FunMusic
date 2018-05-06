@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dialog_sort_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/dialog_sort_text"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:text="@string/sort_way"
-        android:textColor="@color/black"
-        android:textSize="16sp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.1dp"
-        android:background="#CCCCCC"/>
+    <include
+        android:id="@+id/sort_header"
+        layout="@layout/sort_header"/>
 
     <LinearLayout
         android:id="@+id/dialog_sort_by_artist"
@@ -37,12 +25,12 @@
             android:layout_height="wrap_content"
             android:text="@string/sort_by_artist"
             android:textColor="@color/light_black"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/dialog_sort_by_artist_image"
@@ -53,14 +41,13 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             android:src="@drawable/ic_selected"
-            android:visibility="invisible"/>
-
+            android:visibility="invisible" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
-        android:background="#CCCCCC"/>
+        android:background="#CCCCCC" />
 
     <LinearLayout
         android:id="@+id/dialog_sort_by_single"
@@ -78,12 +65,12 @@
             android:layout_height="wrap_content"
             android:text="@string/sort_by_single"
             android:textColor="@color/light_black"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/dialog_sort_by_single_image"
@@ -94,15 +81,14 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             android:src="@drawable/ic_selected"
-            android:visibility="invisible"/>
-
+            android:visibility="invisible" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
         android:layout_weight="1"
-        android:background="#CCCCCC"/>
+        android:background="#CCCCCC" />
 
     <LinearLayout
         android:id="@+id/dialog_sort_by_add_time"
@@ -120,12 +106,12 @@
             android:layout_height="wrap_content"
             android:text="@string/sort_by_add_time"
             android:textColor="@color/light_black"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/dialog_sort_by_add_time_image"
@@ -136,14 +122,13 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             android:src="@drawable/ic_selected"
-            android:visibility="invisible"/>
-
+            android:visibility="invisible" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
-        android:background="#CCCCCC"/>
+        android:background="#CCCCCC" />
 
     <LinearLayout
         android:id="@+id/dialog_sort_by_album"
@@ -161,12 +146,12 @@
             android:layout_height="wrap_content"
             android:text="@string/sort_by_album"
             android:textColor="@color/light_black"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/dialog_sort_by_album_image"
@@ -177,14 +162,13 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             android:src="@drawable/ic_selected"
-            android:visibility="invisible"/>
-
+            android:visibility="invisible" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
-        android:background="#CCCCCC"/>
+        android:background="#CCCCCC" />
 
     <LinearLayout
         android:id="@+id/dialog_sort_by_play_time"
@@ -202,12 +186,12 @@
             android:layout_height="wrap_content"
             android:text="@string/sort_by_play_time"
             android:textColor="@color/light_black"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/dialog_sort_by_play_time_image"
@@ -218,23 +202,11 @@
             android:scaleX="0.7"
             android:scaleY="0.7"
             android:src="@drawable/ic_selected"
-            android:visibility="invisible"/>
-
+            android:visibility="invisible" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@color/color_normal"/>
-
-    <TextView
-        android:id="@+id/dialog_sort_cancel"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/touch_bg"
-        android:text="@string/cancel"
-        android:gravity="center"
-        android:textColor="@color/light_black"
-        android:textSize="16sp"/>
+    <include
+        android:id="@+id/sort_footer"
+        layout="@layout/sort_footer"/>
 
 </LinearLayout>

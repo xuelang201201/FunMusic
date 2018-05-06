@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
@@ -42,10 +44,10 @@ public class LocalMusicFragment extends AttachDialogFragment {
     @BindView(R.id.header_view_search)
     ImageView mSearch;
 
-    private SingleFragment mSingleFragment;
-    private ArtistFragment mArtistFragment;
-    private AlbumFragment mAlbumFragment;
-    private FolderFragment mFolderFragment;
+    private SingleSortFragment mSingleSortFragment;
+    private ArtistSortFragment mArtistSortFragment;
+    private AlbumSortFragment mAlbumSortFragment;
+    private FolderSortFragment mFolderSortFragment;
 
     private String[] mTitles;
     private PopupMenu mPopupMenu;
@@ -113,14 +115,10 @@ public class LocalMusicFragment extends AttachDialogFragment {
     public void initView() {
 
         MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());
-        mSingleFragment = new SingleFragment();
-        adapter.addFragment(mSingleFragment, mTitles[0]);
-        mArtistFragment = new ArtistFragment();
-        adapter.addFragment(mArtistFragment, mTitles[1]);
-        mAlbumFragment = new AlbumFragment();
-        adapter.addFragment(mAlbumFragment, mTitles[2]);
-        mFolderFragment = new FolderFragment();
-        adapter.addFragment(mFolderFragment, mTitles[3]);
+        adapter.addFragment(new SingleFragment(), mTitles[0]);
+        adapter.addFragment(new ArtistFragment(), mTitles[1]);
+        adapter.addFragment(new AlbumFragment(), mTitles[2]);
+        adapter.addFragment(new FolderFragment(), mTitles[3]);
         mViewPager.setAdapter(adapter);
         mViewPager.setOffscreenPageLimit(3); // 设置ViewPager预加载数量为3
 
@@ -161,20 +159,20 @@ public class LocalMusicFragment extends AttachDialogFragment {
                     switch (item.getItemId()) {
                         case R.id.action_sort:
                             if (mViewPager.getCurrentItem() == 0) {
-                                showSortDialog();
-                                mSingleFragment.reloadAdapter();
+                                mSingleSortFragment = new SingleSortFragment();
+                                showSortFragment(mSingleSortFragment);
                             }
                             if (mViewPager.getCurrentItem() == 1) {
-//                                showSortDialog();
-                                mArtistFragment.reloadAdapter();
+                                mArtistSortFragment = new ArtistSortFragment();
+                                showSortFragment(mArtistSortFragment);
                             }
                             if (mViewPager.getCurrentItem() == 2) {
-//                                showSortDialog();
-                                mAlbumFragment.reloadAdapter();
+                                mAlbumSortFragment = new AlbumSortFragment();
+                                showSortFragment(mAlbumSortFragment);
                             }
                             if (mViewPager.getCurrentItem() == 3) {
-//                                showSortDialog();
-                                mFolderFragment.reloadAdapter();
+                                mFolderSortFragment = new FolderSortFragment();
+                                showSortFragment(mFolderSortFragment);
                             }
                             mPopupMenu.dismiss();
                             break;
@@ -207,6 +205,12 @@ public class LocalMusicFragment extends AttachDialogFragment {
             MenuPopupHelper helper = new MenuPopupHelper(getActivity(), (MenuBuilder) mPopupMenu.getMenu(), mMore);
             helper.setForceShowIcon(true);
             helper.show();
+        }
+    }
+
+    private void showSortFragment(DialogFragment fragment) {
+        if (getFragmentManager() != null) {
+            fragment.show(getFragmentManager(), "single_sort");
         }
     }
 
