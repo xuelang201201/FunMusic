@@ -62,7 +62,6 @@ import com.charles.funmusic.premission.Permission;
 import com.charles.funmusic.provider.MusicPlaybackState;
 import com.charles.funmusic.provider.RecentStore;
 import com.charles.funmusic.provider.SongPlayCount;
-import com.charles.funmusic.proxy.utils.HttpUtils;
 import com.charles.funmusic.proxy.utils.MusicPlayerProxy;
 import com.charles.funmusic.receiver.MediaButtonIntentReceiver;
 import com.charles.funmusic.utils.ImageUtil;
@@ -80,7 +79,6 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.zhy.http.okhttp.utils.L;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -215,7 +213,7 @@ public class MusicService extends Service {
     private SongPlayCount mSongPlayCount;
     private RecentStore mRecentStore;
 
-    private int mNotificationId = 1000;
+    private int mNotificationId = hashCode();
     private ContentObserver mMediaStoreObserver;
     private static Handler mUrlHandler, mLrcHandler;
     private MusicPlayerProxy mProxy;
@@ -624,15 +622,15 @@ public class MusicService extends Service {
         }
 
         if (newNotifyMode == NOTIFY_MODE_FOREGROUND) {
-            startForeground(mNotificationId, getNotification());
+            startForeground(mNotificationId, buildNotification());
         } else if (newNotifyMode == NOTIFY_MODE_BACKGROUND) {
-            mNotificationManager.notify(mNotificationId, getNotification());
+            mNotificationManager.notify(mNotificationId, buildNotification());
         }
 
         mNotifyMode = newNotifyMode;
     }
 
-    private Notification getNotification() {
+    private Notification buildNotification() {
         RemoteViews remoteViews;
         final int PAUSE_FLAG = 0x1;
         final int NEXT_FLAG = 0x2;
@@ -666,20 +664,17 @@ public class MusicService extends Service {
         final Intent nowPlayingIntent = new Intent();
         nowPlayingIntent.setComponent(new ComponentName("com.charles.funmusic", "com.charles.funmusic.activity.PlayingActivity"));
         nowPlayingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent clickIntent = PendingIntent.getBroadcast(this, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent click = PendingIntent.getActivity(this, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent clickIntent = PendingIntent.getActivity(this, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         final Bitmap bitmap = ImageUtil.getArtworkQuick(this, getAlbumId(), 160, 160);
         if (bitmap != null) {
             remoteViews.setImageViewBitmap(R.id.notification_icon, bitmap);
             // remoteViews.setImageViewUri(R.id.image, MusicUtils.getAlbumUri(this, getAudioId()));
             mNoBit = null;
-
         } else if (!isTrackLocal()) {
             if (mNoBit != null) {
                 remoteViews.setImageViewBitmap(R.id.notification_icon, mNoBit);
                 mNoBit = null;
-
             } else {
                 Uri uri = null;
                 if (getAlbumPath() != null) {
@@ -726,11 +721,9 @@ public class MusicService extends Service {
                     );
                 }
             }
-
         } else {
             remoteViews.setImageViewResource(R.id.notification_icon, R.drawable.ic_default_album_cover);
         }
-
 
         if (mNotificationPostTime == 0) {
             mNotificationPostTime = System.currentTimeMillis();
@@ -739,7 +732,7 @@ public class MusicService extends Service {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "notifier")
                     .setContent(remoteViews)
                     .setSmallIcon(R.drawable.ic_notification)
-                    .setContentIntent(click)
+                    .setContentIntent(clickIntent)
                     .setOngoing(true)
                     .setWhen(mNotificationPostTime);
             if (SystemUtil.isJellyBeanMR1()) {
@@ -1405,10 +1398,9 @@ public class MusicService extends Service {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mSession.setPlaybackState(new PlaybackState.Builder()
                         .setState(playState, position(), 1.0f)
-                        .setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE
-                                | PlaybackState.ACTION_PLAY_PAUSE | PlaybackState.ACTION_SKIP_TO_NEXT
-                                | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
-                        .build()
+                        .setActions(PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE
+                                | PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS
+                        ).build()
                 );
             }
         } else if (what.equals(META_CHANGED) || what.equals(QUEUE_CHANGED)) {
