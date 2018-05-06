@@ -2,14 +2,13 @@ package com.charles.funmusic.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -35,13 +34,13 @@ import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
-import com.charles.funmusic.utils.SystemUtil;
 import com.charles.funmusic.utils.ToastUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -140,26 +139,30 @@ public class SimpleMoreFragment extends AttachDialogFragment {
                 public void onItemClick(View view, String data) {
                     switch (Integer.parseInt(data)) {
                         case 0:
-                            artistDetail();
+                            nextPlay();
                             dismiss();
                             break;
                         case 1:
-                            albumDetail();
+                            artistDetail();
                             dismiss();
                             break;
                         case 2:
-                            addToPlaylist();
+                            albumDetail();
                             dismiss();
                             break;
                         case 3:
-                            share();
+                            addToPlaylist();
                             dismiss();
                             break;
                         case 4:
-                            setAsRingtone();
+                            share();
                             dismiss();
                             break;
                         case 5:
+                            setAsRingtone();
+                            dismiss();
+                            break;
+                        case 6:
                             detail();
                             dismiss();
                             break;
@@ -167,6 +170,25 @@ public class SimpleMoreFragment extends AttachDialogFragment {
                 }
             });
         }
+    }
+
+    /**
+     * 下一首播放
+     */
+    private void nextPlay() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mMusic.getId() == MusicPlayer.getCurrentAudioId()) {
+                    return;
+                }
+                long[] ids = new long[1];
+                ids[0] = mMusic.getId();
+                @SuppressLint("UseSparseArrays") HashMap<Long, Music> map = new HashMap<>();
+                map.put(ids[0], mMusic);
+                MusicPlayer.playNext(mContext, map, ids);
+            }
+        }, 100);
     }
 
     /**
@@ -301,6 +323,7 @@ public class SimpleMoreFragment extends AttachDialogFragment {
      */
     private void setMusicInfo() {
         // 设置list，RecyclerView要显示的内容
+        setInfo("下一首播放", R.drawable.ic_next_play);
         setInfo("歌手：" + FileUtil.getArtist(mMusic.getArtist()), R.drawable.ic_artist);
         setInfo("专辑：" + FileUtil.getAlbum(mMusic.getAlbum()), R.drawable.ic_album);
         setInfo("收藏到歌单", R.drawable.ic_add_to_playlist);
