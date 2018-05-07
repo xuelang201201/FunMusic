@@ -165,7 +165,11 @@ public class ArtistDetailFragment extends BaseFragment {
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        multiple(-1);
+                        Intent intent = new Intent(mContext, MultipleActivity.class);
+                        intent.putParcelableArrayListExtra("ids", mMusics);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtra("where", "select");
+                        mContext.startActivity(intent);
                     }
                 });
             }
@@ -182,13 +186,6 @@ public class ArtistDetailFragment extends BaseFragment {
                     ((ListItemViewHolder) holder).mPlayState.setVisibility(View.GONE);
                 }
             }
-        }
-
-        private void multiple(int position) {
-            Intent intent = new Intent(mContext, MultipleActivity.class);
-            intent.putParcelableArrayListExtra("ids", mMusics);
-            intent.putExtra("position", position);
-            mContext.startActivity(intent);
         }
 
         @Override
@@ -296,7 +293,12 @@ public class ArtistDetailFragment extends BaseFragment {
 
             @Override
             public boolean onLongClick(View v) {
-                multiple(getAdapterPosition() - 1);
+                Intent intent = new Intent(mContext, MultipleActivity.class);
+                intent.putParcelableArrayListExtra("ids", mMusics);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.putExtra("position", getAdapterPosition() - 1);
+                intent.putExtra("where", "longClick");
+                mContext.startActivity(intent);
                 return false;
             }
         }

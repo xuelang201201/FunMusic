@@ -77,10 +77,12 @@ public class MultipleActivity extends BaseActivity {
 
         new loadSongs().execute("");
 
-        int position = getIntent().getIntExtra("position", -1);
-        setItemChecked(position, true);
-        mNumberOfChosen.setText("已选择1项");
-        mRecyclerView.scrollToPosition(position);
+        if (!getIntent().getStringExtra("where").equals("select")) {
+            int position = getIntent().getIntExtra("position", -1);
+            setItemChecked(position, true);
+            mNumberOfChosen.setText("已选择1项");
+            mRecyclerView.scrollToPosition(position);
+        }
 
         initSystemBar(mHeaderView);
     }
