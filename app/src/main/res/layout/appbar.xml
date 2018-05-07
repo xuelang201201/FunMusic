@@ -55,8 +55,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:contentDescription="@null"
         android:padding="6dp"
-        android:scaleX="0.75"
-        android:scaleY="0.75"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
         android:src="@drawable/ic_search"
         android:visibility="gone" />
 

@@ -2,7 +2,6 @@ package com.charles.funmusic.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -46,6 +45,8 @@ public class LocalSearchActivity extends BaseActivity implements SearchView.OnQu
 
         mToolbar.setPadding(0, ScreenUtil.getStatusHeight(this), 0, 0);
         setSupportActionBar(mToolbar);
+
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -58,15 +59,17 @@ public class LocalSearchActivity extends BaseActivity implements SearchView.OnQu
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
 
-        mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
+        MenuItem search = menu.findItem(R.id.menu_search);
+        mSearchView = (SearchView) search.getActionView();
 
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setQueryHint(getResources().getString(R.string.search_local));
 
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setIconified(false);
+        mSearchView.onActionViewExpanded();
 
-        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.menu_search), new MenuItemCompat.OnActionExpandListener() {
+        search.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 return true;
@@ -79,7 +82,7 @@ public class LocalSearchActivity extends BaseActivity implements SearchView.OnQu
             }
         });
 
-        menu.findItem(R.id.menu_search).expandActionView();
+        search.expandActionView();
         return super.onCreateOptionsMenu(menu);
     }
 
