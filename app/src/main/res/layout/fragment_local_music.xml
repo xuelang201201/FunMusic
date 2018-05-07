@@ -4,7 +4,6 @@
     android:id="@+id/fragment_local_music"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/theme_color_primary"
     android:orientation="vertical">
 
     <include
@@ -15,6 +14,7 @@
         android:id="@+id/fragment_local_music_tabs"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:background="@color/theme_color_primary"
         android:tag="tab_indicator_accent_color,bg_primary_color"
         app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white"

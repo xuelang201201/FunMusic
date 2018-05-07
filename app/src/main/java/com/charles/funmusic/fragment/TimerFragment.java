@@ -3,7 +3,6 @@ package com.charles.funmusic.fragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,8 +10,6 @@ import android.widget.TextView;
 
 import com.charles.funmusic.R;
 import com.charles.funmusic.service.MusicPlayer;
-import com.charles.funmusic.service.MusicService;
-import com.charles.funmusic.service.QuitTimer;
 import com.charles.funmusic.utils.ScreenUtil;
 import com.charles.funmusic.utils.ToastUtil;
 
@@ -23,8 +20,6 @@ public class TimerFragment extends BaseFragment {
 
     @BindView(R.id.header_view)
     View mHeaderView;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
     @BindView(R.id.header_view_image_view)
     ImageView mBack;
     @BindView(R.id.header_view_title_text_view)

@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/sort_header"
-        layout="@layout/sort_header"/>
+        layout="@layout/sort_header" />
 
     <LinearLayout
         android:id="@+id/dialog_sort_by_artist"
@@ -207,6 +207,6 @@
 
     <include
         android:id="@+id/sort_footer"
-        layout="@layout/sort_footer"/>
+        layout="@layout/sort_footer" />
 
 </LinearLayout>

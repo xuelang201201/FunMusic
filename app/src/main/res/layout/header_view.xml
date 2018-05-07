@@ -2,17 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/appbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/theme_color_primary">
 
     <!--<android.support.v7.widget.Toolbar-->
-        <!--android:id="@+id/toolbar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--android:visibility="gone"-->
-        <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
+    <!--android:id="@+id/toolbar"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/colorPrimary"-->
+    <!--android:visibility="gone"-->
+    <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
 
     <include
         android:id="@+id/activity_music_toolbar"
-        layout="@layout/appbar"/>
+        layout="@layout/appbar" />
 </RelativeLayout>

@@ -1,12 +1,17 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/theme_color_primary</item>
         <item name="colorPrimaryDark">@color/theme_color_primary</item>
         <item name="colorAccent">@color/theme_color_primary</item>
         <item name="android:windowBackground">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowAnimationStyle">@style/NoAnimation</item>
+    </style>
+
+    <style name="NoAnimation">
         <item name="android:activityOpenEnterAnimation">@null</item>
         <item name="android:activityOpenExitAnimation">@null</item>
         <item name="android:activityCloseEnterAnimation">@null</item>
@@ -21,9 +26,7 @@
         <item name="android:taskToBackExitAnimation">@null</item>
     </style>
 
-    <style name="AppTheme.Text" parent="TextAppearance.AppCompat"/>
-
-    <style name="AppTheme" parent="AppBaseTheme"/>
+    <style name="AppTheme.Text" parent="TextAppearance.AppCompat" />
 
     <style name="AnimationActivity" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/slide_in</item>
@@ -72,7 +75,7 @@
         <item name="android:windowEnterAnimation">@anim/anim_dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/anim_dialog_exit</item>
     </style>
-    
+
     <style name="TabText" parent="TextAppearance.AppCompat">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">18sp</item>
