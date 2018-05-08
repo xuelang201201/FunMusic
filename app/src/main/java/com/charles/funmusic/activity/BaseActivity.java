@@ -297,15 +297,6 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
         }
     }
 
-    protected boolean checkServiceAlive() {
-//        if (AppCache.getMusicService() == null) {
-//            startActivity(new Intent(this, SplashActivity.class));
-//            AppCache.clearStack();
-//            return false;
-//        }
-        return true;
-    }
-
     /**
      * 改变字体
      *

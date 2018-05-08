@@ -74,10 +74,6 @@ public class MusicActivity extends BaseActivity implements NavigationView.OnNavi
         setContentView(R.layout.activity_music);
         getWindow().setBackgroundDrawableResource(R.color.background_material_light_1);
 
-        if (!checkServiceAlive()) {
-            return;
-        }
-
         initView();
     }
 

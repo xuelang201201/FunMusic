@@ -27,10 +27,6 @@ public class SettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        if (!checkServiceAlive()) {
-            return;
-        }
-
         SettingFragment settingFragment = new SettingFragment();
         settingFragment.setMusicService(getMusicService());
         getFragmentManager()
