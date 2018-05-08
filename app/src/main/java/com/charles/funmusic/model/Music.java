@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
-
 public class Music implements Parcelable {
 
     private static final String KEY_SONG_ID = "song_id";
@@ -22,6 +20,7 @@ public class Music implements Parcelable {
     private static final String KEY_LRC = "lrc";
     private static final String KEY_IS_LOCAL = "is_local";
     private static final String KEY_SORT = "sort";
+    private static final String KEY_TRACK_NUMBER = "track_number";
 
     /**
      * 歌曲类型：本地/网络
@@ -91,6 +90,8 @@ public class Music implements Parcelable {
     private boolean isLocal;
 
     private String mSort;
+
+    private int mTrackNumber;
 
     public Music() {
     }
@@ -264,6 +265,14 @@ public class Music implements Parcelable {
         mSort = sort;
     }
 
+    public int getTrackNumber() {
+        return mTrackNumber;
+    }
+
+    public void setTrackNumber(int trackNumber) {
+        mTrackNumber = trackNumber;
+    }
+
     /**
      * 对比本地歌曲是否相同
      */
@@ -295,7 +304,19 @@ public class Music implements Parcelable {
         bundle.putString(KEY_LRC, mLrc);
         bundle.putBoolean(KEY_IS_LOCAL, isLocal());
         bundle.putString(KEY_SORT, mSort);
+        bundle.putInt(KEY_TRACK_NUMBER, mTrackNumber);
         dest.writeBundle(bundle);
+    }
+
+    public Music(long id, long albumId, long artistId, String title, String artist, String album, int duration, int trackNumber) {
+        mId = id;
+        mAlbumId = albumId;
+        mArtistId = artistId;
+        mAlbum = album;
+        mArtist = artist;
+        mDuration = duration;
+        mTitle = title;
+        mTrackNumber = trackNumber;
     }
 
     protected Music(Parcel in) {
@@ -316,6 +337,7 @@ public class Music implements Parcelable {
         mFileSize = in.readLong();
         mSort = in.readString();
         isLocal = in.readByte() != 0;
+        mTrackNumber = in.readInt();
     }
 
     public static final Creator<Music> CREATOR = new Creator<Music>() {
@@ -337,6 +359,7 @@ public class Music implements Parcelable {
             music.mLrc = bundle.getString(KEY_LRC);
             music.mSort = bundle.getString(KEY_SORT);
             music.isLocal = bundle.getBoolean(KEY_IS_LOCAL);
+            music.mTrackNumber = bundle.getInt(KEY_TRACK_NUMBER);
             return music;
         }
 

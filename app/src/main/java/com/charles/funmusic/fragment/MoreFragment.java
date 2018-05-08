@@ -20,7 +20,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +43,6 @@ import com.charles.funmusic.model.OverFlowItem;
 import com.charles.funmusic.net.BMA;
 import com.charles.funmusic.net.HttpUtil;
 import com.charles.funmusic.premission.Permission;
-import com.charles.funmusic.premission.PermissionCallback;
 import com.charles.funmusic.provider.PlaylistManager;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.FileUtil;
@@ -104,7 +102,6 @@ public class MoreFragment extends AttachDialogFragment {
         return fragment;
     }
 
-
     public static MoreFragment newInstance(Music music, int startFrom) {
         MoreFragment fragment = new MoreFragment();
         Bundle args = new Bundle();
@@ -151,7 +148,6 @@ public class MoreFragment extends AttachDialogFragment {
         if (getArguments() != null) {
             mType = getArguments().getInt("type");
             mArgs = getArguments().getString("id");
-            long playlistId = getArguments().getLong("playlist_id");
         }
         // 布局
         View view = inflater.inflate(R.layout.fragment_more, container, false);
@@ -171,7 +167,6 @@ public class MoreFragment extends AttachDialogFragment {
                 mMusic = new Music();
             }
             mArtist = FileUtil.getArtist(mMusic.getArtist());
-            String albumId = mMusic.getAlbumId() + "";
             mAlbum = FileUtil.getAlbum(mMusic.getAlbum());
             String title = getString(R.string.song_name) + FileUtil.getTitle(mMusic.getTitle());
             mTopTitle.setText(title);

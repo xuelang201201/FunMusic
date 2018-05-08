@@ -447,7 +447,7 @@ public class SongPlayCount {
         /* Table name */
         String NAME = "song_play_count";
 
-        /* Song IDs column */
+        /* Music IDs column */
         String ID = "song_id";
 
         /* Week Play Count */

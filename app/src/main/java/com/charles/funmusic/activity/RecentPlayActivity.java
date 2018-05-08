@@ -17,9 +17,9 @@ import com.charles.funmusic.R;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.fragment.MoreFragment;
 import com.charles.funmusic.model.Music;
-import com.charles.funmusic.model.Song;
 import com.charles.funmusic.provider.RecentStore;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.MusicUtil;
 import com.charles.funmusic.utils.loader.SongLoader;
@@ -47,14 +47,14 @@ public class RecentPlayActivity extends BaseActivity {
     RecyclerView mRecyclerView;
 
     private RecentPlayAdapter mAdapter;
-    private List<Song> mSongs;
+    private List<Music> mMusics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recent_play);
 
-        mSongs = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
+        mMusics = SongLoader.getSongsForCursor(TopTracksLoader.getCursor());
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
@@ -71,7 +71,7 @@ public class RecentPlayActivity extends BaseActivity {
     @Override
     public void updateTrack() {
         if (mAdapter != null) {
-            mAdapter.updateDataSet(mSongs);
+            mAdapter.updateDataSet(mMusics);
         }
     }
 
@@ -84,7 +84,7 @@ public class RecentPlayActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            mAdapter = new RecentPlayAdapter(mSongs);
+            mAdapter = new RecentPlayAdapter(mMusics);
             return "Executed";
         }
 
@@ -103,7 +103,7 @@ public class RecentPlayActivity extends BaseActivity {
 
             case R.id.header_view_text_right:
                 RecentStore.getInstance(this).deleteAll();
-                mAdapter.updateDataSet(mSongs);
+                mAdapter.updateDataSet(mMusics);
                 break;
         }
     }
@@ -112,17 +112,17 @@ public class RecentPlayActivity extends BaseActivity {
 
         private final static int FIRST_ITEM = 0;
         private final static int ITEM = 1;
-        private List<Song> mSongs;
+        private List<Music> mMusics;
 
-        RecentPlayAdapter(List<Song> songs) {
-            if (songs == null) {
+        RecentPlayAdapter(List<Music> musics) {
+            if (musics == null) {
                 throw new IllegalArgumentException("model data must not be null");
             }
-            mSongs = songs;
+            mMusics = musics;
         }
 
-        void updateDataSet(List<Song> songs) {
-            mSongs = songs;
+        void updateDataSet(List<Music> musics) {
+            mMusics = musics;
             notifyDataSetChanged();
         }
 
@@ -145,17 +145,17 @@ public class RecentPlayActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            Song song = null;
+            Music music = null;
             if (position > 0) {
-                song = mSongs.get(position - 1);
+                music = mMusics.get(position - 1);
             }
             if (holder instanceof ListItemViewHolder) {
-                if (song != null) {
-                    ((ListItemViewHolder) holder).mTitle.setText(song.getTitle());
-                    ((ListItemViewHolder) holder).mArtistAndAlbum.setText(song.getArtist());
+                if (music != null) {
+                    ((ListItemViewHolder) holder).mTitle.setText(music.getTitle());
+                    ((ListItemViewHolder) holder).mArtistAndAlbum.setText(FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum()));
 
                     // 判断该条目音乐是否在播放
-                    if (MusicPlayer.getCurrentAudioId() == song.getId()) {
+                    if (MusicPlayer.getCurrentAudioId() == music.getId()) {
                         ((ListItemViewHolder) holder).mPlayState.setVisibility(View.VISIBLE);
                         ((ListItemViewHolder) holder).mPlayState.setImageResource(R.drawable.playing);
                     } else {
@@ -163,13 +163,13 @@ public class RecentPlayActivity extends BaseActivity {
                     }
                 }
             } else if (holder instanceof CommonItemViewHolder) {
-                String playAll = "（共" + mSongs.size() + "首）";
+                String playAll = "（共" + mMusics.size() + "首）";
                 ((CommonItemViewHolder) holder).mPlayAll.setText(playAll);
                 ((CommonItemViewHolder) holder).mSelect.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(RecentPlayActivity.this, MultipleActivity.class);
-                        intent.putParcelableArrayListExtra("ids", (ArrayList) mSongs);
+                        intent.putParcelableArrayListExtra("ids", (ArrayList) mMusics);
                         startActivity(intent);
                     }
                 });
@@ -178,7 +178,7 @@ public class RecentPlayActivity extends BaseActivity {
 
         @Override
         public int getItemCount() {
-            return null != mSongs ? mSongs.size() + 1 : 0;
+            return null != mMusics ? mMusics.size() + 1 : 0;
         }
 
         public class CommonItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -199,11 +199,11 @@ public class RecentPlayActivity extends BaseActivity {
                 HandlerUtil.getInstance(RecentPlayActivity.this).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        long[] songs = new long[mSongs.size()];
+                        long[] songs = new long[mMusics.size()];
                         @SuppressLint("UseSparseArrays") HashMap<Long, Music> maps = new HashMap<>();
-                        for (int i = 0; i < mSongs.size(); i++) {
+                        for (int i = 0; i < mMusics.size(); i++) {
                             Music music = MusicUtil.getMusics(
-                                    RecentPlayActivity.this, mSongs.get(i).getId());
+                                    RecentPlayActivity.this, mMusics.get(i).getId());
                             if (music != null) {
                                 songs[i] = music.getId();
                                 music.setLocal(true);
@@ -235,9 +235,8 @@ public class RecentPlayActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         MoreFragment moreFragment = MoreFragment.newInstance(
-                                mSongs.get(getAdapterPosition() - 1).getId() + "",
-                                Keys.MUSIC_OVERFLOW);
-                        moreFragment.show(getSupportFragmentManager(), "music");
+                                mMusics.get(getAdapterPosition() - 1), Keys.MUSIC_OVERFLOW);
+                        moreFragment.show(getSupportFragmentManager(), "song");
                     }
                 });
                 itemView.setOnClickListener(this);
@@ -251,11 +250,11 @@ public class RecentPlayActivity extends BaseActivity {
                 HandlerUtil.getInstance(RecentPlayActivity.this).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        long[] musics = new long[mSongs.size()];
+                        long[] musics = new long[mMusics.size()];
                         @SuppressLint("UseSparseArrays") HashMap<Long, Music> maps = new HashMap<>();
-                        for (int i = 0; i < mSongs.size(); i++) {
+                        for (int i = 0; i < mMusics.size(); i++) {
                             Music music = MusicUtil.getMusics(
-                                    RecentPlayActivity.this, mSongs.get(i).getId());
+                                    RecentPlayActivity.this, mMusics.get(i).getId());
                             if (music != null) {
                                 musics[i] = music.getId();
                                 music.setLocal(true);

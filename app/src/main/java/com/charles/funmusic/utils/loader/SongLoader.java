@@ -3,13 +3,11 @@ package com.charles.funmusic.utils.loader;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.BaseColumns;
-import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Media;
 import android.provider.MediaStore.Audio.Playlists.Members;
 import android.text.TextUtils;
-import android.view.GestureDetector;
 
-import com.charles.funmusic.model.Song;
+import com.charles.funmusic.model.Music;
 import com.charles.funmusic.utils.Preferences;
 
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ public class SongLoader {
 
     private static final long[] sEmptyList = new long[0];
 
-    public static ArrayList<Song> getSongsForCursor(Cursor cursor) {
+    public static ArrayList<Music> getSongsForCursor(Cursor cursor) {
         ArrayList arrayList = new ArrayList();
         if ((cursor != null) && (cursor.moveToFirst())) {
             do {
@@ -31,7 +29,7 @@ public class SongLoader {
                 long artistId = cursor.getLong(6);
                 long albumId = cursor.getLong(7);
 
-                arrayList.add(new Song(id, albumId, artistId, title, artist, album, duration, trackNumber));
+                arrayList.add(new Music(id, albumId, artistId, title, artist, album, duration, trackNumber));
             } while (cursor.moveToNext());
             if (cursor != null) {
                 cursor.close();
@@ -40,8 +38,8 @@ public class SongLoader {
         return arrayList;
     }
 
-    public static Song getSongForCursor(Cursor cursor) {
-        Song song = new Song();
+    private static Music getSongForCursor(Cursor cursor) {
+        Music music = new Music();
         if ((cursor != null) && (cursor.moveToFirst())) {
             long id = cursor.getLong(0);
             String title = cursor.getString(1);
@@ -52,13 +50,13 @@ public class SongLoader {
             long artistId = cursor.getInt(6);
             long albumId = cursor.getLong(7);
 
-            song = new Song(id, albumId, artistId, title, artist, album, duration, trackNumber);
+            music = new Music(id, albumId, artistId, title, artist, album, duration, trackNumber);
         }
 
         if (cursor != null) {
             cursor.close();
         }
-        return song;
+        return music;
     }
 
     public static long[] getSongListForCursor(Cursor cursor) {
@@ -82,15 +80,15 @@ public class SongLoader {
         return list;
     }
 
-    public static ArrayList<Song> getAllSongs(Context context) {
+    public static ArrayList<Music> getAllSongs(Context context) {
         return getSongsForCursor(makeSongCursor(context, null, null));
     }
 
-    public static Song getSongForId(Context context, long id) {
+    public static Music getSongForId(Context context, long id) {
         return getSongForCursor(makeSongCursor(context, "_id=" + String.valueOf(id), null));
     }
 
-    public static ArrayList<Song> searchSongs(Context context, String searchString) {
+    public static ArrayList<Music> searchSongs(Context context, String searchString) {
         return getSongsForCursor(makeSongCursor(context, "title LIKE ?", new String[]{"%" + searchString + "%"}));
     }
 

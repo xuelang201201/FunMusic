@@ -1,6 +1,7 @@
 package com.charles.funmusic.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,8 +38,9 @@ public class MusicFlowAdapter extends RecyclerView.Adapter<MusicFlowAdapter.List
         mOnItemClickListener = listener;
     }
 
+    @NonNull
     @Override
-    public ListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ListItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.music_flow_item, parent, false);
         ListItemViewHolder holder = new ListItemViewHolder(view);
         // 将创建的View注册点击事件
@@ -47,7 +49,7 @@ public class MusicFlowAdapter extends RecyclerView.Adapter<MusicFlowAdapter.List
     }
 
     @Override
-    public void onBindViewHolder(ListItemViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ListItemViewHolder holder, int position) {
         OverFlowItem item = mList.get(position);
         holder.mIcon.setImageResource(item.getAvatar());
 //        holder.mIcon.setImageTintList(R.color.theme_color_primary);

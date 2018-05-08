@@ -13,7 +13,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
         android:contentDescription="@null"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/music_item_container"

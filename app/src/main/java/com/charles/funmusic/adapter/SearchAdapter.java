@@ -11,10 +11,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
-import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.fragment.SimpleMoreFragment;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.service.MusicPlayer;
+import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.FontUtil;
 import com.charles.funmusic.utils.MusicUtil;
 
@@ -46,7 +46,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchHold
     public void onBindViewHolder(@NonNull SearchAdapter.SearchHolder holder, int position) {
         Music music = mSearchResults.get(position);
         holder.mTitle.setText(music.getTitle());
-        holder.mArtist.setText(music.getArtist());
+        holder.mArtistAndAlbum.setText(FileUtil.getArtistAndAlbum(music.getArtist(), music.getAlbum()));
         setOnPopupMenuListener(holder, position);
     }
 
@@ -79,7 +79,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchHold
         @BindView(R.id.music_item_title)
         TextView mTitle;
         @BindView(R.id.music_item_artist_and_album)
-        TextView mArtist;
+        TextView mArtistAndAlbum;
         @BindView(R.id.music_item_play_state)
         ImageView mPlayState;
         @BindView(R.id.music_item_more)
@@ -97,8 +97,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchHold
             fontUtil.changeFont(mContext, mTitle);
             mTitle.getPaint().setFakeBoldText(false);
 
-            fontUtil.changeFont(mContext, mArtist);
-            mArtist.getPaint().setFakeBoldText(false);
+            fontUtil.changeFont(mContext, mArtistAndAlbum);
+            mArtistAndAlbum.getPaint().setFakeBoldText(false);
         }
 
         @Override

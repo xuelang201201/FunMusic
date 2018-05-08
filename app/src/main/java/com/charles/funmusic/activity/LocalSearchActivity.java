@@ -16,7 +16,7 @@ import com.charles.funmusic.adapter.SearchAdapter;
 import com.charles.funmusic.model.Music;
 import com.charles.funmusic.provider.SearchHistory;
 import com.charles.funmusic.utils.ScreenUtil;
-import com.charles.funmusic.utils.SearchUtil;
+import com.charles.funmusic.utils.loader.SongLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +115,7 @@ public class LocalSearchActivity extends BaseActivity implements SearchView.OnQu
         mQueryStr = newText;
         if (!mQueryStr.trim().equals("")) {
             mSearchResults = new ArrayList<>();
-            List<Music> songs = SearchUtil.searchSongs(this, mQueryStr);
+            List<Music> songs = SongLoader.searchSongs(this, mQueryStr);
 
             mSearchResults.addAll(songs.size() < 100 ? songs : songs.subList(0, 100));
         } else {
