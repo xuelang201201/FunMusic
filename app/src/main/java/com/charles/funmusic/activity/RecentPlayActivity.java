@@ -170,6 +170,8 @@ public class RecentPlayActivity extends BaseActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(RecentPlayActivity.this, MultipleActivity.class);
                         intent.putParcelableArrayListExtra("ids", (ArrayList) mMusics);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtra("where", "select");
                         startActivity(intent);
                     }
                 });
