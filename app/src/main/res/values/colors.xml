@@ -6,10 +6,35 @@
     <color name="white">#FFFFFF</color>
     <color name="background_material_light_1">#FAFAFA</color>
     <color name="color_normal">#EFEFEF</color>
-    <color name="theme_color_primary">#FB7299</color>
     <color name="black">#000000</color>
     <color name="light_black">#555555</color>
     <color name="color_grey">#DEDEDE</color>
+    <color name="theme_picker_color">#AAAAAA</color>
     <color name="blue">#33b5e5</color>
     <color name="transparent">#00000000</color>
+    <color name="play_bar_progress_color">@color/theme_color_primary</color>
+
+    <color name="theme_color_primary">#FB7299</color>
+    <color name="theme_color_primary_dark">#B85671</color>
+    <color name="theme_color_primary_trans">#99f0486c</color>
+
+    <color name="firey">#F44336</color>
+    <color name="firey_dark">#C62828</color>
+    <color name="firey_trans">#99F44336</color>
+
+    <color name="sand">#FF9800</color>
+    <color name="sand_dark">#EF6C00</color>
+    <color name="sand_trans">#99FF9800</color>
+
+    <color name="wood">#4CAF50</color>
+    <color name="wood_dark">#2E7D32</color>
+    <color name="wood_trans">#994CAF50</color>
+
+    <color name="storm">#2196F3</color>
+    <color name="storm_dark">#1565C0</color>
+    <color name="storm_trans">#B41A78C3</color>
+
+    <color name="hope">#673AB7</color>
+    <color name="hope_dark">#311B92</color>
+    <color name="hope_trans">#99673AB7</color>
 </resources>

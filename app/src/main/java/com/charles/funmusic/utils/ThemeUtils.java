@@ -481,22 +481,22 @@ public class ThemeUtils {
         void refreshSpecificView(View view);
     }
 
-    private static switchColor mSwitchColor;
+    private static switchColor sSwitchColor;
 
     public static void setSwitchColor(switchColor switchColor) {
-        mSwitchColor = switchColor;
+        sSwitchColor = switchColor;
     }
 
     static
     @ColorInt
     int replaceColorById(Context context, @ColorRes int colorId) {
-        return mSwitchColor == null ? Color.TRANSPARENT : mSwitchColor.replaceColorById(context, colorId);
+        return sSwitchColor == null ? Color.TRANSPARENT : sSwitchColor.replaceColorById(context, colorId);
     }
 
     static
     @ColorInt
     int replaceColor(Context context, @ColorInt int color) {
-        return mSwitchColor == null ? Color.TRANSPARENT : mSwitchColor.replaceColor(context, color);
+        return sSwitchColor == null ? Color.TRANSPARENT : sSwitchColor.replaceColor(context, color);
     }
 
     public interface switchColor {

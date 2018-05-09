@@ -3,29 +3,30 @@ package com.charles.funmusic.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.internal.NavigationMenuView;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.charles.funmusic.R;
+import com.charles.funmusic.adapter.MenuItemAdapter;
 import com.charles.funmusic.adapter.MyPagerAdapter;
 import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.constant.Keys;
 import com.charles.funmusic.fragment.MyFragment;
 import com.charles.funmusic.fragment.OnlineFragment;
 import com.charles.funmusic.fragment.TimerFragment;
+import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.service.MusicService;
 import com.charles.funmusic.utils.ToastUtil;
 
@@ -34,12 +35,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MusicActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MusicActivity extends BaseActivity {
 
     @BindView(R.id.activity_music_drawer_layout)
     DrawerLayout mDrawerLayout;
     @BindView(R.id.activity_music_navigation_view)
-    NavigationView mNavigationView;
+    ListView mNavigationView;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.toolbar_menu)
@@ -84,6 +85,8 @@ public class MusicActivity extends BaseActivity implements NavigationView.OnNavi
 
     private void initView() {
 
+        setSupportActionBar(mToolbar);
+
         MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager());
         mMyFragment = new MyFragment();
         adapter.addFragment(mMyFragment, mTitles[0]);
@@ -110,37 +113,66 @@ public class MusicActivity extends BaseActivity implements NavigationView.OnNavi
             }
         });
 
-        mNavigationView.setNavigationItemSelectedListener(this);
-        setSupportActionBar(mToolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        mDrawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+//        mNavigationView.setNavigationItemSelectedListener(this);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        mDrawerLayout.addDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+//                    onBackPressed();
+//                }
+//            }
+//        });
+//        disableNavigationViewScrolls(mNavigationView);
 
-        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+        setUpDrawer();
+    }
+
+    private void setUpDrawer() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        mNavigationView.addHeaderView(inflater.inflate(R.layout.navigation_header_view, mNavigationView, false));
+        mNavigationView.setAdapter(new MenuItemAdapter(this));
+        mNavigationView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                    onBackPressed();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 1:
+                        startActivity(MusicActivity.this, ThemePickerActivity.class);
+                        break;
+                    case 2:
+                        showTimerFragment();
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        if (MusicPlayer.isPlaying()) {
+                            MusicPlayer.playOrPause();
+                        }
+                        unbindService();
+                        onDestroy();
+                        finish();
+                        break;
                 }
             }
         });
-
-        disableNavigationViewScrolls(mNavigationView);
     }
 
-    /**
-     * 去除掉NavigationView的滚动条
-     *
-     * @param navigationView 侧边导航栏
-     */
-    private void disableNavigationViewScrolls(NavigationView navigationView) {
-        if (navigationView != null) {
-            NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
-            if (navigationMenuView != null) {
-                navigationMenuView.setVerticalScrollBarEnabled(false);
-            }
-        }
-    }
+//    /**
+//     * 去除掉NavigationView的滚动条
+//     *
+//     * @param navigationView 侧边导航栏
+//     */
+//    private void disableNavigationViewScrolls(NavigationView navigationView) {
+//        if (navigationView != null) {
+//            NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
+//            if (navigationMenuView != null) {
+//                navigationMenuView.setVerticalScrollBarEnabled(false);
+//            }
+//        }
+//    }
 
     /**
      * 让返回键和home键功能一样
@@ -251,42 +283,31 @@ public class MusicActivity extends BaseActivity implements NavigationView.OnNavi
         super.onDestroy();
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
-        mDrawerLayout.closeDrawers();
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                item.setChecked(false);
-            }
-        }, 500);
-
-        switch (item.getItemId()) {
-            case R.id.action_timer:
-                showTimerFragment();
-                return true;
-
-            case R.id.action_setting:
-                startActivity(MusicActivity.this, SettingActivity.class);
-                return true;
-
-            case R.id.action_exit:
-                exit();
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * 退出程序
-     */
-    private void exit() {
-        finish();
-        MusicService service = AppCache.getMusicService();
-        if (service != null) {
-            service.exit();
-        }
-    }
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+//        mDrawerLayout.closeDrawers();
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                item.setChecked(false);
+//            }
+//        }, 500);
+//
+//        switch (item.getItemId()) {
+//            case R.id.action_timer:
+//                showTimerFragment();
+//                return true;
+//
+//            case R.id.action_setting:
+//                startActivity(MusicActivity.this, SettingActivity.class);
+//                return true;
+//
+//            case R.id.action_exit:
+//                exit();
+//                return true;
+//        }
+//        return false;
+//    }
 
     /**
      * 显示定时界面
@@ -309,6 +330,17 @@ public class MusicActivity extends BaseActivity implements NavigationView.OnNavi
         isTimerFragmentShow = true;
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
+
+//    /**
+//     * 退出程序
+//     */
+//    private void exit() {
+//        finish();
+//        MusicService service = AppCache.getMusicService();
+//        if (service != null) {
+//            service.exit();
+//        }
+//    }
 
     /**
      * 隐藏界面

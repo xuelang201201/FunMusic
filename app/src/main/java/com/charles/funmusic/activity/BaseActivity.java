@@ -254,7 +254,7 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
         mStateListener.clear();
     }
 
-    private void unbindService() {
+    public void unbindService() {
         if (mToken != null) {
             MusicPlayer.unbindFromService(mToken);
             mToken = null;

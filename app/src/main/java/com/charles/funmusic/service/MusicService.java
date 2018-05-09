@@ -438,6 +438,7 @@ public class MusicService extends Service {
     }
 
     public void exit() {
+        stopSelf();
     }
 
     @Override

@@ -147,5 +147,16 @@
     <string name="select_none">取消全选</string>
     <string name="favorite_all">收藏全部</string>
     <string name="search">搜索</string>
+    <string name="night_mode">夜间模式</string>
+    <string name="use">使用</string>
+    <string name="in_use">使用中</string>
+    <string name="skin">个性换肤</string>
+
+    <string name="sakura">樱花粉</string>
+    <string name="firey">火焰红</string>
+    <string name="sand">沙滩黄</string>
+    <string name="wood">森林绿</string>
+    <string name="storm">风暴蓝</string>
+    <string name="hope">希望紫</string>
 
 </resources>

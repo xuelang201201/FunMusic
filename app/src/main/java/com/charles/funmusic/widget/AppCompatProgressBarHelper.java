@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import com.charles.funmusic.R;
 import com.charles.funmusic.model.TintInfo;
 //import com.charles.funmusic.utils.ThemeUtils;
+import com.charles.funmusic.utils.ThemeUtils;
 import com.charles.funmusic.utils.TintManager;
 
 public class AppCompatProgressBarHelper extends AppCompatBaseHelper {
@@ -57,8 +58,8 @@ public class AppCompatProgressBarHelper extends AppCompatBaseHelper {
                 mProgressTintInfo = new TintInfo();
             }
             mProgressTintInfo.mHasTintList = true;
-//            mProgressTintInfo.mTintList = ColorStateList.valueOf(ThemeUtils.getColor(mView.getContext(), tint.getDefaultColor()));
-//            Log.e("themep", "color = " + ColorStateList.valueOf(ThemeUtils.getColor(mView.getContext(), tint.getDefaultColor())).getDefaultColor());
+            mProgressTintInfo.mTintList = ColorStateList.valueOf(ThemeUtils.getColor(mView.getContext(), tint.getDefaultColor()));
+            Log.e("themep", "color = " + ColorStateList.valueOf(ThemeUtils.getColor(mView.getContext(), tint.getDefaultColor())).getDefaultColor());
         }
         applySupportProgressTint();
     }
@@ -69,7 +70,7 @@ public class AppCompatProgressBarHelper extends AppCompatBaseHelper {
                 mIndeterminateTintInfo = new TintInfo();
             }
             mIndeterminateTintInfo.mHasTintList = true;
-//            mIndeterminateTintInfo.mTintList = ColorStateList.valueOf(ThemeUtils.getColor(mView.getContext(), tint.getDefaultColor()));
+            mIndeterminateTintInfo.mTintList = ColorStateList.valueOf(ThemeUtils.getColor(mView.getContext(), tint.getDefaultColor()));
         }
         applySupportIndeterminateTint();
     }

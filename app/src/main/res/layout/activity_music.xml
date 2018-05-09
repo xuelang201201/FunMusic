@@ -55,13 +55,25 @@
         </FrameLayout>
     </LinearLayout>
 
-    <android.support.design.widget.NavigationView
+    <!--<android.support.design.widget.NavigationView-->
+    <!--android:id="@+id/activity_music_navigation_view"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_gravity="start"-->
+    <!--android:background="@color/white"-->
+    <!--app:headerLayout="@layout/navigation_header_view"-->
+    <!--app:menu="@menu/navigation_menu" />-->
+
+    <ListView
         android:id="@+id/activity_music_navigation_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/white"
-        app:headerLayout="@layout/navigation_header_view"
-        app:menu="@menu/navigation_menu" />
+        android:clipToPadding="false"
+        android:divider="@null"
+        android:listSelector="?android:attr/selectableItemBackground"
+        android:paddingTop="0dp"
+        android:scrollbars="none" />
 
 </android.support.v4.widget.DrawerLayout>

@@ -83,6 +83,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysVisible" />
         <activity android:name=".activity.LockActivity" />
+        <activity android:name=".activity.ThemePickerActivity" />
 
         <service
             android:name=".service.MusicService"

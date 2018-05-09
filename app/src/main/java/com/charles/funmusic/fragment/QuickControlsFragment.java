@@ -14,6 +14,7 @@ import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
+import com.charles.funmusic.utils.ThemeUtils;
 import com.charles.funmusic.utils.ToastUtil;
 import com.charles.funmusic.widget.TintImageView;
 import com.charles.funmusic.widget.TintProgressBar;
@@ -78,8 +79,7 @@ public class QuickControlsFragment extends BaseFragment {
 
     @Override
     public void init(Bundle savedInstanceState) {
-//        mProgress.setProgressTintList(
-//                ThemeUtils.getThemeColorStateList(mContext, R.color.theme_color_primary));
+        mProgress.setProgressTintList(ThemeUtils.getThemeColorStateList(mContext, R.color.theme_color_primary));
         mProgress.postDelayed(mUpdateProgress, 0);
 
         changeFont(mTitle, false);

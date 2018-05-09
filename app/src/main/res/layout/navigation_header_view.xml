@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="160dp"
     android:background="@color/colorPrimaryDark"
+    android:fitsSystemWindows="true"
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
@@ -15,7 +15,7 @@
         android:layout_marginTop="10dp"
         app:border_color="@color/white"
         app:border_width="1dp"
-        app:srcCompat="@drawable/ic_default_avatar_white"/>
+        app:srcCompat="@drawable/ic_default_avatar_white" />
 
     <TextView
         android:id="@+id/navigation_header_view_username"
@@ -30,6 +30,6 @@
         android:gravity="center"
         android:text="@string/app_name"
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
 </RelativeLayout>
