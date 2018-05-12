@@ -79,7 +79,7 @@ public class QuickControlsFragment extends BaseFragment {
 
     @Override
     public void init(Bundle savedInstanceState) {
-        mProgress.setProgressTintList(ThemeUtils.getThemeColorStateList(mContext, R.color.theme_color_primary));
+//        mProgress.setProgressTintList(ThemeUtils.getThemeColorStateList(mContext, R.color.theme_color_primary));
         mProgress.postDelayed(mUpdateProgress, 0);
 
         changeFont(mTitle, false);

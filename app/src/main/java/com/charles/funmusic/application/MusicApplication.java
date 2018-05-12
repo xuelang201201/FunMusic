@@ -24,7 +24,9 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 
-public class MusicApplication extends Application implements ThemeUtils.switchColor {
+public class MusicApplication extends Application
+//        implements ThemeUtils.switchColor
+{
 
     private static int MAX_MEM = (int) Runtime.getRuntime().maxMemory() / 4;
 
@@ -40,7 +42,7 @@ public class MusicApplication extends Application implements ThemeUtils.switchCo
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Permission.init(this);
         }
-        ThemeUtils.setSwitchColor(this);
+//        ThemeUtils.setSwitchColor(this);
     }
 
     private void frescoInit() {
@@ -124,56 +126,68 @@ public class MusicApplication extends Application implements ThemeUtils.switchCo
         OkHttpUtils.initClient(okHttpClient);
     }
 
-    @Override
-    public int replaceColorById(Context context, @ColorInt int originColor) {
-        if (ThemeHelper.isDefaultTheme(context)) {
-            return originColor;
-        }
-        String theme = getTheme(context);
-        int colorId = -1;
-        if (theme != null) {
-            colorId = getThemeColor(context, originColor, theme);
-        }
-        return colorId != -1 ? getResources().getColor(colorId) : originColor;
-    }
+//    @Override
+//    public int replaceColorById(Context context, @ColorRes int colorId) {
+//        if (ThemeHelper.isDefaultTheme(context)) {
+//            return context.getResources().getColor(colorId);
+//        }
+//        String theme = getTheme(context);
+//        if (theme != null) {
+//            colorId = getThemeColorId(context, colorId, theme);
+//        }
+//        return context.getResources().getColor(colorId);
+//    }
+//
+//    @Override
+//    public int replaceColor(Context context, @ColorInt int originColor) {
+//        if (ThemeHelper.isDefaultTheme(context)) {
+//            return originColor;
+//        }
+//        String theme = getTheme(context);
+//        int colorId = -1;
+//        if (theme != null) {
+//            colorId = getThemeColor(context, originColor, theme);
+//        }
+//        return colorId != -1 ? getResources().getColor(colorId) : originColor;
+//    }
+//
+//    private String getTheme(Context context) {
+//        if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_STORM) {
+//            return "blue";
+//        } else if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_HOPE) {
+//            return "purple";
+//        } else if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_WOOD) {
+//            return "green";
+//        } else if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_SAND) {
+//            return "orange";
+//        } else if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_FIREY) {
+//            return "red";
+//        }
+//        return null;
+//    }
+//
+//    private
+//    @ColorRes
+//    int getThemeColorId(Context context, int colorId, String theme) {
+//        switch (colorId) {
+//            case R.color.theme_color_primary:
+//                return context.getResources().getIdentifier(theme, "color", getPackageName());
+//            case R.color.theme_color_primary_dark:
+//                return context.getResources().getIdentifier(theme + "_dark", "color", getPackageName());
+//            case R.color.play_bar_progress_color:
+//                return context.getResources().getIdentifier(theme + "_trans", "color", getPackageName());
+//        }
+//        return colorId;
+//    }
+//
+//    private
+//    @ColorRes
+//    int getThemeColor(Context context, int color, String theme) {
+//        switch (color) {
+//            case 0xd20000:
+//                return context.getResources().getIdentifier(theme, "color", getPackageName());
+//        }
+//        return -1;
+//    }
 
-    private String getTheme(Context context) {
-        if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_STORM) {
-            return "blue";
-        } else if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_HOPE) {
-            return "purple";
-        } else if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_WOOD) {
-            return "green";
-        } else if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_SAND) {
-            return "orange";
-        } else if (ThemeHelper.getTheme(context) == ThemeHelper.CARD_FIREY) {
-            return "red";
-        }
-        return null;
-    }
-
-    private @ColorRes int getThemeColor(Context context, int colorId, String theme) {
-        switch (colorId) {
-            case R.color.theme_color_primary:
-                return context.getResources().getIdentifier(theme, "color", getPackageName());
-            case R.color.theme_color_primary_dark:
-                return context.getResources().getIdentifier(theme + "_dark", "color", getPackageName());
-            case R.color.play_bar_progress_color:
-                return context.getResources().getIdentifier(theme + "_trans", "color", getPackageName());
-        }
-        return colorId;
-    }
-
-    @Override
-    public int replaceColor(Context context, @ColorInt int originColor) {
-        if (ThemeHelper.isDefaultTheme(context)) {
-            return originColor;
-        }
-        String theme = getTheme(context);
-        int colorId = -1;
-        if (theme != null) {
-            colorId = getThemeColor(context, originColor, theme);
-        }
-        return colorId != -1 ? getResources().getColor(colorId) : originColor;
-    }
 }

@@ -152,7 +152,6 @@ public class MusicActivity extends BaseActivity {
                             MusicPlayer.playOrPause();
                         }
                         unbindService();
-                        onDestroy();
                         finish();
                         break;
                 }
@@ -218,7 +217,7 @@ public class MusicActivity extends BaseActivity {
         super.onBackPressed();
     }
 
-    @OnClick({R.id.toolbar_menu, R.id.toolbar_search, R.id.play_bar})
+    @OnClick({R.id.toolbar_menu, R.id.toolbar_search})
     public void doClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_menu:
@@ -227,9 +226,6 @@ public class MusicActivity extends BaseActivity {
 
             case R.id.toolbar_search:
                 showSearchActivity();
-                break;
-
-            case R.id.play_bar:
                 break;
         }
     }
@@ -268,8 +264,6 @@ public class MusicActivity extends BaseActivity {
             @Override
             public void run() {
                 mViewPager.setCurrentItem(savedInstanceState.getInt(Keys.VIEW_PAGER_INDEX), false);
-//                mLocalMusicFragment.onRestoreInstanceState(savedInstanceState);
-//                mOnlineFragment.onRestoreInstanceState(savedInstanceState);
             }
         });
         mTitles = savedInstanceState.getStringArray("title");
@@ -282,32 +276,6 @@ public class MusicActivity extends BaseActivity {
         finish();
         super.onDestroy();
     }
-
-//    @Override
-//    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
-//        mDrawerLayout.closeDrawers();
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                item.setChecked(false);
-//            }
-//        }, 500);
-//
-//        switch (item.getItemId()) {
-//            case R.id.action_timer:
-//                showTimerFragment();
-//                return true;
-//
-//            case R.id.action_setting:
-//                startActivity(MusicActivity.this, SettingActivity.class);
-//                return true;
-//
-//            case R.id.action_exit:
-//                exit();
-//                return true;
-//        }
-//        return false;
-//    }
 
     /**
      * 显示定时界面
