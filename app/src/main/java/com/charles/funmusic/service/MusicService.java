@@ -438,6 +438,8 @@ public class MusicService extends Service {
     }
 
     public void exit() {
+        stop();
+        QuitTimer.getInstance().stop();
         stopSelf();
     }
 
