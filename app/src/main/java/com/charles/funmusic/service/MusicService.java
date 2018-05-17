@@ -113,7 +113,7 @@ public class MusicService extends Service {
     public static final String MUSIC_PACKAGE_NAME = "com.android.music";
     public static final String SERVICE_COMMAND = "com.charles.funmusic.music_service_command";
     public static final String ACTION_TOGGLE_PAUSE = "com.charles.funmusic.toggle_pause";
-    public static final String ACTION_STOP = "com.charles.funmusic.mStop";
+    public static final String ACTION_STOP = "com.charles.funmusic.stop";
     public static final String ACTION_NEXT = "com.charles.funmusic.next";
     public static final String ACTION_PAUSE = "com.charles.funmusic.pause";
     public static final String ACTION_PREVIOUS = "com.charles.funmusic.previous";

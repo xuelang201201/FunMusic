@@ -1,6 +1,7 @@
 package com.charles.funmusic.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,6 +38,7 @@ import com.charles.funmusic.utils.ToastUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 
@@ -59,6 +61,8 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
     private QuickControlsFragment mFragment;
     private ArrayList<MusicStateListener> mStateListener = new ArrayList<>();
     protected Handler mHandler = new Handler(Looper.getMainLooper());
+
+    public static List<Activity> sActivities = new ArrayList<>();
 
     /**
      * 沉浸式状态栏
@@ -202,6 +206,8 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
         filter.addAction(MusicService.MUSIC_LOADING);
         registerReceiver(mPlaybackStatus, new IntentFilter(filter));
         showQuickControl(true);
+
+        sActivities.add(this);
     }
 
     @Override
@@ -252,6 +258,8 @@ public abstract class BaseActivity extends AppCompatActivity implements ServiceC
         } catch (final Throwable ignored) {
         }
         mStateListener.clear();
+
+        sActivities.remove(this);
     }
 
     public void unbindService() {

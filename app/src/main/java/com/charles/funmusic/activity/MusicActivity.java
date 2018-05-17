@@ -1,5 +1,6 @@
 package com.charles.funmusic.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -152,7 +153,9 @@ public class MusicActivity extends BaseActivity {
                             MusicPlayer.playOrPause();
                         }
                         unbindService();
-                        finish();
+                        for (Activity activity : sActivities) {
+                            activity.finish();
+                        }
                         break;
                 }
             }
