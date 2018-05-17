@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/fragment_splash_image_view"
+        android:id="@+id/activity_splash_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -31,7 +31,7 @@
         android:textSize="24sp"/>
 
     <TextView
-        android:id="@+id/fragment_splash_copyright"
+        android:id="@+id/activity_splash_copyright"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -43,4 +43,9 @@
         android:scaleX="0.9"
         android:scaleY="0.9"
         android:textSize="12sp"/>
+
+    <include
+        android:id="@+id/play_bar"
+        layout="@layout/play_bar"
+        android:visibility="gone"/>
 </LinearLayout>
