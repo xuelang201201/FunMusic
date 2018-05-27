@@ -5,7 +5,11 @@ import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.charles.funmusic.R;
@@ -14,7 +18,6 @@ import com.charles.funmusic.application.AppCache;
 import com.charles.funmusic.service.MusicPlayer;
 import com.charles.funmusic.utils.FileUtil;
 import com.charles.funmusic.utils.HandlerUtil;
-import com.charles.funmusic.utils.ThemeUtils;
 import com.charles.funmusic.utils.ToastUtil;
 import com.charles.funmusic.widget.TintImageView;
 import com.charles.funmusic.widget.TintProgressBar;
@@ -30,6 +33,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class QuickControlsFragment extends BaseFragment {
@@ -72,13 +76,18 @@ public class QuickControlsFragment extends BaseFragment {
         return new QuickControlsFragment();
     }
 
+    @Nullable
     @Override
-    public int getLayoutId() {
-        return R.layout.play_bar;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.play_bar, container, false);
+        ButterKnife.bind(this, view);
+
+        init();
+
+        return view;
     }
 
-    @Override
-    public void init(Bundle savedInstanceState) {
+    private void init() {
 //        mProgress.setProgressTintList(ThemeUtils.getThemeColorStateList(mContext, R.color.theme_color_primary));
         mProgress.postDelayed(mUpdateProgress, 0);
 

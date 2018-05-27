@@ -2,8 +2,12 @@ package com.charles.funmusic.fragment;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +18,7 @@ import com.charles.funmusic.utils.ScreenUtil;
 import com.charles.funmusic.utils.ToastUtil;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class TimerFragment extends BaseFragment {
@@ -65,17 +70,21 @@ public class TimerFragment extends BaseFragment {
 
 //    private CountDownTimer mTimer;
 
-    @Override
-    public int getLayoutId() {
-        return R.layout.fragment_timer;
-    }
 
+    @Nullable
     @Override
-    public void init(Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_timer, container, false);
+        ButterKnife.bind(this, view);
+
         mTitle.setText(getString(R.string.menu_timer));
 
         setSelectedTimer(mTimerNoText, mTimerNoImage);
         initSystemBar();
+
+        view.setOnTouchListener(this); // 防止fragment被击穿
+
+        return view;
     }
 
     /**

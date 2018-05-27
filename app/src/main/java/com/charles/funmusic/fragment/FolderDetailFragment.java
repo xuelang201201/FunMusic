@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -74,13 +75,18 @@ public class FolderDetailFragment extends BaseFragment {
         }
     }
 
+    @Nullable
     @Override
-    public int getLayoutId() {
-        return R.layout.fragment_common;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_common, container, false);
+        ButterKnife.bind(this, view);
+
+        init();
+
+        return view;
     }
 
-    @Override
-    public void init(Bundle savedInstanceState) {
+    private void init() {
         mHeaderView.setVisibility(View.VISIBLE);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));

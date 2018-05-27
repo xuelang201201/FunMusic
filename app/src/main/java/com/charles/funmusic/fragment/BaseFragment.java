@@ -9,10 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
@@ -25,20 +23,12 @@ import com.charles.funmusic.utils.FontUtil;
 import com.charles.funmusic.utils.HandlerUtil;
 import com.charles.funmusic.utils.ScreenUtil;
 
-import butterknife.ButterKnife;
-
 /**
  * 基类
  */
 public abstract class BaseFragment extends Fragment implements View.OnTouchListener, MusicStateListener {
     private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
     protected Handler mHandler;
-
-    public abstract int getLayoutId();
-
-    public abstract void init(Bundle savedInstanceState);
-
-    public View mView;
 
     public Context mContext;
 
@@ -67,7 +57,7 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
                 ft.commitAllowingStateLoss();
             }
         }
-        mHandler = HandlerUtil.getInstance(mContext);
+        mHandler = HandlerUtil.getInstance(getActivity());
     }
 
     @Override
@@ -93,19 +83,6 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
         outState.putBoolean(STATE_SAVE_IS_HIDDEN, isHidden());
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (mView == null) {
-            mView = inflater.inflate(getLayoutId(), container, false);
-
-            ButterKnife.bind(this, mView);
-            init(savedInstanceState);
-        }
-
-        mView.setOnTouchListener(this); // 防止fragment被击穿
-        return mView;
-    }
-
     protected MusicService getMusicService() {
         MusicService musicService = AppCache.getMusicService();
         if (musicService == null) {
@@ -125,8 +102,9 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
 
     /**
      * 改变字体
+     *
      * @param textView TextView
-     * @param isBold 是否加粗
+     * @param isBold   是否加粗
      */
     protected void changeFont(TextView textView, boolean isBold) {
         FontUtil fontUtil = new FontUtil();
@@ -144,14 +122,6 @@ public abstract class BaseFragment extends Fragment implements View.OnTouchListe
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return true;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mView != null) {
-            ((ViewGroup) mView.getParent()).removeView(mView);
-        }
     }
 
     /**

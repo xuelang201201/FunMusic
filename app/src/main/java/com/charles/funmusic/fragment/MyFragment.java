@@ -3,7 +3,6 @@ package com.charles.funmusic.fragment;
 import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -47,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 //import com.charles.funmusic.utils.ThemeUtils;
 
@@ -81,22 +81,27 @@ public class MyFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPlaylistInfo = PlaylistInfo.getInstance(mContext);
-        if (SystemUtil.isLollipop() && ContextCompat.checkSelfPermission(mContext,
+        if (SystemUtil.isLollipop() && ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) mContext, new String[]{
+            ActivityCompat.requestPermissions(getActivity(), new String[]{
                     Manifest.permission.READ_EXTERNAL_STORAGE
             }, 0);
         }
     }
 
+    @Nullable
     @Override
-    public int getLayoutId() {
-        return R.layout.fragment_my;
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_my, container, false);
+        ButterKnife.bind(this, view);
+
+        init();
+
+        return view;
     }
 
-    @Override
-    public void init(Bundle savedInstanceState) {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+    private void init() {
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 //        mSwipeRefresh.setColorSchemeColors(ThemeUtils.getColorById(mContext, R.color.theme_color_primary));
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -105,14 +110,14 @@ public class MyFragment extends BaseFragment {
             }
         });
         // 先给adapter设置空数据，异步加载好后更新数据，防止RecyclerView no attach
-        mAdapter = new MyFragmentAdapter(mContext);
+        mAdapter = new MyFragmentAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
         // 设置没有item动画
         ((SimpleItemAnimator) mRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         reloadAdapter();
 
-        ((Activity) mContext).getWindow().setBackgroundDrawableResource(R.color.background_material_light_1);
+        getActivity().getWindow().setBackgroundDrawableResource(R.color.background_material_light_1);
     }
 
     @Override
@@ -137,7 +142,7 @@ public class MyFragment extends BaseFragment {
     }
 
     private void setMusicInfo() {
-        if (SystemUtil.isLollipop() && ContextCompat.checkSelfPermission(mContext,
+        if (SystemUtil.isLollipop() && ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             loadCount(false);
         } else {
@@ -152,21 +157,21 @@ public class MyFragment extends BaseFragment {
         int favoriteCount = 0;
         if (has) {
             try {
-                localMusicCount = MusicUtil.queryMusics(mContext, Keys.START_FROM_LOCAL).size();
+                localMusicCount = MusicUtil.queryMusics(getActivity(), Keys.START_FROM_LOCAL).size();
                 recentMusicCount = TopTracksLoader.getCount(AppCache.getContext(),
                         TopTracksLoader.QueryType.RecentSongs);
-                downloadCount = DownloadStore.getInstance(mContext).getDownLoadedListAll().size();
+                downloadCount = DownloadStore.getInstance(getActivity()).getDownLoadedListAll().size();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        setInfo(mContext.getResources().getString(R.string.local_musics),
+        setInfo(getActivity().getResources().getString(R.string.local_musics),
                 localMusicCount, R.drawable.ic_local, 0);
-        setInfo(mContext.getResources().getString(R.string.recent_play),
+        setInfo(getActivity().getResources().getString(R.string.recent_play),
                 recentMusicCount, R.drawable.ic_recent, 1);
-        setInfo(mContext.getResources().getString(R.string.download_management),
+        setInfo(getActivity().getResources().getString(R.string.download_management),
                 downloadCount, R.drawable.ic_download, 2);
-        setInfo(mContext.getResources().getString(R.string.favorites),
+        setInfo(getActivity().getResources().getString(R.string.favorites),
                 favoriteCount, R.drawable.ic_favorite, 3);
     }
 
@@ -179,10 +184,10 @@ public class MyFragment extends BaseFragment {
                 setMusicInfo();
                 ArrayList<Playlist> playLists = mPlaylistInfo.getPlaylist();
                 ArrayList results = new ArrayList(mList);
-                results.add(mContext.getResources().getString(R.string.created_play_lists));
+                results.add(getActivity().getResources().getString(R.string.created_play_lists));
                 results.addAll(playLists);
                 if (mAdapter == null) {
-                    mAdapter = new MyFragmentAdapter(mContext);
+                    mAdapter = new MyFragmentAdapter(getActivity());
                 }
                 mAdapter.updateResults(results, playLists);
                 return null;
@@ -190,7 +195,7 @@ public class MyFragment extends BaseFragment {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                if (mContext == null) {
+                if (getActivity() == null) {
                     return;
                 }
                 mAdapter.notifyDataSetChanged();

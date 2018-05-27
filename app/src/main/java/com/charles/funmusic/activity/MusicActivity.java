@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -70,11 +71,18 @@ public class MusicActivity extends BaseActivity {
      */
     private long lastClickBackTimeMillis;
 
+    private FragmentManager mManager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
         getWindow().setBackgroundDrawableResource(R.color.background_material_light_1);
+
+        mManager = getSupportFragmentManager();
+        if (savedInstanceState != null) {
+            mManager.popBackStackImmediate(null, 1);
+        }
 
         initView();
     }
@@ -87,8 +95,7 @@ public class MusicActivity extends BaseActivity {
     private void initView() {
 
         setSupportActionBar(mToolbar);
-
-        MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager());
+        MyPagerAdapter adapter = new MyPagerAdapter(mManager);
         mMyFragment = new MyFragment();
         adapter.addFragment(mMyFragment, mTitles[0]);
         mOnlineFragment = new OnlineFragment();
